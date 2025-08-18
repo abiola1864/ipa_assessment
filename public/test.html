@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>API Debug Test</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .test-card {
+            background: white;
+            padding: 20px;
+            margin: 10px 0;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        button {
+            background: #4CAF50;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        button:hover {
+            background: #45a049;
+        }
+        .result {
+            background: #f8f9fa;
+            padding: 15px;
+            margin: 10px 0;
+            border-radius: 4px;
+            border-left: 4px solid #007bff;
+            white-space: pre-wrap;
+            font-family: monospace;
+        }
+        .success {
+            border-left-color: #28a745;
+            background: #d4edda;
+        }
+        .error {
+            border-left-color: #dc3545;
+            background: #f8d7da;
+        }
+    </style>
+</head>
+<body>
+    <h1>🔧 API Debug Test Page</h1>
+    <p>Use this page to test if the backend API is working correctly.</p>
+
+    <div class="test-card">
+        <h3>1. Health Check</h3>
+        <button onclick="testHealth()">Test /api/health</button>
+        <div id="healthResult" class="result" style="display: none;"></div>
+    </div>
+
+    <div class="test-card">
+        <h3>2. Submit Test Quiz</h3>
+        <button onclick="testSubmitQuiz()">Test /api/submit-quiz</button>
+        <div id="submitResult" class="result" style="display: none;"></div>
+    </div>
+
+    <div class="test-card">
+        <h3>3. Get Statistics</h3>
+        <button onclick="testStats()">Test /api/stats</button>
+        <div id="statsResult" class="result" style="display: none;"></div>
+    </div>
+
+    <div class="test-card">
+        <h3>4. Get All Results</h3>
+        <button onclick="testResults()">Test /api/results</button>
+        <div id="resultsResult" class="result" style="display: none;"></div>
+    </div>
+
+    <div class="test-card">
+        <h3>5. Clear All Data</h3>
+        <button onclick="testClear()" style="background: #dc3545;">Test /api/results (DELETE)</button>
+        <div id="clearResult" class="result" style="display: none;"></div>
+    </div>
+
+    <div class="test-card">
+        <h3>Navigation</h3>
+        <a href="/" style="margin-right: 10px;">← Back to Quiz</a>
+        <a href="/admin.html">Admin Dashboard →</a>
+    </div>
+
+    <script>
+        function showResult(elementId, data, isError = false) {
+            const element = document.getElementById(elementId);
+            element.style.display = 'block';
+            element.className = `result ${isError ? 'error' : 'success'}`;
+            element.textContent = typeof data === 'object' ? JSON.stringify(data, null, 2) : data;
+        }
+
+        async function testHealth() {
+            try {
+                console.log('Testing /api/health...');
+                const response = await fetch('/api/health');
+                const data = await response.json();
+                
+                if (response.ok) {
+                    showResult('healthResult', `✅ SUCCESS (${response.status})\n${JSON.stringify(data, null, 2)}`);
+                } else {
+                    showResult('healthResult', `❌ ERROR (${response.status})\n${JSON.stringify(data, null, 2)}`, true);
+                }
+            } catch (error) {
+                showResult('healthResult', `💥 NETWORK ERROR\n${error.message}`, true);
+            }
+        }
+
+        async function testSubmitQuiz() {
+            const testData = {
+                participant_name: 'Test User',
+                completed_at: new Date().toISOString(),
+                total_score: 8,
+                percentage: 53,
+                time_taken: 1200,
+                Q1: 'B', Q1_correct: 'B', Q1_skill: 'Excel - Pivot Tables', Q1_category: 'Data Analysis',
+                Q2: 'A', Q2_correct: 'C', Q2_skill: 'Excel - Data Cleaning', Q2_category: 'Data Analysis',
+                Q3: 'B', Q3_correct: 'B', Q3_skill: 'Power BI - Visualization', Q3_category: 'Data Analysis',
+                Q4: 'A', Q4_correct: 'A', Q4_skill: 'Excel - Lookup Functions', Q4_category: 'Data Analysis',
+                Q5: 'B', Q5_correct: 'C', Q5_skill: 'Data Cleaning Concepts', Q5_category: 'Data Analysis',
+                Q6: 'B', Q6_correct: 'B', Q6_skill: 'Statistical Understanding', Q6_category: 'Data Analysis',
+                Q7: 'B', Q7_correct: 'B', Q7_skill: 'Data Interpretation', Q7_category: 'Data Analysis',
+                Q8: 'C', Q8_correct: 'C', Q8_skill: 'Excel - Formulas', Q8_category: 'Data Analysis',
+                Q9: 'C', Q9_correct: 'C', Q9_skill: 'Data Types', Q9_category: 'Data Analysis',
+                Q10: 'A', Q10_correct: 'B', Q10_skill: 'Power BI - DAX', Q10_category: 'Data Analysis',
+                Q11: 'B', Q11_correct: 'B', Q11_skill: 'Conditional Statements', Q11_category: 'Programming Logic',
+                Q12: 'B', Q12_correct: 'B', Q12_skill: 'Iteration Logic', Q12_category: 'Programming Logic',
+                Q13: 'C', Q13_correct: 'C', Q13_skill: 'Data Handling Concepts', Q13_category: 'Programming Logic',
+                Q14: 'A', Q14_correct: 'A', Q14_skill: 'Boolean Logic', Q14_category: 'Programming Logic',
+                Q15: 'A', Q15_correct: 'B', Q15_skill: 'Algorithm Logic', Q15_category: 'Programming Logic'
+            };
+
+            try {
+                console.log('Testing /api/submit-quiz...');
+                const response = await fetch('/api/submit-quiz', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(testData)
+                });
+                
+                const data = await response.json();
+                
+                if (response.ok) {
+                    showResult('submitResult', `✅ SUCCESS (${response.status})\n${JSON.stringify(data, null, 2)}`);
+                } else {
+                    showResult('submitResult', `❌ ERROR (${response.status})\n${JSON.stringify(data, null, 2)}`, true);
+                }
+            } catch (error) {
+                showResult('submitResult', `💥 NETWORK ERROR\n${error.message}`, true);
+            }
+        }
+
+        async function testStats() {
+            try {
+                console.log('Testing /api/stats...');
+                const response = await fetch('/api/stats');
+                const data = await response.json();
+                
+                if (response.ok) {
+                    showResult('statsResult', `✅ SUCCESS (${response.status})\n${JSON.stringify(data, null, 2)}`);
+                } else {
+                    showResult('statsResult', `❌ ERROR (${response.status})\n${JSON.stringify(data, null, 2)}`, true);
+                }
+            } catch (error) {
+                showResult('statsResult', `💥 NETWORK ERROR\n${error.message}`, true);
+            }
+        }
+
+        async function testResults() {
+            try {
+                console.log('Testing /api/results...');
+                const response = await fetch('/api/results');
+                const data = await response.json();
+                
+                if (response.ok) {
+                    showResult('resultsResult', `✅ SUCCESS (${response.status})\nFound ${data.length} records\n${JSON.stringify(data, null, 2)}`);
+                } else {
+                    showResult('resultsResult', `❌ ERROR (${response.status})\n${JSON.stringify(data, null, 2)}`, true);
+                }
+            } catch (error) {
+                showResult('resultsResult', `💥 NETWORK ERROR\n${error.message}`, true);
+            }
+        }
+
+        async function testClear() {
+            if (!confirm('⚠️ This will delete ALL quiz data. Are you sure?')) {
+                return;
+            }
+
+            try {
+                console.log('Testing DELETE /api/results...');
+                const response = await fetch('/api/results', {
+                    method: 'DELETE'
+                });
+                const data = await response.json();
+                
+                if (response.ok) {
+                    showResult('clearResult', `✅ SUCCESS (${response.status})\n${JSON.stringify(data, null, 2)}`);
+                } else {
+                    showResult('clearResult', `❌ ERROR (${response.status})\n${JSON.stringify(data, null, 2)}`, true);
+                }
+            } catch (error) {
+                showResult('clearResult', `💥 NETWORK ERROR\n${error.message}`, true);
+            }
+        }
+
+        // Auto-run health check on page load
+        window.addEventListener('load', () => {
+            console.log('🔧 API Debug Test Page loaded');
+            testHealth();
+        });
+    </script>
+</body>
+</html>

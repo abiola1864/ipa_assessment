@@ -361,7 +361,7 @@
                 <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
                     <div>
                         <h2 id="questionTitle">Question 1 of 15</h2>
-                        <div class="question-info" id="questionInfo">Data Analysis - Excel</div>
+                        <div class="question-info" id="questionInfo">Loading...</div>
                     </div>
                     <div class="timer" id="timer">30:00</div>
                 </div>
@@ -571,12 +571,6 @@
         let timeLeft = 1800; // 30 minutes in seconds
         let timerInterval;
         let quizStartTime;
-
-        // No need to load questions - they're embedded above
-        function loadQuestions() {
-            // Questions are already available, just log success
-            console.log('Questions loaded successfully:', questions.length, 'questions');
-        }
 
         // Initialize the quiz
         function startQuiz() {
@@ -841,6 +835,8 @@
             statusMessage.textContent = 'Submitting your results to the database...';
             loadingSpinner.style.display = 'block';
             
+            console.log('🚀 Attempting to submit quiz data:', data);
+            
             try {
                 const response = await fetch('/api/submit-quiz', {
                     method: 'POST',
@@ -850,26 +846,35 @@
                     body: JSON.stringify(data)
                 });
                 
-                const result = await response.json();
+                console.log('📡 Response received:', response.status, response.statusText);
                 
-                if (response.ok && result.success) {
+                if (!response.ok) {
+                    const errorText = await response.text();
+                    console.error('❌ HTTP Error:', response.status, errorText);
+                    throw new Error(`HTTP ${response.status}: ${errorText}`);
+                }
+                
+                const result = await response.json();
+                console.log('✅ Success response:', result);
+                
+                if (result.success) {
                     // Success
                     loadingSpinner.style.display = 'none';
-                    statusMessage.textContent = '✅ Results successfully saved to database!';
+                    statusMessage.textContent = `✅ Results successfully saved to database! (ID: ${result.id})`;
                     statusDiv.style.background = '#e8f5e8';
                     statusDiv.style.color = '#2e7d2e';
                     statusDiv.style.borderLeftColor = '#4CAF50';
                     
-                    console.log('Quiz submitted successfully:', result);
+                    console.log('🎉 Quiz submitted successfully:', result);
                 } else {
                     throw new Error(result.error || 'Submission failed');
                 }
             } catch (error) {
-                console.error('Error submitting quiz:', error);
+                console.error('💥 Error submitting quiz:', error);
                 
                 // Show error but don't prevent completion
                 loadingSpinner.style.display = 'none';
-                statusMessage.textContent = '⚠️ Warning: Results may not have been saved. Please inform the administrator.';
+                statusMessage.textContent = `⚠️ Warning: Results may not have been saved. Error: ${error.message}. Please inform the administrator.`;
                 statusDiv.style.background = '#fff3e0';
                 statusDiv.style.color = '#e65100';
                 statusDiv.style.borderLeftColor = '#ff9800';
@@ -880,8 +885,9 @@
                     existingData.push(data);
                     localStorage.setItem('quizResultsBackup', JSON.stringify(existingData));
                     statusMessage.textContent += ' (Saved locally as backup)';
+                    console.log('💾 Saved backup locally:', data);
                 } catch (localError) {
-                    console.error('Failed to save local backup:', localError);
+                    console.error('❌ Failed to save local backup:', localError);
                 }
             }
         }
@@ -940,7 +946,10 @@
         }
 
         // Initialize when page loads
-        window.addEventListener('load', loadQuestions);
+        window.addEventListener('load', () => {
+            console.log('✅ Quiz page loaded successfully');
+            console.log('📊 Questions available:', questions.length);
+        });
 
         // Prevent accidental page refresh during quiz
         window.addEventListener('beforeunload', function (e) {
