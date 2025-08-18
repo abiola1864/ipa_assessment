@@ -441,7 +441,130 @@
     </div>
 
     <script>
-        let questions = [];
+        // Questions data embedded directly (no external file needed)
+        const questions = [
+            {
+                id: 1,
+                category: 'Data Analysis',
+                skill: 'Excel - Pivot Tables',
+                question: 'You have a sales dataset with columns: Region, Product, Sales. Which Excel feature allows you to quickly summarize total sales per region?',
+                options: ['VLOOKUP', 'Pivot Table', 'Conditional Formatting', 'Data Validation'],
+                correct: 'B'
+            },
+            {
+                id: 2,
+                category: 'Data Analysis',
+                skill: 'Excel - Data Cleaning',
+                question: 'Which function is most useful for removing extra spaces in Excel cells?',
+                options: ['CLEAN', 'SUBSTITUTE', 'TRIM', 'CONCATENATE'],
+                correct: 'C'
+            },
+            {
+                id: 3,
+                category: 'Data Analysis',
+                skill: 'Power BI - Visualization',
+                question: 'To show the contribution of each product category to total sales, which visualization is most appropriate?',
+                options: ['Line chart', 'Pie/Donut chart', 'Scatter plot', 'Histogram'],
+                correct: 'B'
+            },
+            {
+                id: 4,
+                category: 'Data Analysis',
+                skill: 'Excel - Lookup Functions',
+                question: 'Which formula would you use to find the price of a product based on its ID from another sheet?',
+                options: ['INDEX-MATCH', 'CONCAT', 'IF', 'LEN'],
+                correct: 'A'
+            },
+            {
+                id: 5,
+                category: 'Data Analysis',
+                skill: 'Data Cleaning Concepts',
+                question: 'Your dataset has missing values in the Age column. What is NOT a valid method of handling missing data?',
+                options: ['Imputing with mean/median', 'Removing rows with missing values', 'Replacing with random noise', 'Leaving them as missing if analysis method supports it'],
+                correct: 'C'
+            },
+            {
+                id: 6,
+                category: 'Data Analysis',
+                skill: 'Statistical Understanding',
+                question: 'Which measure of central tendency is LEAST affected by extreme outliers?',
+                options: ['Mean', 'Median', 'Mode', 'Standard Deviation'],
+                correct: 'B'
+            },
+            {
+                id: 7,
+                category: 'Data Analysis',
+                skill: 'Data Interpretation',
+                question: 'A correlation of -0.85 between hours worked and errors made suggests:',
+                options: ['No relationship', 'Strong negative relationship', 'Strong positive relationship', 'Weak positive relationship'],
+                correct: 'B'
+            },
+            {
+                id: 8,
+                category: 'Data Analysis',
+                skill: 'Excel - Formulas',
+                question: 'Which Excel function would you use to count cells that meet a specific criteria?',
+                options: ['SUM', 'AVERAGE', 'COUNTIF', 'MAX'],
+                correct: 'C'
+            },
+            {
+                id: 9,
+                category: 'Data Analysis',
+                skill: 'Data Types',
+                question: 'In a dataset, which data type is most appropriate for storing categorical information like "High", "Medium", "Low"?',
+                options: ['Numeric', 'Date/Time', 'Text/String', 'Boolean'],
+                correct: 'C'
+            },
+            {
+                id: 10,
+                category: 'Data Analysis',
+                skill: 'Power BI - DAX',
+                question: 'In Power BI, what does DAX stand for?',
+                options: ['Data Analysis Extensions', 'Data Analysis Expressions', 'Database Analysis Exchange', 'Dynamic Analytics Exchange'],
+                correct: 'B'
+            },
+            {
+                id: 11,
+                category: 'Programming Logic',
+                skill: 'Conditional Statements',
+                question: 'What does this pseudocode do?\n\nIF Age >= 18 THEN\n   PRINT "Adult"\nELSE\n   PRINT "Minor"',
+                options: ['Always prints "Adult"', 'Categorizes based on age', 'Always prints "Minor"', 'Prints both'],
+                correct: 'B'
+            },
+            {
+                id: 12,
+                category: 'Programming Logic',
+                skill: 'Iteration Logic',
+                question: 'Which loop is best suited when the number of iterations is known beforehand?',
+                options: ['WHILE loop', 'FOR loop', 'REPEAT loop', 'IF statement'],
+                correct: 'B'
+            },
+            {
+                id: 13,
+                category: 'Programming Logic',
+                skill: 'Data Handling Concepts',
+                question: 'In most programming languages, missing values are often represented as:',
+                options: ['0', '"missing"', 'NULL or NA', '-1'],
+                correct: 'C'
+            },
+            {
+                id: 14,
+                category: 'Programming Logic',
+                skill: 'Boolean Logic',
+                question: 'What is the result of: (True AND False) OR True?',
+                options: ['True', 'False', 'Error', 'Cannot be determined'],
+                correct: 'A'
+            },
+            {
+                id: 15,
+                category: 'Programming Logic',
+                skill: 'Algorithm Logic',
+                question: 'To find the maximum value in a list of numbers, which approach is most efficient?',
+                options: ['Sort the list first, then take the last element', 'Compare each element with current maximum', 'Calculate average and find values above it', 'Use a nested loop to compare all pairs'],
+                correct: 'B'
+            }
+        ];
+
         let currentQuestionIndex = 0;
         let answers = {};
         let participantName = '';
@@ -449,16 +572,10 @@
         let timerInterval;
         let quizStartTime;
 
-        // Load questions from JSON file
-        async function loadQuestions() {
-            try {
-                const response = await fetch('./questions.json');
-                const data = await response.json();
-                questions = data.questions;
-            } catch (error) {
-                console.error('Error loading questions:', error);
-                alert('Error loading quiz questions. Please refresh the page and try again.');
-            }
+        // No need to load questions - they're embedded above
+        function loadQuestions() {
+            // Questions are already available, just log success
+            console.log('Questions loaded successfully:', questions.length, 'questions');
         }
 
         // Initialize the quiz
