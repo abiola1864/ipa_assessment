@@ -107,6 +107,8 @@
         .table-container {
             overflow-x: auto;
             margin-top: 20px;
+            max-height: 600px;
+            overflow-y: auto;
         }
 
         table {
@@ -127,6 +129,9 @@
             background: #f8f9fa;
             font-weight: 600;
             color: #333;
+            position: sticky;
+            top: 0;
+            z-index: 10;
         }
 
         tr:hover {
@@ -203,6 +208,68 @@
             font-size: 16px;
         }
 
+        .loading-spinner {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #3498db;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 20px auto;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .status-indicator {
+            display: inline-block;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            margin-right: 8px;
+        }
+
+        .status-online {
+            background: #4CAF50;
+            animation: pulse 2s infinite;
+        }
+
+        .status-offline {
+            background: #f44336;
+        }
+
+        @keyframes pulse {
+            0% { opacity: 1; }
+            50% { opacity: 0.5; }
+            100% { opacity: 1; }
+        }
+
+        .last-updated {
+            font-size: 12px;
+            color: #666;
+            margin-top: 10px;
+        }
+
+        .error-message {
+            background: #ffebee;
+            color: #c62828;
+            padding: 15px;
+            border-radius: 6px;
+            margin: 20px 0;
+            border-left: 4px solid #f44336;
+        }
+
+        .success-message {
+            background: #e8f5e8;
+            color: #2e7d2e;
+            padding: 15px;
+            border-radius: 6px;
+            margin: 20px 0;
+            border-left: 4px solid #4CAF50;
+        }
+
         .hidden {
             display: none;
         }
@@ -253,31 +320,57 @@
         <div id="adminDashboard" class="hidden">
             <div class="card">
                 <div class="header">
-                    <h1>📊 Admin Dashboard</h1>
-                    <button class="btn btn-danger" onclick="logout()">Logout</button>
+                    <div>
+                        <h1>📊 Admin Dashboard</h1>
+                        <div style="display: flex; align-items: center; margin-top: 10px;">
+                            <span class="status-indicator status-online" id="statusIndicator"></span>
+                            <span id="connectionStatus">Connected to Database</span>
+                        </div>
+                    </div>
+                    <div>
+                        <button class="btn btn-primary" onclick="refreshData()" style="margin-right: 10px;">
+                            🔄 Refresh
+                        </button>
+                        <button class="btn btn-danger" onclick="logout()">Logout</button>
+                    </div>
                 </div>
 
                 <div class="info-box">
                     <h3>📋 Assessment Management</h3>
-                    <p>Monitor quiz completions, download results, and manage assessment data. Results are automatically saved when participants complete the quiz.</p>
+                    <p>Real-time monitoring of quiz completions. Data is automatically saved to SQLite database when participants complete assessments.</p>
+                    <div class="last-updated">
+                        Last updated: <span id="lastUpdated">Loading...</span>
+                    </div>
+                </div>
+
+                <!-- Loading State -->
+                <div id="loadingState" class="hidden">
+                    <div class="loading-spinner"></div>
+                    <p style="text-align: center;">Loading dashboard data...</p>
+                </div>
+
+                <!-- Error State -->
+                <div id="errorState" class="error-message hidden">
+                    <strong>⚠️ Connection Error</strong>
+                    <p id="errorMessage">Unable to connect to the database. Please check your connection and try again.</p>
                 </div>
 
                 <!-- Statistics -->
                 <div class="stats-grid" id="statsGrid">
                     <div class="stat-card">
-                        <div class="stat-number" id="totalParticipants">0</div>
+                        <div class="stat-number" id="totalParticipants">-</div>
                         <div class="stat-label">Total Participants</div>
                     </div>
                     <div class="stat-card" style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);">
-                        <div class="stat-number" id="averageScore">0%</div>
+                        <div class="stat-number" id="averageScore">-</div>
                         <div class="stat-label">Average Score</div>
                     </div>
                     <div class="stat-card" style="background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);">
-                        <div class="stat-number" id="completionRate">0</div>
+                        <div class="stat-number" id="todayCount">-</div>
                         <div class="stat-label">Completed Today</div>
                     </div>
                     <div class="stat-card" style="background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);">
-                        <div class="stat-number" id="excellentCount">0</div>
+                        <div class="stat-number" id="excellentCount">-</div>
                         <div class="stat-label">Excellent Scores (80%+)</div>
                     </div>
                 </div>
@@ -287,13 +380,16 @@
                     <button class="btn btn-primary" onclick="downloadCSV()" id="downloadBtn" disabled>
                         📥 Download Results (CSV)
                     </button>
-                    <button class="btn btn-primary" onclick="refreshData()">
-                        🔄 Refresh Data
+                    <button class="btn btn-primary" onclick="checkHealth()">
+                        🏥 Health Check
                     </button>
                     <button class="btn btn-danger" onclick="clearAllData()" id="clearBtn">
                         🗑️ Clear All Data
                     </button>
                 </div>
+
+                <!-- Success Messages -->
+                <div id="successMessage" class="success-message hidden"></div>
 
                 <!-- Results Table -->
                 <div id="resultsSection">
@@ -302,11 +398,13 @@
                         <table id="resultsTable">
                             <thead>
                                 <tr>
+                                    <th>ID</th>
                                     <th>Participant Name</th>
                                     <th>Score</th>
                                     <th>Percentage</th>
                                     <th>Data Analysis</th>
                                     <th>Programming</th>
+                                    <th>Time Taken</th>
                                     <th>Grade</th>
                                     <th>Completed At</th>
                                 </tr>
@@ -324,7 +422,7 @@
                     <h3>No Results Yet</h3>
                     <p>Results will appear here once participants complete the quiz.</p>
                     <p style="margin-top: 20px;">
-                        <a href="candidate.html" target="_blank" class="btn btn-primary">
+                        <a href="/" target="_blank" class="btn btn-primary">
                             🚀 Open Quiz Page
                         </a>
                     </p>
@@ -336,6 +434,8 @@
     <script>
         const ADMIN_PASSWORD = 'admin123'; // Change this for security
         let quizResults = [];
+        let autoRefreshInterval;
+        let lastUpdateTime = null;
 
         // Password protection
         function checkPassword() {
@@ -354,6 +454,11 @@
             document.getElementById('adminDashboard').classList.add('hidden');
             document.getElementById('passwordScreen').classList.remove('hidden');
             document.getElementById('adminPassword').value = '';
+            
+            // Clear auto-refresh
+            if (autoRefreshInterval) {
+                clearInterval(autoRefreshInterval);
+            }
         }
 
         // Allow Enter key for password
@@ -365,62 +470,111 @@
             });
         });
 
-        function loadDashboard() {
-            refreshData();
+        async function loadDashboard() {
+            await checkHealth();
+            await refreshData();
+            
+            // Start auto-refresh every 30 seconds
+            autoRefreshInterval = setInterval(refreshData, 30000);
         }
 
-        function refreshData() {
-            // Load data from localStorage
-            quizResults = JSON.parse(localStorage.getItem('quizResults') || '[]');
-            
-            // Update statistics
-            updateStatistics();
-            
-            // Update results table
-            updateResultsTable();
-            
-            // Show/hide empty state
-            toggleEmptyState();
+        async function refreshData() {
+            try {
+                showLoading();
+                
+                // Load statistics and results in parallel
+                const [statsResponse, resultsResponse] = await Promise.all([
+                    fetch('/api/stats'),
+                    fetch('/api/results')
+                ]);
+                
+                if (!statsResponse.ok || !resultsResponse.ok) {
+                    throw new Error('Failed to fetch data from server');
+                }
+                
+                const stats = await statsResponse.json();
+                const results = await resultsResponse.json();
+                
+                quizResults = results;
+                
+                // Update UI
+                updateStatistics(stats);
+                updateResultsTable(results);
+                toggleEmptyState();
+                hideError();
+                
+                // Update last refresh time
+                lastUpdateTime = new Date();
+                document.getElementById('lastUpdated').textContent = lastUpdateTime.toLocaleString();
+                
+            } catch (error) {
+                console.error('Error refreshing data:', error);
+                showError('Failed to load data from database: ' + error.message);
+                updateConnectionStatus(false);
+            } finally {
+                hideLoading();
+            }
         }
 
-        function updateStatistics() {
-            const totalParticipants = quizResults.length;
-            const averageScore = totalParticipants > 0 ? 
-                Math.round(quizResults.reduce((sum, result) => sum + result.percentage, 0) / totalParticipants) : 0;
-            
-            // Count completions today
-            const today = new Date().toDateString();
-            const todayCompletions = quizResults.filter(result => 
-                new Date(result.completed_at).toDateString() === today
-            ).length;
-            
-            // Count excellent scores (80%+)
-            const excellentCount = quizResults.filter(result => result.percentage >= 80).length;
+        function showLoading() {
+            document.getElementById('loadingState').classList.remove('hidden');
+        }
 
-            // Update DOM
-            document.getElementById('totalParticipants').textContent = totalParticipants;
-            document.getElementById('averageScore').textContent = averageScore + '%';
-            document.getElementById('completionRate').textContent = todayCompletions;
-            document.getElementById('excellentCount').textContent = excellentCount;
+        function hideLoading() {
+            document.getElementById('loadingState').classList.add('hidden');
+        }
+
+        function showError(message) {
+            document.getElementById('errorMessage').textContent = message;
+            document.getElementById('errorState').classList.remove('hidden');
+            updateConnectionStatus(false);
+        }
+
+        function hideError() {
+            document.getElementById('errorState').classList.add('hidden');
+            updateConnectionStatus(true);
+        }
+
+        function showSuccess(message) {
+            const successDiv = document.getElementById('successMessage');
+            successDiv.textContent = message;
+            successDiv.classList.remove('hidden');
+            
+            // Auto-hide after 5 seconds
+            setTimeout(() => {
+                successDiv.classList.add('hidden');
+            }, 5000);
+        }
+
+        function updateConnectionStatus(isConnected) {
+            const indicator = document.getElementById('statusIndicator');
+            const status = document.getElementById('connectionStatus');
+            
+            if (isConnected) {
+                indicator.className = 'status-indicator status-online';
+                status.textContent = 'Connected to Database';
+            } else {
+                indicator.className = 'status-indicator status-offline';
+                status.textContent = 'Database Connection Error';
+            }
+        }
+
+        function updateStatistics(stats) {
+            document.getElementById('totalParticipants').textContent = stats.total || 0;
+            document.getElementById('averageScore').textContent = (stats.average_score || 0) + '%';
+            document.getElementById('todayCount').textContent = stats.today_count || 0;
+            document.getElementById('excellentCount').textContent = stats.excellent_count || 0;
 
             // Enable/disable download button
-            document.getElementById('downloadBtn').disabled = totalParticipants === 0;
+            document.getElementById('downloadBtn').disabled = (stats.total || 0) === 0;
         }
 
-        function updateResultsTable() {
+        function updateResultsTable(results) {
             const tbody = document.getElementById('resultsTableBody');
             tbody.innerHTML = '';
 
-            // Sort by completion time (most recent first)
-            const sortedResults = [...quizResults].sort((a, b) => 
-                new Date(b.completed_at) - new Date(a.completed_at)
-            );
-
-            sortedResults.forEach(result => {
+            results.forEach(result => {
                 // Calculate category scores
-                const dataAnalysisQuestions = 10; // Q1-Q10
-                const programmingQuestions = 5;   // Q11-Q15
-                
                 let dataAnalysisScore = 0;
                 let programmingScore = 0;
                 
@@ -439,20 +593,29 @@
 
                 const row = document.createElement('tr');
                 row.innerHTML = `
+                    <td>#${result.id}</td>
                     <td>${result.participant_name}</td>
                     <td>${result.total_score}/15</td>
                     <td>${result.percentage}%</td>
                     <td>${dataAnalysisScore}/10</td>
                     <td>${programmingScore}/5</td>
+                    <td>${formatTimeTaken(result.time_taken)}</td>
                     <td>
                         <span class="grade-badge ${getGradeClass(result.percentage)}">
                             ${getGradeText(result.percentage)}
                         </span>
                     </td>
-                    <td>${formatDateTime(result.completed_at)}</td>
+                    <td>${formatDateTime(result.created_at)}</td>
                 `;
                 tbody.appendChild(row);
             });
+        }
+
+        function formatTimeTaken(seconds) {
+            if (!seconds) return 'N/A';
+            const mins = Math.floor(seconds / 60);
+            const secs = seconds % 60;
+            return `${mins}:${secs.toString().padStart(2, '0')}`;
         }
 
         function getGradeClass(percentage) {
@@ -478,35 +641,42 @@
             document.getElementById('emptyState').classList.toggle('hidden', hasResults);
         }
 
-        function downloadCSV() {
-            if (quizResults.length === 0) {
-                alert('No data to download.');
-                return;
+        async function downloadCSV() {
+            try {
+                const response = await fetch('/api/download-csv');
+                
+                if (!response.ok) {
+                    throw new Error('Failed to download CSV');
+                }
+                
+                // Get filename from response headers
+                const contentDisposition = response.headers.get('Content-Disposition');
+                let filename = 'quiz_results.csv';
+                if (contentDisposition) {
+                    const filenameMatch = contentDisposition.match(/filename="(.+)"/);
+                    if (filenameMatch) {
+                        filename = filenameMatch[1];
+                    }
+                }
+                
+                // Download the file
+                const blob = await response.blob();
+                const url = window.URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = filename;
+                a.click();
+                window.URL.revokeObjectURL(url);
+                
+                showSuccess(`✅ CSV file downloaded successfully! (${quizResults.length} records)`);
+                
+            } catch (error) {
+                console.error('Error downloading CSV:', error);
+                showError('Failed to download CSV: ' + error.message);
             }
-
-            // Create CSV content
-            const headers = Object.keys(quizResults[0]);
-            const csvContent = [
-                headers.join(','),
-                ...quizResults.map(row => 
-                    headers.map(header => `"${row[header] || ''}"`).join(',')
-                )
-            ].join('\n');
-
-            // Download file
-            const blob = new Blob([csvContent], { type: 'text/csv' });
-            const url = window.URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = `technical_assessment_results_${new Date().toISOString().split('T')[0]}.csv`;
-            a.click();
-            window.URL.revokeObjectURL(url);
-
-            // Show success message
-            alert(`✅ CSV file downloaded successfully!\n\nFile: technical_assessment_results_${new Date().toISOString().split('T')[0]}.csv\nRecords: ${quizResults.length}`);
         }
 
-        function clearAllData() {
+        async function clearAllData() {
             if (quizResults.length === 0) {
                 alert('No data to clear.');
                 return;
@@ -515,27 +685,94 @@
             const confirmed = confirm(`⚠️ Are you sure you want to delete all ${quizResults.length} quiz results?\n\nThis action cannot be undone.`);
             
             if (confirmed) {
-                localStorage.removeItem('quizResults');
-                refreshData();
-                alert('✅ All data has been cleared successfully.');
+                try {
+                    const response = await fetch('/api/results', {
+                        method: 'DELETE'
+                    });
+                    
+                    if (!response.ok) {
+                        throw new Error('Failed to clear data');
+                    }
+                    
+                    const result = await response.json();
+                    
+                    if (result.success) {
+                        showSuccess('✅ All data has been cleared successfully.');
+                        await refreshData();
+                    } else {
+                        throw new Error(result.error || 'Unknown error');
+                    }
+                    
+                } catch (error) {
+                    console.error('Error clearing data:', error);
+                    showError('Failed to clear data: ' + error.message);
+                }
             }
         }
 
-        // Auto-refresh every 30 seconds when page is active
-        let autoRefreshInterval;
-        
+        async function checkHealth() {
+            try {
+                const response = await fetch('/api/health');
+                
+                if (!response.ok) {
+                    throw new Error('Health check failed');
+                }
+                
+                const health = await response.json();
+                
+                if (health.status === 'OK') {
+                    showSuccess('🏥 Server health check passed. Database is connected and operational.');
+                    updateConnectionStatus(true);
+                } else {
+                    throw new Error('Server reported unhealthy status');
+                }
+                
+            } catch (error) {
+                console.error('Health check failed:', error);
+                showError('Health check failed: ' + error.message);
+                updateConnectionStatus(false);
+            }
+        }
+
+        // Handle page visibility changes for auto-refresh
         document.addEventListener('visibilitychange', function() {
             if (document.hidden) {
-                clearInterval(autoRefreshInterval);
+                if (autoRefreshInterval) {
+                    clearInterval(autoRefreshInterval);
+                }
             } else {
-                autoRefreshInterval = setInterval(refreshData, 30000);
+                // Restart auto-refresh when page becomes visible
+                if (document.getElementById('adminDashboard').classList.contains('hidden') === false) {
+                    autoRefreshInterval = setInterval(refreshData, 30000);
+                    refreshData(); // Immediate refresh
+                }
             }
         });
 
-        // Start auto-refresh when dashboard loads
+        // Handle browser tab close
+        window.addEventListener('beforeunload', function() {
+            if (autoRefreshInterval) {
+                clearInterval(autoRefreshInterval);
+            }
+        });
+
+        // Initialize page
         window.addEventListener('load', function() {
-            if (!document.hidden) {
-                autoRefreshInterval = setInterval(refreshData, 30000);
+            // Check if there's any local backup data
+            const backupData = localStorage.getItem('quizResultsBackup');
+            if (backupData) {
+                try {
+                    const backup = JSON.parse(backupData);
+                    if (backup.length > 0) {
+                        const showBackup = confirm(`Found ${backup.length} quiz results saved locally as backup. Would you like to see them? (This might happen if the database was unavailable during quiz submissions)`);
+                        if (showBackup) {
+                            console.log('Local backup data:', backup);
+                            alert('Local backup data has been logged to the browser console. Check the developer tools.');
+                        }
+                    }
+                } catch (error) {
+                    console.error('Error reading local backup:', error);
+                }
             }
         });
     </script>

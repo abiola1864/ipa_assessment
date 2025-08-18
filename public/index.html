@@ -272,6 +272,30 @@
             border-left: 4px solid #f44336;
         }
 
+        .loading-spinner {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #3498db;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            animation: spin 1s linear infinite;
+            margin: 20px auto;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .submission-status {
+            background: #e8f5e8;
+            color: #2e7d2e;
+            padding: 15px;
+            border-radius: 6px;
+            margin-top: 20px;
+            border-left: 4px solid #4CAF50;
+        }
+
         .hidden {
             display: none;
         }
@@ -313,6 +337,7 @@
                     <li>30 Minutes Time Limit</li>
                     <li>70% Data Analysis, 30% Programming Logic</li>
                     <li>All questions are mandatory</li>
+                    <li>Results are automatically saved to the database</li>
                     <li>You can navigate between questions before submitting</li>
                 </ul>
             </div>
@@ -397,12 +422,17 @@
                     <div class="grade-badge excellent" id="gradeBadge">Excellent</div>
                 </div>
 
+                <div id="submissionStatus" class="submission-status hidden">
+                    <div class="loading-spinner" id="loadingSpinner"></div>
+                    <p id="statusMessage">Submitting your results...</p>
+                </div>
+
                 <p style="margin-top: 30px; color: #666; font-size: 14px;">
-                    Your results have been recorded. The administrator will analyze all results to identify training needs and improvements.
+                    Your results have been securely saved to the database. The administrator can now access your assessment data for analysis and reporting.
                 </p>
 
                 <div style="margin-top: 30px;">
-                    <button class="btn btn-primary" onclick="resetQuiz()">
+                    <button class="btn btn-primary" onclick="resetQuiz()" id="resetBtn">
                         Take Quiz Again
                     </button>
                 </div>
@@ -417,7 +447,7 @@
         let participantName = '';
         let timeLeft = 1800; // 30 minutes in seconds
         let timerInterval;
-        let quizData = [];
+        let quizStartTime;
 
         // Load questions from JSON file
         async function loadQuestions() {
@@ -427,7 +457,7 @@
                 questions = data.questions;
             } catch (error) {
                 console.error('Error loading questions:', error);
-                alert('Error loading quiz questions. Please refresh the page.');
+                alert('Error loading quiz questions. Please refresh the page and try again.');
             }
         }
 
@@ -440,6 +470,14 @@
                 alert('Please enter your name before starting the quiz.');
                 return;
             }
+
+            if (participantName.length < 2) {
+                alert('Please enter your full name (at least 2 characters).');
+                return;
+            }
+
+            // Record start time
+            quizStartTime = new Date();
 
             // Hide start screen, show quiz screen
             document.getElementById('startScreen').classList.add('hidden');
@@ -624,7 +662,7 @@
             });
         }
 
-        function submitQuiz() {
+        async function submitQuiz() {
             // Check if all questions are answered
             const unansweredQuestions = [];
             questions.forEach(q => {
@@ -638,20 +676,30 @@
                 return;
             }
             
-            // Calculate score
+            // Calculate score and time taken
             let score = 0;
             questions.forEach(q => {
                 if (answers[q.id] === q.correct) {
                     score++;
                 }
             });
+
+            const quizEndTime = new Date();
+            const timeTakenSeconds = Math.floor((quizEndTime - quizStartTime) / 1000);
             
-            // Store quiz data
+            // Stop timer
+            clearInterval(timerInterval);
+            
+            // Show completion screen first
+            showCompletionScreen(score, questions.length);
+            
+            // Prepare data for submission
             const quizResult = {
                 participant_name: participantName,
-                completed_at: new Date().toISOString(),
+                completed_at: quizEndTime.toISOString(),
                 total_score: score,
-                percentage: Math.round((score / questions.length) * 100)
+                percentage: Math.round((score / questions.length) * 100),
+                time_taken: timeTakenSeconds
             };
             
             // Add individual question responses
@@ -662,16 +710,63 @@
                 quizResult[`Q${q.id}_category`] = q.category;
             });
             
-            // Store in localStorage for admin to access
-            const existingData = JSON.parse(localStorage.getItem('quizResults') || '[]');
-            existingData.push(quizResult);
-            localStorage.setItem('quizResults', JSON.stringify(existingData));
+            // Submit to backend
+            await submitToDatabase(quizResult);
+        }
+
+        async function submitToDatabase(data) {
+            const statusDiv = document.getElementById('submissionStatus');
+            const statusMessage = document.getElementById('statusMessage');
+            const loadingSpinner = document.getElementById('loadingSpinner');
             
-            // Stop timer
-            clearInterval(timerInterval);
+            // Show submission status
+            statusDiv.classList.remove('hidden');
+            statusMessage.textContent = 'Submitting your results to the database...';
+            loadingSpinner.style.display = 'block';
             
-            // Show completion screen
-            showCompletionScreen(score, questions.length);
+            try {
+                const response = await fetch('/api/submit-quiz', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(data)
+                });
+                
+                const result = await response.json();
+                
+                if (response.ok && result.success) {
+                    // Success
+                    loadingSpinner.style.display = 'none';
+                    statusMessage.textContent = '✅ Results successfully saved to database!';
+                    statusDiv.style.background = '#e8f5e8';
+                    statusDiv.style.color = '#2e7d2e';
+                    statusDiv.style.borderLeftColor = '#4CAF50';
+                    
+                    console.log('Quiz submitted successfully:', result);
+                } else {
+                    throw new Error(result.error || 'Submission failed');
+                }
+            } catch (error) {
+                console.error('Error submitting quiz:', error);
+                
+                // Show error but don't prevent completion
+                loadingSpinner.style.display = 'none';
+                statusMessage.textContent = '⚠️ Warning: Results may not have been saved. Please inform the administrator.';
+                statusDiv.style.background = '#fff3e0';
+                statusDiv.style.color = '#e65100';
+                statusDiv.style.borderLeftColor = '#ff9800';
+                
+                // Also try to save locally as backup
+                try {
+                    const existingData = JSON.parse(localStorage.getItem('quizResultsBackup') || '[]');
+                    existingData.push(data);
+                    localStorage.setItem('quizResultsBackup', JSON.stringify(existingData));
+                    statusMessage.textContent += ' (Saved locally as backup)';
+                } catch (localError) {
+                    console.error('Failed to save local backup:', localError);
+                }
+            }
         }
 
         function showCompletionScreen(score, total) {
@@ -711,12 +806,16 @@
             answers = {};
             participantName = '';
             timeLeft = 1800;
+            quizStartTime = null;
             
             // Clear timer
             clearInterval(timerInterval);
             
             // Reset form
             document.getElementById('participantName').value = '';
+            
+            // Hide status message
+            document.getElementById('submissionStatus').classList.add('hidden');
             
             // Show start screen
             document.getElementById('completionScreen').classList.add('hidden');
@@ -725,6 +824,25 @@
 
         // Initialize when page loads
         window.addEventListener('load', loadQuestions);
+
+        // Prevent accidental page refresh during quiz
+        window.addEventListener('beforeunload', function (e) {
+            if (document.getElementById('quizScreen').classList.contains('hidden')) {
+                return; // Quiz not in progress
+            }
+            
+            const confirmationMessage = 'Are you sure you want to leave? Your quiz progress will be lost.';
+            e.returnValue = confirmationMessage;
+            return confirmationMessage;
+        });
+
+        // Handle page visibility change (tab switching, etc.)
+        document.addEventListener('visibilitychange', function() {
+            if (document.hidden && !document.getElementById('quizScreen').classList.contains('hidden')) {
+                console.log('User switched tabs during quiz at:', new Date().toISOString());
+                // You could implement additional security measures here
+            }
+        });
     </script>
 </body>
 </html>
