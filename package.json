@@ -1,0 +1,13 @@
+{
+  "name": "technical-assessment-quiz",
+  "version": "1.0.0",
+  "description": "Technical Assessment Quiz System",
+  "main": "index.html",
+  "scripts": {
+    "start": "serve -s ."
+  },
+  "dependencies": {},
+  "devDependencies": {
+    "serve": "^14.0.0"
+  }
+}

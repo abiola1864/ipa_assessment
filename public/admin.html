@@ -1,0 +1,543 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Technical Assessment - Admin Dashboard</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background-color: #f5f5f5;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .card {
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            padding: 30px;
+            margin-bottom: 20px;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+
+        .header h1 {
+            color: #333;
+            font-size: 2.5em;
+        }
+
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .btn-primary {
+            background: #4CAF50;
+            color: white;
+        }
+
+        .btn-primary:hover:not(:disabled) {
+            background: #45a049;
+        }
+
+        .btn-danger {
+            background: #f44336;
+            color: white;
+        }
+
+        .btn-danger:hover:not(:disabled) {
+            background: #d32f2f;
+        }
+
+        .btn:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .stat-card {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 25px;
+            border-radius: 10px;
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 2.5em;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        .stat-label {
+            font-size: 1.1em;
+            opacity: 0.9;
+        }
+
+        .table-container {
+            overflow-x: auto;
+            margin-top: 20px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: white;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        th, td {
+            padding: 12px 15px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+
+        th {
+            background: #f8f9fa;
+            font-weight: 600;
+            color: #333;
+        }
+
+        tr:hover {
+            background: #f5f5f5;
+        }
+
+        .grade-badge {
+            padding: 4px 12px;
+            border-radius: 15px;
+            color: white;
+            font-size: 12px;
+            font-weight: bold;
+        }
+
+        .excellent { background: #4CAF50; }
+        .good { background: #FF9800; }
+        .needs-improvement { background: #f44336; }
+
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: #666;
+        }
+
+        .empty-state-icon {
+            font-size: 4em;
+            margin-bottom: 20px;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+        }
+
+        .info-box {
+            background: #e3f2fd;
+            border-left: 4px solid #2196F3;
+            padding: 20px;
+            border-radius: 6px;
+            margin-bottom: 20px;
+        }
+
+        .info-box h3 {
+            color: #1976d2;
+            margin-bottom: 10px;
+        }
+
+        .info-box p {
+            color: #1976d2;
+            margin: 0;
+        }
+
+        .password-section {
+            background: #fff3e0;
+            border-left: 4px solid #ff9800;
+            padding: 20px;
+            border-radius: 6px;
+            margin-bottom: 30px;
+        }
+
+        .password-input {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+            margin-top: 15px;
+        }
+
+        .password-input input {
+            padding: 10px;
+            border: 2px solid #ddd;
+            border-radius: 6px;
+            font-size: 16px;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 10px;
+            }
+            
+            .card {
+                padding: 20px;
+            }
+            
+            .header {
+                flex-direction: column;
+                gap: 15px;
+                text-align: center;
+            }
+            
+            .action-buttons {
+                justify-content: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Password Protection -->
+        <div id="passwordScreen" class="card">
+            <div class="header">
+                <h1>🔒 Admin Access</h1>
+            </div>
+
+            <div class="password-section">
+                <h3>🔐 Authentication Required</h3>
+                <p>Please enter the admin password to access the dashboard.</p>
+                <div class="password-input">
+                    <input type="password" id="adminPassword" placeholder="Enter admin password" maxlength="50">
+                    <button class="btn btn-primary" onclick="checkPassword()">Login</button>
+                </div>
+                <p style="margin-top: 10px; font-size: 12px; color: #666;">
+                    Default password: <code>admin123</code>
+                </p>
+            </div>
+        </div>
+
+        <!-- Admin Dashboard -->
+        <div id="adminDashboard" class="hidden">
+            <div class="card">
+                <div class="header">
+                    <h1>📊 Admin Dashboard</h1>
+                    <button class="btn btn-danger" onclick="logout()">Logout</button>
+                </div>
+
+                <div class="info-box">
+                    <h3>📋 Assessment Management</h3>
+                    <p>Monitor quiz completions, download results, and manage assessment data. Results are automatically saved when participants complete the quiz.</p>
+                </div>
+
+                <!-- Statistics -->
+                <div class="stats-grid" id="statsGrid">
+                    <div class="stat-card">
+                        <div class="stat-number" id="totalParticipants">0</div>
+                        <div class="stat-label">Total Participants</div>
+                    </div>
+                    <div class="stat-card" style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);">
+                        <div class="stat-number" id="averageScore">0%</div>
+                        <div class="stat-label">Average Score</div>
+                    </div>
+                    <div class="stat-card" style="background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);">
+                        <div class="stat-number" id="completionRate">0</div>
+                        <div class="stat-label">Completed Today</div>
+                    </div>
+                    <div class="stat-card" style="background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);">
+                        <div class="stat-number" id="excellentCount">0</div>
+                        <div class="stat-label">Excellent Scores (80%+)</div>
+                    </div>
+                </div>
+
+                <!-- Action Buttons -->
+                <div class="action-buttons">
+                    <button class="btn btn-primary" onclick="downloadCSV()" id="downloadBtn" disabled>
+                        📥 Download Results (CSV)
+                    </button>
+                    <button class="btn btn-primary" onclick="refreshData()">
+                        🔄 Refresh Data
+                    </button>
+                    <button class="btn btn-danger" onclick="clearAllData()" id="clearBtn">
+                        🗑️ Clear All Data
+                    </button>
+                </div>
+
+                <!-- Results Table -->
+                <div id="resultsSection">
+                    <h3 style="margin-bottom: 20px;">📈 Recent Completions</h3>
+                    <div class="table-container">
+                        <table id="resultsTable">
+                            <thead>
+                                <tr>
+                                    <th>Participant Name</th>
+                                    <th>Score</th>
+                                    <th>Percentage</th>
+                                    <th>Data Analysis</th>
+                                    <th>Programming</th>
+                                    <th>Grade</th>
+                                    <th>Completed At</th>
+                                </tr>
+                            </thead>
+                            <tbody id="resultsTableBody">
+                                <!-- Results will be populated here -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Empty State -->
+                <div id="emptyState" class="empty-state hidden">
+                    <div class="empty-state-icon">📋</div>
+                    <h3>No Results Yet</h3>
+                    <p>Results will appear here once participants complete the quiz.</p>
+                    <p style="margin-top: 20px;">
+                        <a href="candidate.html" target="_blank" class="btn btn-primary">
+                            🚀 Open Quiz Page
+                        </a>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const ADMIN_PASSWORD = 'admin123'; // Change this for security
+        let quizResults = [];
+
+        // Password protection
+        function checkPassword() {
+            const password = document.getElementById('adminPassword').value;
+            if (password === ADMIN_PASSWORD) {
+                document.getElementById('passwordScreen').classList.add('hidden');
+                document.getElementById('adminDashboard').classList.remove('hidden');
+                loadDashboard();
+            } else {
+                alert('❌ Incorrect password. Please try again.');
+                document.getElementById('adminPassword').value = '';
+            }
+        }
+
+        function logout() {
+            document.getElementById('adminDashboard').classList.add('hidden');
+            document.getElementById('passwordScreen').classList.remove('hidden');
+            document.getElementById('adminPassword').value = '';
+        }
+
+        // Allow Enter key for password
+        document.addEventListener('DOMContentLoaded', function() {
+            document.getElementById('adminPassword').addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    checkPassword();
+                }
+            });
+        });
+
+        function loadDashboard() {
+            refreshData();
+        }
+
+        function refreshData() {
+            // Load data from localStorage
+            quizResults = JSON.parse(localStorage.getItem('quizResults') || '[]');
+            
+            // Update statistics
+            updateStatistics();
+            
+            // Update results table
+            updateResultsTable();
+            
+            // Show/hide empty state
+            toggleEmptyState();
+        }
+
+        function updateStatistics() {
+            const totalParticipants = quizResults.length;
+            const averageScore = totalParticipants > 0 ? 
+                Math.round(quizResults.reduce((sum, result) => sum + result.percentage, 0) / totalParticipants) : 0;
+            
+            // Count completions today
+            const today = new Date().toDateString();
+            const todayCompletions = quizResults.filter(result => 
+                new Date(result.completed_at).toDateString() === today
+            ).length;
+            
+            // Count excellent scores (80%+)
+            const excellentCount = quizResults.filter(result => result.percentage >= 80).length;
+
+            // Update DOM
+            document.getElementById('totalParticipants').textContent = totalParticipants;
+            document.getElementById('averageScore').textContent = averageScore + '%';
+            document.getElementById('completionRate').textContent = todayCompletions;
+            document.getElementById('excellentCount').textContent = excellentCount;
+
+            // Enable/disable download button
+            document.getElementById('downloadBtn').disabled = totalParticipants === 0;
+        }
+
+        function updateResultsTable() {
+            const tbody = document.getElementById('resultsTableBody');
+            tbody.innerHTML = '';
+
+            // Sort by completion time (most recent first)
+            const sortedResults = [...quizResults].sort((a, b) => 
+                new Date(b.completed_at) - new Date(a.completed_at)
+            );
+
+            sortedResults.forEach(result => {
+                // Calculate category scores
+                const dataAnalysisQuestions = 10; // Q1-Q10
+                const programmingQuestions = 5;   // Q11-Q15
+                
+                let dataAnalysisScore = 0;
+                let programmingScore = 0;
+                
+                for (let i = 1; i <= 15; i++) {
+                    const userAnswer = result[`Q${i}`];
+                    const correctAnswer = result[`Q${i}_correct`];
+                    
+                    if (userAnswer === correctAnswer) {
+                        if (i <= 10) {
+                            dataAnalysisScore++;
+                        } else {
+                            programmingScore++;
+                        }
+                    }
+                }
+
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${result.participant_name}</td>
+                    <td>${result.total_score}/15</td>
+                    <td>${result.percentage}%</td>
+                    <td>${dataAnalysisScore}/10</td>
+                    <td>${programmingScore}/5</td>
+                    <td>
+                        <span class="grade-badge ${getGradeClass(result.percentage)}">
+                            ${getGradeText(result.percentage)}
+                        </span>
+                    </td>
+                    <td>${formatDateTime(result.completed_at)}</td>
+                `;
+                tbody.appendChild(row);
+            });
+        }
+
+        function getGradeClass(percentage) {
+            if (percentage >= 80) return 'excellent';
+            if (percentage >= 60) return 'good';
+            return 'needs-improvement';
+        }
+
+        function getGradeText(percentage) {
+            if (percentage >= 80) return 'Excellent';
+            if (percentage >= 60) return 'Good';
+            return 'Needs Improvement';
+        }
+
+        function formatDateTime(isoString) {
+            const date = new Date(isoString);
+            return date.toLocaleString();
+        }
+
+        function toggleEmptyState() {
+            const hasResults = quizResults.length > 0;
+            document.getElementById('resultsSection').classList.toggle('hidden', !hasResults);
+            document.getElementById('emptyState').classList.toggle('hidden', hasResults);
+        }
+
+        function downloadCSV() {
+            if (quizResults.length === 0) {
+                alert('No data to download.');
+                return;
+            }
+
+            // Create CSV content
+            const headers = Object.keys(quizResults[0]);
+            const csvContent = [
+                headers.join(','),
+                ...quizResults.map(row => 
+                    headers.map(header => `"${row[header] || ''}"`).join(',')
+                )
+            ].join('\n');
+
+            // Download file
+            const blob = new Blob([csvContent], { type: 'text/csv' });
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `technical_assessment_results_${new Date().toISOString().split('T')[0]}.csv`;
+            a.click();
+            window.URL.revokeObjectURL(url);
+
+            // Show success message
+            alert(`✅ CSV file downloaded successfully!\n\nFile: technical_assessment_results_${new Date().toISOString().split('T')[0]}.csv\nRecords: ${quizResults.length}`);
+        }
+
+        function clearAllData() {
+            if (quizResults.length === 0) {
+                alert('No data to clear.');
+                return;
+            }
+
+            const confirmed = confirm(`⚠️ Are you sure you want to delete all ${quizResults.length} quiz results?\n\nThis action cannot be undone.`);
+            
+            if (confirmed) {
+                localStorage.removeItem('quizResults');
+                refreshData();
+                alert('✅ All data has been cleared successfully.');
+            }
+        }
+
+        // Auto-refresh every 30 seconds when page is active
+        let autoRefreshInterval;
+        
+        document.addEventListener('visibilitychange', function() {
+            if (document.hidden) {
+                clearInterval(autoRefreshInterval);
+            } else {
+                autoRefreshInterval = setInterval(refreshData, 30000);
+            }
+        });
+
+        // Start auto-refresh when dashboard loads
+        window.addEventListener('load', function() {
+            if (!document.hidden) {
+                autoRefreshInterval = setInterval(refreshData, 30000);
+            }
+        });
+    </script>
+</body>
+</html>
