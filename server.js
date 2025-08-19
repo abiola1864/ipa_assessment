@@ -7,7 +7,26 @@ const app = express();
 const PORT = process.env.PORT || 3000;
 
 // Middleware
-app.use(express.json({ limit: '10mb' }));
+app.use(express.json({ limit: '10mb' }
+
+// API: Clear all data (for testing)
+app.delete('/api/results', (req, res) => {
+    console.log('🗑️ Admin requesting to clear all data');
+    
+    if (!db) {
+        return res.status(500).json({ error: 'Database not available' });
+    }
+    
+    db.run("DELETE FROM quiz_results", (err) => {
+        if (err) {
+            console.error('❌ Error clearing data:', err.message);
+            res.status(500).json({ error: 'Database error' });
+        } else {
+            console.log('✅ All quiz results cleared successfully');
+            res.json({ success: true, message: 'All data cleared' });
+        }
+    });
+});));
 
 // Add CORS headers for API requests
 app.use('/api/*', (req, res, next) => {
@@ -318,7 +337,7 @@ app.get('/api/stats', (req, res) => {
     getStats();
 });
 
-// API: Download CSV
+// API: Download CSV with enhanced data structure
 app.get('/api/download-csv', (req, res) => {
     console.log('💾 Admin requesting CSV download');
     
@@ -339,18 +358,122 @@ app.get('/api/download-csv', (req, res) => {
             return;
         }
         
-        // Convert to CSV
-        const headers = Object.keys(rows[0]);
+        // Enhanced CSV with calculated fields and analysis
+        const enhancedRows = rows.map(row => {
+            // Calculate category scores
+            let dataAnalysisScore = 0;
+            let programmingScore = 0;
+            let dataAnalysisTotal = 0;
+            let programmingTotal = 0;
+            
+            for (let i = 1; i <= 15; i++) {
+                const userAnswer = row[`Q${i}`];
+                const correctAnswer = row[`Q${i}_correct`];
+                const category = row[`Q${i}_category`];
+                
+                if (category === 'Data Analysis') {
+                    dataAnalysisTotal++;
+                    if (userAnswer === correctAnswer) dataAnalysisScore++;
+                } else if (category === 'Programming Logic') {
+                    programmingTotal++;
+                    if (userAnswer === correctAnswer) programmingScore++;
+                }
+            }
+            
+            // Calculate skill area performance
+            const skillAreas = {
+                'Excel Skills': 0,
+                'Power BI Skills': 0,
+                'Statistical Understanding': 0,
+                'Data Cleaning': 0,
+                'Programming Logic': 0,
+                'Algorithm Thinking': 0
+            };
+            
+            const skillAreaTotals = {
+                'Excel Skills': 0,
+                'Power BI Skills': 0,
+                'Statistical Understanding': 0,
+                'Data Cleaning': 0,
+                'Programming Logic': 0,
+                'Algorithm Thinking': 0
+            };
+            
+            for (let i = 1; i <= 15; i++) {
+                const userAnswer = row[`Q${i}`];
+                const correctAnswer = row[`Q${i}_correct`];
+                const skill = row[`Q${i}_skill`];
+                
+                // Map skills to areas
+                let area = 'Other';
+                if (skill && skill.includes('Excel')) area = 'Excel Skills';
+                else if (skill && skill.includes('Power BI')) area = 'Power BI Skills';
+                else if (skill && (skill.includes('Statistical') || skill.includes('Interpretation'))) area = 'Statistical Understanding';
+                else if (skill && skill.includes('Data')) area = 'Data Cleaning';
+                else if (skill && (skill.includes('Conditional') || skill.includes('Loop') || skill.includes('Boolean'))) area = 'Programming Logic';
+                else if (skill && skill.includes('Algorithm')) area = 'Algorithm Thinking';
+                
+                if (skillAreaTotals[area] !== undefined) {
+                    skillAreaTotals[area]++;
+                    if (userAnswer === correctAnswer) skillAreas[area]++;
+                }
+            }
+            
+            return {
+                ...row,
+                // Category Performance
+                data_analysis_score: dataAnalysisScore,
+                data_analysis_total: dataAnalysisTotal,
+                data_analysis_percentage: Math.round((dataAnalysisScore / dataAnalysisTotal) * 100),
+                programming_score: programmingScore,
+                programming_total: programmingTotal,
+                programming_percentage: Math.round((programmingScore / programmingTotal) * 100),
+                
+                // Skill Area Performance
+                excel_skills_score: skillAreas['Excel Skills'],
+                excel_skills_total: skillAreaTotals['Excel Skills'],
+                excel_skills_percentage: skillAreaTotals['Excel Skills'] > 0 ? Math.round((skillAreas['Excel Skills'] / skillAreaTotals['Excel Skills']) * 100) : 0,
+                
+                powerbi_skills_score: skillAreas['Power BI Skills'],
+                powerbi_skills_total: skillAreaTotals['Power BI Skills'],
+                powerbi_skills_percentage: skillAreaTotals['Power BI Skills'] > 0 ? Math.round((skillAreas['Power BI Skills'] / skillAreaTotals['Power BI Skills']) * 100) : 0,
+                
+                statistical_understanding_score: skillAreas['Statistical Understanding'],
+                statistical_understanding_total: skillAreaTotals['Statistical Understanding'],
+                statistical_understanding_percentage: skillAreaTotals['Statistical Understanding'] > 0 ? Math.round((skillAreas['Statistical Understanding'] / skillAreaTotals['Statistical Understanding']) * 100) : 0,
+                
+                data_cleaning_score: skillAreas['Data Cleaning'],
+                data_cleaning_total: skillAreaTotals['Data Cleaning'],
+                data_cleaning_percentage: skillAreaTotals['Data Cleaning'] > 0 ? Math.round((skillAreas['Data Cleaning'] / skillAreaTotals['Data Cleaning']) * 100) : 0,
+                
+                programming_logic_score: skillAreas['Programming Logic'],
+                programming_logic_total: skillAreaTotals['Programming Logic'],
+                programming_logic_percentage: skillAreaTotals['Programming Logic'] > 0 ? Math.round((skillAreas['Programming Logic'] / skillAreaTotals['Programming Logic']) * 100) : 0,
+                
+                algorithm_thinking_score: skillAreas['Algorithm Thinking'],
+                algorithm_thinking_total: skillAreaTotals['Algorithm Thinking'],
+                algorithm_thinking_percentage: skillAreaTotals['Algorithm Thinking'] > 0 ? Math.round((skillAreas['Algorithm Thinking'] / skillAreaTotals['Algorithm Thinking']) * 100) : 0,
+                
+                // Overall Performance Level
+                performance_level: row.percentage >= 80 ? 'Excellent' : row.percentage >= 60 ? 'Good' : 'Needs Improvement',
+                
+                // Time taken in minutes
+                time_taken_minutes: row.time_taken ? Math.round(row.time_taken / 60) : null
+            };
+        });
+        
+        // Convert to CSV with all fields
+        const headers = Object.keys(enhancedRows[0]);
         const csvContent = [
             headers.join(','),
-            ...rows.map(row => 
+            ...enhancedRows.map(row => 
                 headers.map(header => `"${row[header] || ''}"`).join(',')
             )
         ].join('\n');
         
-        const filename = `technical_assessment_results_${new Date().toISOString().split('T')[0]}.csv`;
+        const filename = `technical_assessment_results_detailed_${new Date().toISOString().split('T')[0]}.csv`;
         
-        console.log(`✅ Sending CSV with ${rows.length} records`);
+        console.log(`✅ Sending enhanced CSV with ${enhancedRows.length} records and ${headers.length} columns`);
         
         res.setHeader('Content-Type', 'text/csv');
         res.setHeader('Content-Disposition', `attachment; filename="${filename}"`);
@@ -358,24 +481,206 @@ app.get('/api/download-csv', (req, res) => {
     });
 });
 
-// API: Clear all data (for testing)
-app.delete('/api/results', (req, res) => {
-    console.log('🗑️ Admin requesting to clear all data');
+// API: Get detailed analytics for admin dashboard
+app.get('/api/analytics', (req, res) => {
+    console.log('📊 Admin requesting detailed analytics');
     
     if (!db) {
         return res.status(500).json({ error: 'Database not available' });
     }
     
-    db.run("DELETE FROM quiz_results", (err) => {
+    db.all("SELECT * FROM quiz_results ORDER BY created_at DESC", [], (err, rows) => {
         if (err) {
-            console.error('❌ Error clearing data:', err.message);
+            console.error('❌ Error fetching analytics data:', err.message);
             res.status(500).json({ error: 'Database error' });
-        } else {
-            console.log('✅ All quiz results cleared successfully');
-            res.json({ success: true, message: 'All data cleared' });
+            return;
         }
+        
+        if (rows.length === 0) {
+            res.json({
+                skillAreas: [],
+                participantAnalysis: [],
+                strengthsAndGaps: {
+                    strengths: [],
+                    gaps: []
+                },
+                capacityBuildingPlan: []
+            });
+            return;
+        }
+        
+        // Define skill areas for capacity building
+        const skillAreaMapping = {
+            'Excel Skills': ['Excel - Pivot Tables', 'Excel - Data Cleaning', 'Excel - Lookup Functions', 'Excel - Formulas'],
+            'Power BI & Visualization': ['Power BI - Visualization', 'Power BI - DAX'],
+            'Statistical Understanding': ['Statistical Understanding', 'Data Interpretation'],
+            'Data Management': ['Data Cleaning Concepts', 'Data Types', 'Data Handling Concepts'],
+            'Programming Logic': ['Conditional Statements', 'Iteration Logic', 'Boolean Logic'],
+            'Algorithm & Problem Solving': ['Algorithm Logic']
+        };
+        
+        // Calculate performance by skill area
+        const skillAreaPerformance = {};
+        Object.keys(skillAreaMapping).forEach(area => {
+            skillAreaPerformance[area] = {
+                name: area,
+                totalQuestions: 0,
+                totalCorrect: 0,
+                participantScores: [],
+                averagePercentage: 0
+            };
+        });
+        
+        // Calculate individual participant performance
+        const participantAnalysis = rows.map(participant => {
+            const analysis = {
+                name: participant.participant_name,
+                id: participant.id,
+                totalScore: participant.total_score,
+                percentage: participant.percentage,
+                skillAreas: {}
+            };
+            
+            // Initialize skill areas for this participant
+            Object.keys(skillAreaMapping).forEach(area => {
+                analysis.skillAreas[area] = { correct: 0, total: 0, percentage: 0 };
+            });
+            
+            // Calculate performance by skill area for this participant
+            for (let i = 1; i <= 15; i++) {
+                const userAnswer = participant[`Q${i}`];
+                const correctAnswer = participant[`Q${i}_correct`];
+                const skill = participant[`Q${i}_skill`];
+                
+                // Find which skill area this question belongs to
+                for (const [area, skills] of Object.entries(skillAreaMapping)) {
+                    if (skills.includes(skill)) {
+                        analysis.skillAreas[area].total++;
+                        skillAreaPerformance[area].totalQuestions++;
+                        
+                        if (userAnswer === correctAnswer) {
+                            analysis.skillAreas[area].correct++;
+                            skillAreaPerformance[area].totalCorrect++;
+                        }
+                        break;
+                    }
+                }
+            }
+            
+            // Calculate percentages for this participant
+            Object.keys(analysis.skillAreas).forEach(area => {
+                const areaData = analysis.skillAreas[area];
+                areaData.percentage = areaData.total > 0 ? Math.round((areaData.correct / areaData.total) * 100) : 0;
+                skillAreaPerformance[area].participantScores.push(areaData.percentage);
+            });
+            
+            return analysis;
+        });
+        
+        // Calculate average percentages for skill areas
+        Object.keys(skillAreaPerformance).forEach(area => {
+            const areaData = skillAreaPerformance[area];
+            if (areaData.participantScores.length > 0) {
+                areaData.averagePercentage = Math.round(
+                    areaData.participantScores.reduce((sum, score) => sum + score, 0) / areaData.participantScores.length
+                );
+            }
+        });
+        
+        // Convert to array and sort by performance
+        const skillAreasArray = Object.values(skillAreaPerformance).sort((a, b) => a.averagePercentage - b.averagePercentage);
+        
+        // Identify strengths (top 2) and gaps (bottom 2)
+        const gaps = skillAreasArray.slice(0, 2);
+        const strengths = skillAreasArray.slice(-2);
+        
+        // Generate capacity building plan
+        const capacityBuildingPlan = [
+            {
+                priority: 'High Priority',
+                areas: gaps.map(area => ({
+                    name: area.name,
+                    currentLevel: area.averagePercentage + '%',
+                    targetLevel: '80%',
+                    recommendedActions: generateRecommendations(area.name, area.averagePercentage)
+                }))
+            },
+            {
+                priority: 'Medium Priority',
+                areas: skillAreasArray.slice(2, -2).map(area => ({
+                    name: area.name,
+                    currentLevel: area.averagePercentage + '%',
+                    targetLevel: '85%',
+                    recommendedActions: generateRecommendations(area.name, area.averagePercentage)
+                }))
+            },
+            {
+                priority: 'Maintain Excellence',
+                areas: strengths.map(area => ({
+                    name: area.name,
+                    currentLevel: area.averagePercentage + '%',
+                    targetLevel: '90%+',
+                    recommendedActions: ['Advanced training', 'Peer mentoring opportunities', 'Complex project assignments']
+                }))
+            }
+        ];
+        
+        console.log('✅ Analytics calculated successfully');
+        
+        res.json({
+            skillAreas: skillAreasArray,
+            participantAnalysis,
+            strengthsAndGaps: {
+                strengths,
+                gaps
+            },
+            capacityBuildingPlan
+        });
     });
 });
+
+function generateRecommendations(skillArea, currentPercentage) {
+    const recommendations = {
+        'Excel Skills': [
+            'Hands-on Excel workshop focusing on pivot tables and formulas',
+            'Online Excel certification course',
+            'Practice with real datasets',
+            'Peer mentoring from Excel power users'
+        ],
+        'Power BI & Visualization': [
+            'Power BI fundamentals training',
+            'Data visualization best practices workshop',
+            'DAX formula training',
+            'Dashboard design principles course'
+        ],
+        'Statistical Understanding': [
+            'Basic statistics refresher course',
+            'Data interpretation workshop',
+            'Statistical thinking for analysts',
+            'Correlation and regression training'
+        ],
+        'Data Management': [
+            'Data cleaning and preparation workshop',
+            'Data quality best practices training',
+            'Database fundamentals course',
+            'Data governance principles'
+        ],
+        'Programming Logic': [
+            'Introduction to programming concepts',
+            'Logic and algorithm thinking workshop',
+            'Conditional statements and loops training',
+            'Problem-solving methodology course'
+        ],
+        'Algorithm & Problem Solving': [
+            'Algorithmic thinking workshop',
+            'Problem decomposition techniques',
+            'Efficiency and optimization training',
+            'Advanced logical reasoning course'
+        ]
+    };
+    
+    return recommendations[skillArea] || ['General skills development', 'Targeted practice sessions', 'Mentoring support'];
+}
 
 // Error handling middleware
 app.use((err, req, res, next) => {
