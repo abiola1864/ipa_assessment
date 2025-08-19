@@ -119,7 +119,10 @@ app.post('/api/submit-quiz', (req, res) => {
         return res.status(400).json({ error: 'Invalid data', details: 'Missing required fields' });
     }
     
-    // Prepare SQL statement
+    // Database schema has: 5 basic + 60 question fields = 65 columns (excluding auto-generated id and created_at)
+    // We need exactly 65 placeholders and 65 values
+    
+    // Prepare SQL statement - EXACTLY 65 placeholders for 65 columns
     const sql = `INSERT INTO quiz_results (
         participant_name, completed_at, total_score, percentage, time_taken,
         Q1, Q1_correct, Q1_skill, Q1_category,
@@ -137,14 +140,17 @@ app.post('/api/submit-quiz', (req, res) => {
         Q13, Q13_correct, Q13_skill, Q13_category,
         Q14, Q14_correct, Q14_skill, Q14_category,
         Q15, Q15_correct, Q15_skill, Q15_category
-    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`;
+    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`;
     
+    // EXACTLY 65 values to match 65 columns
     const values = [
+        // Basic fields (5)
         data.participant_name,
         data.completed_at,
         data.total_score,
         data.percentage,
         data.time_taken || null,
+        // Q1-Q15 fields (60 = 15 questions × 4 fields each)
         data.Q1 || '', data.Q1_correct || '', data.Q1_skill || '', data.Q1_category || '',
         data.Q2 || '', data.Q2_correct || '', data.Q2_skill || '', data.Q2_category || '',
         data.Q3 || '', data.Q3_correct || '', data.Q3_skill || '', data.Q3_category || '',
@@ -162,7 +168,29 @@ app.post('/api/submit-quiz', (req, res) => {
         data.Q15 || '', data.Q15_correct || '', data.Q15_skill || '', data.Q15_category || ''
     ];
     
-    console.log('💾 Attempting to save to database...');
+    // Verify counts match exactly
+    const placeholderCount = (sql.match(/\?/g) || []).length;
+    console.log(`📊 Database columns to insert: 65`);
+    console.log(`📊 SQL placeholders: ${placeholderCount}`);
+    console.log(`📊 Values provided: ${values.length}`);
+    
+    if (placeholderCount !== 65) {
+        console.error(`❌ SQL ERROR: Expected exactly 65 placeholders, found ${placeholderCount}`);
+        return res.status(500).json({ 
+            error: 'SQL configuration error', 
+            details: `Expected 65 placeholders, found ${placeholderCount}`
+        });
+    }
+    
+    if (values.length !== 65) {
+        console.error(`❌ DATA ERROR: Expected exactly 65 values, got ${values.length}`);
+        return res.status(500).json({ 
+            error: 'Data configuration error', 
+            details: `Expected 65 values, got ${values.length}`
+        });
+    }
+    
+    console.log('✅ Placeholder and value counts match - proceeding with database insert');
     
     db.run(sql, values, function(err) {
         if (err) {
