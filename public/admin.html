@@ -434,18 +434,25 @@
             try {
                 showLoading();
                 
-                // In a real implementation, these would be API calls
-                // For now, simulate with the stored data
-                const stats = calculateStats();
-                const results = getStoredResults();
+                // Fetch statistics from API
+                const statsResponse = await fetch('/api/stats');
+                if (statsResponse.ok) {
+                    const stats = await statsResponse.json();
+                    updateStatistics(stats);
+                }
                 
-                quizResults = results;
-                
-                updateStatistics(stats);
-                updateResultsTable(results);
-                
-                if (results.length > 0) {
-                    loadAnalytics();
+                // Fetch results from API
+                const resultsResponse = await fetch('/api/results');
+                if (resultsResponse.ok) {
+                    const results = await resultsResponse.json();
+                    quizResults = results;
+                    updateResultsTable(results);
+                    
+                    if (results.length > 0) {
+                        await loadAnalytics();
+                    }
+                } else {
+                    throw new Error('Failed to fetch results');
                 }
                 
                 toggleSections();
@@ -459,188 +466,16 @@
             }
         }
 
-        function getStoredResults() {
-            // In a real implementation, this would fetch from the server
-            // For demo purposes, return empty array
-            return [];
-        }
-
-        function calculateStats() {
-            const results = getStoredResults();
-            
-            if (results.length === 0) {
-                return {
-                    total: 0,
-                    average_score: 0,
-                    today_count: 0,
-                    excellent_count: 0
-                };
-            }
-
-            const total = results.length;
-            const average_score = Math.round(results.reduce((sum, r) => sum + r.percentage, 0) / total);
-            
-            const today = new Date().toDateString();
-            const today_count = results.filter(r => 
-                new Date(r.completed_at).toDateString() === today
-            ).length;
-            
-            const excellent_count = results.filter(r => r.percentage >= 80).length;
-
-            return {
-                total,
-                average_score,
-                today_count,
-                excellent_count
-            };
-        }
-
-        function loadAnalytics() {
-            // Calculate analytics from quiz results
-            analyticsData = {
-                skillAreas: calculateSkillAreas(),
-                capacityBuildingPlan: generateCapacityPlan(),
-                participantAnalysis: analyzeParticipants()
-            };
-            updateAnalytics();
-        }
-
-        function calculateSkillAreas() {
-            const areas = [
-                { name: 'Data Analysis', questions: [1,2,3,4,5,6,7,8] },
-                { name: 'M&E', questions: [9,10,11,12,13] },
-                { name: 'RCT/Impact', questions: [14,15,16] },
-                { name: 'Programming Logic', questions: [17,18,19,20] }
-            ];
-
-            return areas.map(area => {
-                const participantScores = quizResults.map(result => {
-                    let correct = 0;
-                    area.questions.forEach(qNum => {
-                        if (result[`Q${qNum}`] === result[`Q${qNum}_correct`]) {
-                            correct++;
-                        }
-                    });
-                    return Math.round((correct / area.questions.length) * 100);
-                });
-
-                const averagePercentage = participantScores.length > 0 
-                    ? Math.round(participantScores.reduce((sum, score) => sum + score, 0) / participantScores.length)
-                    : 0;
-
-                return {
-                    name: area.name,
-                    averagePercentage,
-                    participantScores
-                };
-            });
-        }
-
-        function generateCapacityPlan() {
-            const skillAreas = calculateSkillAreas();
-            
-            const highPriority = skillAreas.filter(area => area.averagePercentage < 60);
-            const mediumPriority = skillAreas.filter(area => area.averagePercentage >= 60 && area.averagePercentage < 80);
-            const maintain = skillAreas.filter(area => area.averagePercentage >= 80);
-
-            const plan = [];
-            
-            if (highPriority.length > 0) {
-                plan.push({
-                    priority: 'High Priority - Immediate Capacity Building Required',
-                    areas: highPriority.map(area => ({
-                        name: area.name,
-                        currentLevel: `${area.averagePercentage}%`,
-                        targetLevel: '75%+',
-                        recommendation: getRecommendation(area.name, 'high')
-                    }))
-                });
-            }
-
-            if (mediumPriority.length > 0) {
-                plan.push({
-                    priority: 'Medium Priority - Skills Enhancement Needed',
-                    areas: mediumPriority.map(area => ({
-                        name: area.name,
-                        currentLevel: `${area.averagePercentage}%`,
-                        targetLevel: '85%+',
-                        recommendation: getRecommendation(area.name, 'medium')
-                    }))
-                });
-            }
-
-            if (maintain.length > 0) {
-                plan.push({
-                    priority: 'Maintain Excellence - Advanced Training Opportunities',
-                    areas: maintain.map(area => ({
-                        name: area.name,
-                        currentLevel: `${area.averagePercentage}%`,
-                        targetLevel: '90%+',
-                        recommendation: getRecommendation(area.name, 'maintain')
-                    }))
-                });
-            }
-
-            return plan;
-        }
-
-        function getRecommendation(areaName, priority) {
-            const recommendations = {
-                'Data Analysis': {
-                    'high': 'Focus on causal analysis training and Excel/Power BI skills for BVN and POS agent data',
-                    'medium': 'Advanced statistical concepts and data visualization for consumer protection metrics',
-                    'maintain': 'Mentoring roles and advanced analytics for policy decision support'
-                },
-                'M&E': {
-                    'high': 'Basic M&E framework training focusing on theory of change for financial inclusion programs',
-                    'medium': 'Advanced indicator development and attribution analysis for CBN initiatives',
-                    'maintain': 'Leading M&E design for new consumer protection and financial inclusion programs'
-                },
-                'RCT/Impact': {
-                    'high': 'Introduction to randomized evaluations and experimental design for policy testing',
-                    'medium': 'Hands-on RCT implementation and analysis for financial inclusion interventions',
-                    'maintain': 'Research leadership and external validity assessment for scaling programs'
-                },
-                'Programming': {
-                    'high': 'Basic system design thinking and data processing logic for regulatory reporting',
-                    'medium': 'Database management and automated reporting system design',
-                    'maintain': 'System architecture design and cross-departmental technical leadership'
+        async function loadAnalytics() {
+            try {
+                const response = await fetch('/api/analytics');
+                if (response.ok) {
+                    analyticsData = await response.json();
+                    updateAnalytics();
                 }
-            };
-            
-            return recommendations[areaName]?.[priority] || 'Targeted skills development recommended';
-        }
-
-        function analyzeParticipants() {
-            return quizResults.map(result => {
-                const skillAreas = {
-                    'Data Analysis': { questions: [1,2,3,4,5,6,7,8] },
-                    'M&E': { questions: [9,10,11,12,13] },
-                    'RCT/Impact': { questions: [14,15,16] },
-                    'Programming': { questions: [17,18,19,20] }
-                };
-
-                const skillResults = {};
-                Object.entries(skillAreas).forEach(([area, config]) => {
-                    let correct = 0;
-                    config.questions.forEach(qNum => {
-                        if (result[`Q${qNum}`] === result[`Q${qNum}_correct`]) {
-                            correct++;
-                        }
-                    });
-                    skillResults[area] = {
-                        correct,
-                        total: config.questions.length,
-                        percentage: Math.round((correct / config.questions.length) * 100)
-                    };
-                });
-
-                return {
-                    name: result.participant_name,
-                    percentage: result.percentage,
-                    skillAreas: skillResults
-                };
-            });
+            } catch (error) {
+                console.error('Error loading analytics:', error);
+            }
         }
 
         function updateStatistics(stats) {
@@ -721,7 +556,7 @@
                         <div style="display: flex; justify-content: space-between; align-items: center;">
                             <div>
                                 <strong>${area.name}</strong>
-                                <div style="color: #666; font-size: 12px;">${area.participantScores.length} participants</div>
+                                <div style="color: #666; font-size: 12px;">${area.participantScores ? area.participantScores.length : 0} participants</div>
                             </div>
                             <div style="font-size: 1.2em; font-weight: bold; color: ${color};">
                                 ${area.averagePercentage}%
@@ -754,7 +589,7 @@
                                 <div style="font-size: 12px; color: #666;">
                                     Current: ${area.currentLevel} → Target: ${area.targetLevel}
                                 </div>
-                                ${area.recommendation ? `<div style="font-size: 11px; color: #555; font-style: italic; margin-top: 4px;">${area.recommendation}</div>` : ''}
+                                ${area.recommendedActions ? `<div style="font-size: 11px; color: #555; font-style: italic; margin-top: 4px;">${Array.isArray(area.recommendedActions) ? area.recommendedActions.join(', ') : area.recommendedActions}</div>` : ''}
                             </div>
                         `).join('')}
                     </div>
@@ -850,8 +685,21 @@
         // Action Functions
         async function downloadCSV() {
             try {
-                // In a real implementation, this would call the server API
-                showActionMessage('CSV download functionality requires server backend implementation.');
+                const response = await fetch('/api/download-csv');
+                if (response.ok) {
+                    const blob = await response.blob();
+                    const url = window.URL.createObjectURL(blob);
+                    const a = document.createElement('a');
+                    a.style.display = 'none';
+                    a.href = url;
+                    a.download = `technical_assessment_results_${new Date().toISOString().split('T')[0]}.csv`;
+                    document.body.appendChild(a);
+                    a.click();
+                    window.URL.revokeObjectURL(url);
+                    showActionMessage('✅ CSV downloaded successfully!');
+                } else {
+                    throw new Error('Failed to download CSV');
+                }
                 
             } catch (error) {
                 console.error('Error downloading CSV:', error);
@@ -861,8 +709,13 @@
 
         async function checkHealth() {
             try {
-                // In a real implementation, this would check server health
-                showActionMessage('🏥 Health check passed. System is operational.');
+                const response = await fetch('/api/health');
+                if (response.ok) {
+                    const result = await response.json();
+                    showActionMessage(`🏥 ${result.message}`);
+                } else {
+                    throw new Error('Health check failed');
+                }
                 
             } catch (error) {
                 console.error('Health check failed:', error);
@@ -880,8 +733,17 @@
             
             if (confirmed) {
                 try {
-                    // In a real implementation, this would call the server API
-                    showActionMessage('✅ Data clearing functionality requires server backend implementation.');
+                    const response = await fetch('/api/results', {
+                        method: 'DELETE'
+                    });
+                    
+                    if (response.ok) {
+                        const result = await response.json();
+                        showActionMessage('✅ ' + result.message);
+                        await refreshData(); // Refresh the dashboard
+                    } else {
+                        throw new Error('Failed to clear data');
+                    }
                     
                 } catch (error) {
                     console.error('Error clearing data:', error);

@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CBN Technical Assessment Quiz</title>
+    <title>IPA Technical Assessment Quiz</title>
     <style>
         * {
             margin: 0;
@@ -25,58 +25,106 @@
 
         .card {
             background: white;
-            border-radius: 10px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+            padding: 40px;
             margin-bottom: 20px;
         }
 
         .header {
             text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .logo-section {
+            display: flex;
+            justify-content: center;
+            align-items: center;
             margin-bottom: 30px;
         }
 
+        .ipa-logo {
+            max-width: 220px;
+            height: auto;
+            filter: drop-shadow(0 2px 10px rgba(0,0,0,0.1));
+        }
+
         .header h1 {
-            color: #333;
-            font-size: 2.5em;
+            color: #11853d;
+            font-size: 2.8em;
+            margin-bottom: 15px;
+            font-weight: 700;
+        }
+
+        .header .subtitle {
+            color: #666;
+            font-size: 1.2em;
             margin-bottom: 10px;
+            font-weight: 500;
+        }
+
+        .organization-info {
+            background: linear-gradient(135deg, #f8fffe 0%, #e8f5f0 100%);
+            border-left: 5px solid #11853d;
+            padding: 25px;
+            margin-bottom: 30px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(17, 133, 61, 0.1);
+        }
+
+        .organization-info h4 {
+            color: #11853d;
+            margin-bottom: 12px;
+            font-size: 1.2em;
+            font-weight: 600;
+        }
+
+        .organization-info p {
+            color: #555;
+            font-size: 15px;
+            margin: 0;
+            line-height: 1.7;
         }
 
         .timer {
             background: #ff4444;
             color: white;
-            padding: 10px 20px;
-            border-radius: 5px;
+            padding: 12px 24px;
+            border-radius: 8px;
             font-size: 1.2em;
             font-weight: bold;
             float: right;
+            box-shadow: 0 2px 10px rgba(255, 68, 68, 0.3);
         }
 
         .progress-bar {
             width: 100%;
-            height: 10px;
+            height: 12px;
             background: #e0e0e0;
-            border-radius: 5px;
+            border-radius: 6px;
             margin: 20px 0;
+            overflow: hidden;
         }
 
         .progress-fill {
             height: 100%;
-            background: #4CAF50;
-            border-radius: 5px;
+            background: linear-gradient(90deg, #11853d 0%, #16a852 100%);
+            border-radius: 6px;
             transition: width 0.3s ease;
         }
 
         .question-info {
             color: #666;
             margin-bottom: 20px;
+            font-weight: 500;
         }
 
         .question {
             font-size: 1.2em;
-            margin-bottom: 25px;
-            line-height: 1.6;
+            margin-bottom: 30px;
+            line-height: 1.7;
             white-space: pre-line;
+            color: #333;
         }
 
         .options {
@@ -86,26 +134,30 @@
 
         .option {
             margin-bottom: 15px;
-            padding: 15px;
+            padding: 18px;
             border: 2px solid #ddd;
-            border-radius: 8px;
+            border-radius: 10px;
             cursor: pointer;
             transition: all 0.3s ease;
             background: white;
         }
 
         .option:hover {
-            border-color: #4CAF50;
-            background: #f8f8f8;
+            border-color: #11853d;
+            background: #f8fffe;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 15px rgba(17, 133, 61, 0.1);
         }
 
         .option.selected {
-            border-color: #4CAF50;
-            background: #e8f5e8;
+            border-color: #11853d;
+            background: linear-gradient(135deg, #f8fffe 0%, #e8f5f0 100%);
+            box-shadow: 0 4px 15px rgba(17, 133, 61, 0.2);
         }
 
         .option input[type="radio"] {
-            margin-right: 10px;
+            margin-right: 12px;
+            transform: scale(1.2);
         }
 
         .navigation {
@@ -116,24 +168,26 @@
         }
 
         .btn {
-            padding: 12px 24px;
+            padding: 14px 28px;
             border: none;
-            border-radius: 6px;
+            border-radius: 8px;
             cursor: pointer;
             font-size: 16px;
-            font-weight: 500;
+            font-weight: 600;
             transition: all 0.3s ease;
             text-decoration: none;
             display: inline-block;
         }
 
         .btn-primary {
-            background: #4CAF50;
+            background: linear-gradient(135deg, #11853d 0%, #16a852 100%);
             color: white;
+            box-shadow: 0 4px 15px rgba(17, 133, 61, 0.3);
         }
 
         .btn-primary:hover:not(:disabled) {
-            background: #45a049;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(17, 133, 61, 0.4);
         }
 
         .btn-secondary {
@@ -143,6 +197,7 @@
 
         .btn-secondary:hover:not(:disabled) {
             background: #555;
+            transform: translateY(-1px);
         }
 
         .btn-danger {
@@ -153,18 +208,21 @@
         .btn:disabled {
             background: #ccc;
             cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
         }
 
         .question-grid {
             display: flex;
             flex-wrap: wrap;
-            gap: 10px;
+            gap: 12px;
             margin-top: 20px;
+            justify-content: center;
         }
 
         .question-number {
-            width: 40px;
-            height: 40px;
+            width: 44px;
+            height: 44px;
             border-radius: 50%;
             display: flex;
             align-items: center;
@@ -176,46 +234,62 @@
             transition: all 0.3s ease;
         }
 
+        .question-number:hover {
+            transform: scale(1.1);
+        }
+
         .question-number.answered {
-            background: #4CAF50;
+            background: #11853d;
             color: white;
-            border-color: #4CAF50;
+            border-color: #11853d;
         }
 
         .question-number.current {
             background: #2196F3;
             color: white;
             border-color: #2196F3;
+            transform: scale(1.15);
         }
 
         .form-group {
-            margin-bottom: 20px;
+            margin-bottom: 25px;
         }
 
         .form-group label {
             display: block;
-            margin-bottom: 5px;
-            font-weight: 500;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #11853d;
         }
 
         .form-group input {
             width: 100%;
-            padding: 12px;
+            padding: 15px;
             border: 2px solid #ddd;
-            border-radius: 6px;
+            border-radius: 8px;
             font-size: 16px;
+            transition: border-color 0.3s ease;
+        }
+
+        .form-group input:focus {
+            outline: none;
+            border-color: #11853d;
+            box-shadow: 0 0 0 3px rgba(17, 133, 61, 0.1);
         }
 
         .quiz-info {
-            background: #e3f2fd;
-            padding: 20px;
-            border-radius: 8px;
-            margin-bottom: 25px;
+            background: linear-gradient(135deg, #e3f2fd 0%, #f8fbff 100%);
+            padding: 30px;
+            border-radius: 12px;
+            margin-bottom: 30px;
+            border: 1px solid #e1f5fe;
         }
 
         .quiz-info h3 {
             color: #1976d2;
-            margin-bottom: 15px;
+            margin-bottom: 20px;
+            font-size: 1.3em;
+            font-weight: 600;
         }
 
         .quiz-info ul {
@@ -223,58 +297,62 @@
         }
 
         .quiz-info li {
-            margin-bottom: 8px;
+            margin-bottom: 10px;
             color: #1976d2;
+            font-weight: 500;
         }
 
         .completion-card {
             text-align: center;
-            padding: 40px;
+            padding: 50px;
         }
 
         .completion-icon {
-            font-size: 4em;
-            margin-bottom: 20px;
+            font-size: 5em;
+            margin-bottom: 25px;
         }
 
         .score-display {
-            background: #f5f5f5;
-            padding: 30px;
-            border-radius: 10px;
-            margin: 20px 0;
+            background: linear-gradient(135deg, #f5f5f5 0%, #fff 100%);
+            padding: 40px;
+            border-radius: 15px;
+            margin: 25px 0;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
         }
 
         .score-number {
-            font-size: 3em;
+            font-size: 3.5em;
             font-weight: bold;
-            color: #4CAF50;
+            color: #11853d;
         }
 
         .grade-badge {
-            padding: 10px 20px;
+            padding: 12px 24px;
             border-radius: 25px;
             color: white;
             font-weight: bold;
-            margin-top: 10px;
+            margin-top: 15px;
             display: inline-block;
+            font-size: 1.1em;
         }
 
-        .excellent { background: #4CAF50; }
-        .good { background: #FF9800; }
-        .needs-improvement { background: #f44336; }
+        .excellent { background: linear-gradient(135deg, #11853d 0%, #16a852 100%); }
+        .good { background: linear-gradient(135deg, #FF9800 0%, #FFC107 100%); }
+        .needs-improvement { background: linear-gradient(135deg, #f44336 0%, #e57373 100%); }
 
         .validation-error {
             background: #ffebee;
             color: #c62828;
-            padding: 15px;
-            border-radius: 6px;
+            padding: 18px;
+            border-radius: 8px;
             margin-bottom: 20px;
             border-left: 4px solid #f44336;
+            font-weight: 500;
         }
 
         .loading-spinner {
             border: 4px solid #f3f3f3;
-            border-top: 4px solid #3498db;
+            border-top: 4px solid #11853d;
             border-radius: 50%;
             width: 50px;
             height: 50px;
@@ -290,30 +368,30 @@
         .submission-status {
             background: #e8f5e8;
             color: #2e7d2e;
-            padding: 15px;
-            border-radius: 6px;
+            padding: 18px;
+            border-radius: 8px;
             margin-top: 20px;
-            border-left: 4px solid #4CAF50;
+            border-left: 4px solid #11853d;
         }
 
         .detailed-results {
             text-align: left;
             margin-top: 30px;
-            padding: 20px;
+            padding: 25px;
             background: #f9f9f9;
-            border-radius: 8px;
+            border-radius: 12px;
         }
 
         .result-question {
-            margin-bottom: 20px;
-            padding: 15px;
-            border-radius: 6px;
+            margin-bottom: 25px;
+            padding: 20px;
+            border-radius: 8px;
             border-left: 4px solid #ddd;
         }
 
         .result-question.correct {
             background: #e8f5e8;
-            border-left-color: #4CAF50;
+            border-left-color: #11853d;
         }
 
         .result-question.incorrect {
@@ -322,8 +400,9 @@
         }
 
         .result-question h4 {
-            margin-bottom: 10px;
+            margin-bottom: 12px;
             color: #333;
+            font-weight: 600;
         }
 
         .result-details {
@@ -337,29 +416,43 @@
         }
 
         .correct-answer {
-            color: #4CAF50;
+            color: #11853d;
             font-weight: bold;
         }
 
         .explanation {
             background: #f0f0f0;
-            padding: 10px;
-            border-radius: 4px;
-            margin-top: 8px;
+            padding: 12px;
+            border-radius: 6px;
+            margin-top: 10px;
             font-style: italic;
+            line-height: 1.5;
         }
 
         .hidden {
             display: none;
         }
 
+        .footer-logos {
+            text-align: center;
+            margin-top: 50px;
+            padding-top: 30px;
+            border-top: 1px solid #eee;
+        }
+
+        .footer-logos p {
+            color: #666;
+            font-size: 14px;
+            margin-bottom: 20px;
+        }
+
         @media (max-width: 768px) {
             .container {
-                padding: 10px;
+                padding: 15px;
             }
             
             .card {
-                padding: 20px;
+                padding: 25px;
             }
             
             .timer {
@@ -372,6 +465,22 @@
             .question-grid {
                 justify-content: center;
             }
+
+            .ipa-logo {
+                max-width: 180px;
+            }
+
+            .header h1 {
+                font-size: 2.2em;
+            }
+
+            .organization-info {
+                padding: 20px;
+            }
+
+            .quiz-info {
+                padding: 20px;
+            }
         }
     </style>
 </head>
@@ -380,8 +489,25 @@
         <!-- Start Screen -->
         <div id="startScreen" class="card">
             <div class="header">
-                <h1>📊 CBN Technical Assessment</h1>
-                <p style="color: #666; margin-top: 10px;">Consumer Protection & Financial Inclusion Department</p>
+            <!-- Logo Section -->
+<!-- Logo Section -->
+<div class="logo-section">
+    <!-- IPA Logo -->
+    <img src="/ipalogo.png" 
+         alt="IPA - Innovations for Poverty Action" 
+         class="ipa-logo">
+</div>
+
+
+
+                <h1>Technical Assessment</h1>
+                <p class="subtitle">Innovations for Poverty Action</p>
+            </div>
+
+            <!-- Organization Information -->
+            <div class="organization-info">
+                <h4>Assessment Overview</h4>
+                <p>This technical assessment evaluates expertise in data analysis, monitoring & evaluation, impact evaluation methodology, and programming logic for evidence-based research and policy implementation.</p>
             </div>
 
             <div class="quiz-info">
@@ -390,8 +516,8 @@
                     <li>20 Multiple Choice Questions</li>
                     <li>35 Minutes Time Limit</li>
                     <li>40% Data Analysis, 25% M&E/Impact Evaluation, 35% Programming Logic</li>
-                    <li>Tests real expertise in CBN consumer protection and financial inclusion work</li>
-                    <li>Specific examples: BVN enrollment, POS agents, agent banking, USSD banking, digital payments</li>
+                    <li>Tests expertise in research methodology and implementation</li>
+                    <li>Covers statistical analysis, evaluation design, and technical problem-solving</li>
                     <li>All questions are required</li>
                     <li>Detailed results with explanations provided at the end</li>
                     <li>You can move between questions before submitting</li>
@@ -470,7 +596,7 @@
             <div class="card completion-card">
                 <div class="completion-icon" id="completionIcon">🎉</div>
                 <h2>Assessment Completed!</h2>
-                <p id="thankYouMessage">Thank you for completing the CBN technical assessment!</p>
+                <p id="thankYouMessage">Thank you for completing the technical assessment!</p>
 
                 <div class="score-display">
                     <div class="score-number" id="finalScore">20/20</div>
@@ -485,14 +611,14 @@
 
                 <!-- Detailed Results Section -->
                 <div id="detailedResultsContainer" class="detailed-results">
-                    <h3 style="margin-bottom: 20px; text-align: center;">📋 Detailed Results</h3>
+                    <h3 style="margin-bottom: 20px; text-align: center;">Detailed Results</h3>
                     <div id="detailedResultsList">
                         <!-- Will be populated by JavaScript -->
                     </div>
                 </div>
 
                 <p style="margin-top: 30px; color: #666; font-size: 14px;">
-                    Your results have been saved to the database. The administrator can access your assessment data for analysis and reporting.
+                    Your results have been saved to the database for analysis and reporting purposes.
                 </p>
 
                 <div style="margin-top: 30px;">
@@ -505,7 +631,7 @@
     </div>
 
     <script>
-        // CBN-specific questions for Consumer Protection & Financial Inclusion staff
+        // Technical assessment questions
         const questions = [
             // Data Analysis Questions (8)
             {
@@ -523,19 +649,19 @@
                 explanation: 'Richer states with better infrastructure naturally attract more POS agents AND have higher account penetration for many reasons. You must check if the relationship still holds when comparing similar states, or the policy might fail.'
             },
             {
-    "id": 2,
-    "category": "Data Analysis",
-    "skill": "Practical vs Statistical Importance",
-    "question": "A BVN enrollment campaign increased enrollment from 45% to 48% in a survey of 50,000 people. The result is statistically significant. What is the most accurate interpretation?",
-    "options": [
-        "The effect is statistically significant, but the increase is small and may not be practically meaningful",
-        "Statistical significance means the campaign had a large effect",
-        "A large sample size can make even small effects statistically significant",
-        "Both A and C"
-    ],
-    "correct": "D",
-    "explanation": "With 50,000 observations, even a 3% change can be statistically significant. Statistical significance does not always mean the effect is large or practically important. Both A (small effect size) and C (role of large sample) are correct."
-},
+                id: 2,
+                category: 'Data Analysis',
+                skill: 'Practical vs Statistical Importance',
+                question: 'A BVN enrollment campaign increased enrollment from 45% to 48% in a survey of 50,000 people. The result is statistically significant. What is the most accurate interpretation?',
+                options: [
+                    'The effect is statistically significant, but the increase is small and may not be practically meaningful',
+                    'Statistical significance means the campaign had a large effect',
+                    'A large sample size can make even small effects statistically significant',
+                    'Both A and C'
+                ],
+                correct: 'D',
+                explanation: 'With 50,000 observations, even a 3% change can be statistically significant. Statistical significance does not always mean the effect is large or practically important. Both A (small effect size) and C (role of large sample) are correct.'
+            },
             {
                 id: 3,
                 category: 'Data Analysis',
@@ -551,19 +677,19 @@
                 explanation: 'Self-selection bias: people who choose USSD banking are already more engaged with their accounts. Their lower dormancy might come from being active users, not from USSD itself. Need to compare similar users to isolate USSD\'s real effect.'
             },
             {
-              "id": 4,
-    "category": "Data Analysis",
-    "skill": "Understanding Data Reversals",
-    "question": "Your loan approval data shows women get approved 60% of the time vs men at 65%. But when you look by loan type: microloans (women 75%, men 70%) and mortgage loans (women 45%, men 40%). Women do better in both categories but worse overall. What explains this?",
-    "options": [
-        "There are errors in the data",
-        "Women apply mostly for mortgages, men apply more for microloans, and mortgages are harder to get approved",
-        "Women apply mostly for microloans, men apply more for mortgages, and mortgages are harder to get approved",
-        "Banks discriminate against women only for mortgage loans"
-    ],
-    "correct": "B",
-    "explanation": "This is an example of Simpson's Paradox. Women do better in each loan type, but because more of their applications are for mortgages (the harder loan to get), their overall approval rate looks lower. The overall average is misleading because it hides the difference in loan type distribution."
-},
+                id: 4,
+                category: 'Data Analysis',
+                skill: 'Understanding Data Reversals',
+                question: 'Your loan approval data shows women get approved 60% of the time vs men at 65%. But when you look by loan type: microloans (women 75%, men 70%) and mortgage loans (women 45%, men 40%). Women do better in both categories but worse overall. What explains this?',
+                options: [
+                    'There are errors in the data',
+                    'Women apply mostly for mortgages, men apply more for microloans, and mortgages are harder to get approved',
+                    'Women apply mostly for microloans, men apply more for mortgages, and mortgages are harder to get approved',
+                    'Banks discriminate against women only for mortgage loans'
+                ],
+                correct: 'B',
+                explanation: 'This is an example of Simpson\'s Paradox. Women do better in each loan type, but because more of their applications are for mortgages (the harder loan to get), their overall approval rate looks lower. The overall average is misleading because it hides the difference in loan type distribution.'
+            },
             {
                 id: 5,
                 category: 'Data Analysis',
@@ -640,7 +766,7 @@
                 id: 10,
                 category: 'M&E',
                 skill: 'Output vs Outcome vs Impact',
-                question: 'You evaluate CBN\'s financial literacy program for rural farmers. After 6 months you find: 90% can calculate loan interest correctly, 70% now keep written business records, and farm profits increased 20%. How do you classify these results?',
+                question: 'You evaluate a financial literacy program for rural farmers. After 6 months you find: 90% can calculate loan interest correctly, 70% now keep written business records, and farm profits increased 20%. How do you classify these results?',
                 options: [
                     'All three show the program\'s impact',
                     'Knowledge is outcome, record-keeping is output, profits are impact',
@@ -654,7 +780,7 @@
                 id: 11,
                 category: 'M&E',
                 skill: 'Measuring Complex Outcomes',
-                question: 'You need to measure whether CBN\'s consumer protection efforts have improved "financial security" for Nigerian families. Which set of indicators best captures this complex outcome?',
+                question: 'You need to measure whether consumer protection efforts have improved "financial security" for Nigerian families. Which set of indicators best captures this complex outcome?',
                 options: [
                     'Only measure number of consumer complaints filed',
                     'Only measure household savings account balances',
@@ -668,21 +794,21 @@
                 id: 12,
                 category: 'M&E',
                 skill: 'Attribution vs Contribution',
-                question: 'CBN\'s POS agent expansion program shows 60% increase in rural account openings in target areas, while non-target areas show 20% increase. During the same period, the government launched a social benefit payment program requiring bank accounts. How should you report CBN\'s contribution?',
+                question: 'A POS agent expansion program shows 60% increase in rural account openings in target areas, while non-target areas show 20% increase. During the same period, the government launched a social benefit payment program requiring bank accounts. How should you report the program\'s contribution?',
                 options: [
-                    'CBN caused the full 60% increase',
-                    'CBN caused 40% increase (60% minus 20% background growth)',
+                    'The program caused the full 60% increase',
+                    'The program caused 40% increase (60% minus 20% background growth)',
                     'Report the 40% difference but note that government payments likely boosted both target and non-target areas',
-                    'Cannot determine CBN\'s effect due to government program'
+                    'Cannot determine the program\'s effect due to government program'
                 ],
                 correct: 'C',
-                explanation: 'Good M&E distinguishes attribution (CBN caused this) from contribution (CBN helped achieve this). The 40% difference suggests CBN effect, but government payments likely boosted all areas. Honest reporting shows evidence while acknowledging limitations.'
+                explanation: 'Good M&E distinguishes attribution (program caused this) from contribution (program helped achieve this). The 40% difference suggests program effect, but government payments likely boosted all areas. Honest reporting shows evidence while acknowledging limitations.'
             },
             {
                 id: 13,
                 category: 'M&E',
                 skill: 'Logical Framework Design',
-                question: 'Your logical framework for CBN\'s digital payment promotion has this impact: "Increased use of digital payments in Nigeria." The outcome is "Merchants accept digital payments." What is the most appropriate output indicator?',
+                question: 'Your logical framework for digital payment promotion has this impact: "Increased use of digital payments in Nigeria." The outcome is "Merchants accept digital payments." What is the most appropriate output indicator?',
                 options: [
                     'Percentage of transactions done digitally nationwide',
                     'Number of merchants reporting increased sales from digital payments',
@@ -698,7 +824,7 @@
                 id: 14,
                 category: 'RCT/Impact',
                 skill: 'Randomization Design Trade-offs',
-                question: 'CBN wants to test a new agent banking training program across 200 agents in 40 local government areas (LGAs). You could randomize individual agents or entire LGAs. What is the key trade-off?',
+                question: 'An organization wants to test a new agent banking training program across 200 agents in 40 local government areas (LGAs). You could randomize individual agents or entire LGAs. What is the key trade-off?',
                 options: [
                     'Individual randomization gives better statistics but trained agents might share knowledge with untrained ones; LGA randomization prevents sharing but needs more LGAs for same statistical power',
                     'LGA randomization is always better',
@@ -712,7 +838,7 @@
                 id: 15,
                 category: 'RCT/Impact',
                 skill: 'Intent-to-Treat Analysis Logic',
-                question: 'In CBN\'s financial literacy RCT, 75% of people assigned to training actually attended, while 25% of the control group got similar training elsewhere. For policy decisions, which analysis approach is most useful?',
+                question: 'In a financial literacy RCT, 75% of people assigned to training actually attended, while 25% of the control group got similar training elsewhere. For policy decisions, which analysis approach is most useful?',
                 options: [
                     'Compare only those who actually got training vs those who didn\'t',
                     'Compare based on original assignment regardless of actual participation',
@@ -720,13 +846,13 @@
                     'Weight results by participation rates'
                 ],
                 correct: 'B',
-                explanation: 'Intent-to-treat analysis preserves randomization and answers the policy question: "What happens when CBN offers this program?" Real implementation will have non-participation too. Comparing actual participants introduces bias since participation correlates with motivation.'
+                explanation: 'Intent-to-treat analysis preserves randomization and answers the policy question: "What happens when we offer this program?" Real implementation will have non-participation too. Comparing actual participants introduces bias since participation correlates with motivation.'
             },
             {
                 id: 16,
                 category: 'RCT/Impact',
                 skill: 'Research vs Real-World Effects',
-                question: 'CBN\'s mobile banking education RCT showed 80% adoption with intensive support and monitoring. When scaled nationally with normal implementation, adoption dropped to 30%. This difference most likely reflects:',
+                question: 'A mobile banking education RCT showed 80% adoption with intensive support and monitoring. When scaled nationally with normal implementation, adoption dropped to 30%. This difference most likely reflects:',
                 options: [
                     'The RCT was poorly designed',
                     'Research attention effects - intensive monitoring in RCT created artificial conditions not present in normal implementation',
@@ -742,7 +868,7 @@
                 id: 17,
                 category: 'Programming Logic',
                 skill: 'Reliable System Design',
-                question: 'CBN needs to process daily transaction reports from 24 banks to detect suspicious patterns. Some banks send files late or with errors. Which processing approach ensures reliable daily reports?',
+                question: 'An organization needs to process daily transaction reports from 24 banks to detect suspicious patterns. Some banks send files late or with errors. Which processing approach ensures reliable daily reports?',
                 options: [
                     'Wait for all 24 banks before starting any processing',
                     'Process each bank\'s file separately with ability to retry failed banks without reprocessing successful ones',
@@ -756,7 +882,7 @@
                 id: 18,
                 category: 'Programming Logic',
                 skill: 'System Performance Trade-offs',
-                question: 'CBN\'s real-time BVN verification system handles 50,000 requests/hour across multiple servers. Account balances must be accurate, but system must stay fast. You can either check all servers before each transaction or update balances with delays. What\'s the main trade-off?',
+                question: 'A real-time BVN verification system handles 50,000 requests/hour across multiple servers. Account balances must be accurate, but system must stay fast. You can either check all servers before each transaction or update balances with delays. What\'s the main trade-off?',
                 options: [
                     'Checking all servers ensures accuracy but creates slowdowns; delayed updates maintain speed but risk temporary mismatches',
                     'Checking servers is always better for financial systems',
@@ -770,7 +896,7 @@
                 id: 19,
                 category: 'Programming Logic',
                 skill: 'Data Integrity Protection',
-                question: 'CBN\'s nightly job processes customer complaints to update bank ratings. The job fails halfway through, leaving some banks\' ratings updated and others not. What principle prevents this data corruption?',
+                question: 'A nightly job processes customer complaints to update bank ratings. The job fails halfway through, leaving some banks\' ratings updated and others not. What principle prevents this data corruption?',
                 options: [
                     'Process banks in random order for speed',
                     'Use database transactions - either all bank ratings update or none do',
@@ -784,7 +910,7 @@
                 id: 20,
                 category: 'Programming Logic',
                 skill: 'Optimization Strategy',
-                question: 'CBN\'s agent verification system searches 5 million agent records by phone number, taking 45 seconds per search. You could: add more servers, create a phone number index, cache frequent searches, or upgrade hardware. What gives the biggest improvement?',
+                question: 'An agent verification system searches 5 million agent records by phone number, taking 45 seconds per search. You could: add more servers, create a phone number index, cache frequent searches, or upgrade hardware. What gives the biggest improvement?',
                 options: [
                     'More servers to distribute workload',
                     'Phone number index to enable fast lookups',
@@ -870,7 +996,7 @@
             
             // Update question title and info
             document.getElementById('questionTitle').textContent = `Question ${currentQuestionIndex + 1} of ${questions.length}`;
-            document.getElementById('questionInfo').textContent = `${question.category} - ${question.skill}`;
+            document.getElementById('questionInfo').textContent = `${question.category}`;
             
             // Update question text
             document.getElementById('questionText').textContent = question.question;
@@ -1030,7 +1156,7 @@
                 });
 
                 resultDiv.innerHTML = `
-                    <h4>Question ${question.id}: ${question.category} - ${question.skill}</h4>
+                    <h4>Question ${question.id}: ${question.category}</h4>
                     <p style="margin-bottom: 10px;">${question.question}</p>
                     <div class="result-details">
                         ${!isCorrect ? `<p><span class="your-answer">Your answer: ${userAnswer}.</span> ${optionTexts[userAnswer]}</p>` : ''}
@@ -1122,7 +1248,7 @@
             statusMessage.textContent = 'Submitting your results...';
             loadingSpinner.style.display = 'block';
             
-            console.log('🚀 Attempting to submit assessment data:', data);
+            console.log('Attempting to submit assessment data:', data);
             
             try {
                 const response = await fetch('/api/submit-quiz', {
@@ -1133,49 +1259,38 @@
                     body: JSON.stringify(data)
                 });
                 
-                console.log('📡 Response received:', response.status, response.statusText);
+                console.log('Response received:', response.status, response.statusText);
                 
                 if (!response.ok) {
                     const errorText = await response.text();
-                    console.error('❌ HTTP Error:', response.status, errorText);
+                    console.error('HTTP Error:', response.status, errorText);
                     throw new Error(`HTTP ${response.status}: ${errorText}`);
                 }
                 
                 const result = await response.json();
-                console.log('✅ Success response:', result);
+                console.log('Success response:', result);
                 
                 if (result.success) {
                     // Success
                     loadingSpinner.style.display = 'none';
-                    statusMessage.textContent = `✅ Results successfully saved! (ID: ${result.id})`;
+                    statusMessage.textContent = `Results successfully saved! (ID: ${result.id})`;
                     statusDiv.style.background = '#e8f5e8';
                     statusDiv.style.color = '#2e7d2e';
-                    statusDiv.style.borderLeftColor = '#4CAF50';
+                    statusDiv.style.borderLeftColor = '#11853d';
                     
-                    console.log('🎉 Assessment submitted successfully:', result);
+                    console.log('Assessment submitted successfully:', result);
                 } else {
                     throw new Error(result.error || 'Submission failed');
                 }
             } catch (error) {
-                console.error('💥 Error submitting assessment:', error);
+                console.error('Error submitting assessment:', error);
                 
                 // Show error but don't prevent completion
                 loadingSpinner.style.display = 'none';
-                statusMessage.textContent = `⚠️ Warning: Results may not have been saved. Error: ${error.message}. Please inform the administrator.`;
+                statusMessage.textContent = `Warning: Results may not have been saved. Error: ${error.message}. Please inform the administrator.`;
                 statusDiv.style.background = '#fff3e0';
                 statusDiv.style.color = '#e65100';
                 statusDiv.style.borderLeftColor = '#ff9800';
-                
-                // Also try to save locally as backup
-                try {
-                    const existingData = JSON.parse(localStorage.getItem('cbnAssessmentBackup') || '[]');
-                    existingData.push(data);
-                    localStorage.setItem('cbnAssessmentBackup', JSON.stringify(existingData));
-                    statusMessage.textContent += ' (Saved locally as backup)';
-                    console.log('💾 Saved backup locally:', data);
-                } catch (localError) {
-                    console.error('❌ Failed to save local backup:', localError);
-                }
             }
         }
 
@@ -1234,9 +1349,9 @@
 
         // Initialize when page loads
         window.addEventListener('load', () => {
-            console.log('✅ CBN Technical Assessment loaded successfully');
-            console.log('📊 Questions available:', questions.length);
-            console.log('🎯 Focus areas: Data Analysis, M&E, RCT/Impact, Programming Logic');
+            console.log('IPA Technical Assessment loaded successfully');
+            console.log('Questions available:', questions.length);
+            console.log('Focus areas: Data Analysis, M&E, RCT/Impact, Programming Logic');
         });
 
         // Prevent accidental page refresh during quiz
