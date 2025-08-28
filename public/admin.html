@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>IPA Technical Assessment - Admin Dashboard</title>
+    <title>Consumer Protection Technical Assessment - Admin Dashboard</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <style>
@@ -1076,7 +1076,7 @@
         <div class="sidebar">
             <div class="sidebar-header">
                 <div class="sidebar-header-content">
-                    <h1><i class="fas fa-chart-line"></i> IPA Assessment</h1>
+                    <h1><i class="fas fa-chart-line"></i> Consumer Protection Assessment</h1>
                     <p>Advanced Analytics Dashboard</p>
                 </div>
             </div>
@@ -1146,7 +1146,7 @@
             <div id="overviewSection" class="content-section active">
                 <div class="section-header">
                     <h2 class="section-title">Dashboard Overview</h2>
-                    <p class="section-subtitle">Technical Assessment Performance Summary</p>
+                    <p class="section-subtitle">Consumer Protection Technical Assessment Performance Summary</p>
                 </div>
 
                 <!-- Statistics Grid -->
@@ -1201,9 +1201,9 @@
                 <div id="emptyState" class="card hidden" style="text-align: center; padding: 80px;">
                     <i class="fas fa-clipboard-list" style="font-size: 4rem; color: var(--text-muted); margin-bottom: 24px;"></i>
                     <h3>No Results Yet</h3>
-                    <p style="margin: 20px 0; color: var(--text-secondary);">Results will appear here once participants complete the quiz.</p>
+                    <p style="margin: 20px 0; color: var(--text-secondary);">Results will appear here once participants complete the assessment.</p>
                     <a href="/" target="_blank" class="btn btn-primary">
-                        <i class="fas fa-external-link-alt"></i> Open Quiz Page
+                        <i class="fas fa-external-link-alt"></i> Open Assessment Page
                     </a>
                 </div>
             </div>
@@ -1324,7 +1324,7 @@
                             <i class="fas fa-download"></i> Export & Download
                         </h3>
                     </div>
-                    <p style="color: var(--text-secondary); margin-bottom: 24px; font-weight: 500;">Download comprehensive reports and data exports for analysis and reporting.</p>
+                    <p style="color: var(--text-secondary); margin-bottom: 24px; font-weight: 500;">Download comprehensive reports and data exports for analysis and reporting purposes.</p>
                     <div style="display: flex; gap: 16px; flex-wrap: wrap;">
                         <button class="btn btn-primary" onclick="downloadCSV()" id="downloadBtn2" disabled>
                             <i class="fas fa-file-csv"></i> Download Enhanced CSV
@@ -1441,26 +1441,33 @@
 
         function generateAnalytics(results) {
             const questions = [
-                { id: 1, category: 'Data Analysis', skill: 'Understanding Hidden Factors', question: 'You find that states with more POS agents have higher account opening rates. Lagos has 15,000 POS agents and 78% account penetration, while Yobe has 200 POS agents and 23% account penetration. Before recommending more POS agents for Yobe, what should you check first?' },
-                { id: 2, category: 'Data Analysis', skill: 'Practical vs Statistical Importance', question: 'A BVN enrollment campaign increased enrollment from 45% to 48% in a survey of 50,000 people. The result is statistically significant. What is the most accurate interpretation?' },
-                { id: 3, category: 'Data Analysis', skill: 'Recognizing Self-Selection Bias', question: 'Your data shows customers who use USSD banking have 40% fewer dormant account problems than those who don\'t. Before concluding that USSD prevents dormancy, what should you consider?' },
-                { id: 4, category: 'Data Analysis', skill: 'Understanding Data Reversals', question: 'Your loan approval data shows women get approved 60% of the time vs men at 65%. But when you look by loan type: microloans (women 75%, men 70%) and mortgage loans (women 45%, men 40%). Women do better in both categories but worse overall. What explains this?' },
-                { id: 5, category: 'Data Analysis', skill: 'Measurement Error Effects', question: 'You are studying the relationship between small business income and loan repayment rates. Business owners report their income in interviews, but many understate it to avoid taxes. How does this affect your analysis?' },
-                { id: 6, category: 'Data Analysis', skill: 'Understanding Base Rates', question: 'Your fraud detection system correctly identifies 90% of fraudulent transactions and has 8% false alarms. In Nigeria where only 0.2% of transactions are fraudulent, what percentage of transactions flagged as fraud are actually fraudulent?' },
-                { id: 7, category: 'Data Analysis', skill: 'Avoiding Survivor Bias', question: 'You want to evaluate agent banking performance by studying agents who have operated for 2+ years. You find 85% of these agents are profitable and conclude the agent banking model works well. What is the problem with this approach?' },
-                { id: 8, category: 'Data Analysis', skill: 'Natural Performance Variation', question: 'After a customer service training program, you notice the worst-performing bank branches improved a lot, while the best-performing branches showed little change. Should CBN focus all future training on poor performers?' },
-                { id: 9, category: 'M&E', skill: 'Pre- and Post-Test Purpose', question: 'Why is it important to conduct a pre-test and a post-test in a program?' },
-                { id: 10, category: 'M&E', skill: 'Output vs Outcome vs Impact', question: 'You evaluate a financial literacy program for rural farmers. After 6 months you find: 90% can calculate loan interest correctly, 70% now keep written business records, and farm profits increased 20%. How do you classify these results?' },
-                { id: 11, category: 'M&E', skill: 'Measuring Complex Outcomes', question: 'You need to measure whether consumer protection efforts have improved "financial security" for Nigerian families. Which set of indicators best captures this complex outcome?' },
-                { id: 12, category: 'M&E', skill: 'Monitoring vs Evaluation', question: 'What is the key difference between monitoring and evaluation?' },
-                { id: 13, category: 'M&E', skill: 'Logical Framework Design', question: 'Your logical framework for digital payment promotion has this impact: "Increased use of digital payments in Nigeria." The outcome is "Merchants accept digital payments." What is the most appropriate output indicator?' },
-                { id: 14, category: 'RCT/Impact', skill: 'Randomization Design Trade-offs', question: 'An organization wants to test a new agent banking training program across 200 agents in 40 local government areas (LGAs). You could randomize individual agents or entire LGAs. What is the key trade-off?' },
-                { id: 15, category: 'RCT/Impact', skill: 'Intent-to-Treat Analysis Logic', question: 'In a financial literacy RCT, 75% of people assigned to training actually attended, while 25% of the control group got similar training elsewhere. For policy decisions, which analysis approach is most useful?' },
-                { id: 16, category: 'RCT/Impact', skill: 'Research vs Real-World Effects', question: 'A mobile banking education RCT showed 80% adoption with intensive support and monitoring. When scaled nationally with normal implementation, adoption dropped to 30%. This difference most likely reflects:' },
-                { id: 17, category: 'Programming Logic', skill: 'Reliable System Design', question: 'An organization needs to process daily transaction reports from 24 banks to detect suspicious patterns. Some banks send files late or with errors. Which processing approach ensures reliable daily reports?' },
-                { id: 18, category: 'Programming Logic', skill: 'System Performance Trade-offs', question: 'A real-time BVN verification system handles 50,000 requests/hour across multiple servers. Account balances must be accurate, but system must stay fast. You can either check all servers before each transaction or update balances with delays. What\'s the main trade-off?' },
-                { id: 19, category: 'Programming Logic', skill: 'Data Integrity Protection', question: 'A nightly job processes customer complaints to update bank ratings. The job fails halfway through, leaving some banks\' ratings updated and others not. What principle prevents this data corruption?' },
-                { id: 20, category: 'Programming Logic', skill: 'Optimization Strategy', question: 'An agent verification system searches 5 million agent records by phone number, taking 45 seconds per search. You could: add more servers, create a phone number index, cache frequent searches, or upgrade hardware. What gives the biggest improvement?' }
+                // Data Analysis Questions (8) - Including Excel/Pivot Table skills
+                { id: 1, category: 'Data Analysis', skill: 'Understanding Correlation vs Causation', question: 'Your analysis shows states with more telecom tower installations have higher consumer satisfaction rates. Lagos has 8,500 towers and 82% satisfaction, while Kebbi has 150 towers and 31% satisfaction. Before recommending more towers for Kebbi, what should you examine first?' },
+                { id: 2, category: 'Data Analysis', skill: 'Excel Pivot Table Analysis', question: 'You have 50,000 consumer complaint records in Excel. You need to find which service type has the highest complaint resolution rate by region. Which Excel feature and approach is most efficient?' },
+                { id: 3, category: 'Data Analysis', skill: 'Statistical vs Practical Significance', question: 'A consumer education campaign improved complaint resolution knowledge from 62% to 64% in a survey of 45,000 consumers. The result is statistically significant (p<0.001). What is the most accurate interpretation?' },
+                { id: 4, category: 'Data Analysis', skill: 'Self-Selection Bias Recognition', question: 'Your data shows consumers who use online complaint portals get 45% faster resolution times than those who call customer service. Before concluding that online portals are more efficient, what should you consider?' },
+                { id: 5, category: 'Data Analysis', skill: 'Excel Data Analysis - Simpson\'s Paradox', question: 'Your Excel analysis shows Provider A resolves 75% of complaints vs Provider B at 78%. But examining by complaint type: billing issues (A: 85%, B: 82%) and service issues (A: 90%, B: 88%). Provider A performs better in both categories but worse overall. How do you explain this in your report?' },
+                { id: 6, category: 'Data Analysis', skill: 'Measurement Error Impact', question: 'You\'re analyzing the relationship between household income and telecom service spending from consumer surveys. Many respondents understate their income to avoid appearing wealthy. How does this affect your analysis?' },
+                { id: 7, category: 'Data Analysis', skill: 'Base Rate Understanding', question: 'Your fraud detection algorithm correctly identifies 92% of fraudulent telecom accounts and has 6% false alarms. In a market where only 0.3% of accounts are fraudulent, what percentage of flagged accounts are actually fraudulent?' },
+                { id: 8, category: 'Data Analysis', skill: 'Regression to the Mean', question: 'After implementing a consumer protection intervention, you notice the worst-performing service providers improved significantly while top performers showed little change. Should the regulator focus all future interventions on poor performers?' },
+
+                // M&E Questions (5)
+                { id: 9, category: 'M&E', skill: 'Pre-test and Post-test Purpose', question: 'Why is it important to conduct pre-tests and post-tests when evaluating consumer education programs?' },
+                { id: 10, category: 'M&E', skill: 'Output vs Outcome vs Impact', question: 'You evaluate a consumer awareness campaign about telecom billing rights. After 6 months: 85% can identify billing errors correctly, 68% now dispute incorrect charges, and overall billing complaints decreased 15%. How do you classify these results?' },
+                { id: 11, category: 'M&E', skill: 'Complex Outcome Measurement', question: 'You need to measure whether consumer protection efforts have improved "consumer empowerment" in the telecom sector. Which indicator set best captures this complex outcome?' },
+                { id: 12, category: 'M&E', skill: 'Monitoring vs Evaluation Distinction', question: 'What is the fundamental difference between monitoring and evaluation in consumer protection programs?' },
+                { id: 13, category: 'M&E', skill: 'Logical Framework Design', question: 'Your logical framework for improving telecom service quality has this impact: "Enhanced consumer satisfaction with telecom services." The outcome is "Service providers improve response times." What is the most appropriate output indicator?' },
+
+                // RCT/Impact Evaluation Questions (3)
+                { id: 14, category: 'RCT/Impact', skill: 'Randomization Design Trade-offs', question: 'You want to test a new consumer complaint resolution process across 300 customer service centers in 50 cities. You could randomize individual centers or entire cities. What is the key trade-off?' },
+                { id: 15, category: 'RCT/Impact', skill: 'Intent-to-Treat Analysis', question: 'In a consumer education RCT, 78% of assigned participants attended training, while 22% of the control group received similar training elsewhere. For policy decisions, which analysis approach is most valuable?' },
+                { id: 16, category: 'RCT/Impact', skill: 'Research vs Implementation Effects', question: 'A consumer protection helpline RCT showed 85% issue resolution with intensive monitoring and support. When scaled nationally with normal operations, resolution dropped to 45%. This difference most likely reflects:' },
+
+                // Programming Logic Questions (4) - Including actual programming skills
+                { id: 17, category: 'Programming Logic', skill: 'Conditional Logic Programming', question: 'You\'re writing code to categorize consumer complaints by urgency. Complete this logic: if complaint_type == "billing" and amount > 10000: priority = "high" elif complaint_type == "service" and downtime > 24: priority = "high" else: priority = "normal". A service complaint with 30 hours downtime gets what priority?' },
+                { id: 18, category: 'Programming Logic', skill: 'Boolean Logic and Operators', question: 'In a consumer protection database, you need to flag accounts where: (account_age < 6 months) AND (complaints != 0) AND NOT (resolved_complaints >= total_complaints). For an account with age=3, complaints=5, resolved=5, total=5, what does this expression evaluate to?' },
+                { id: 19, category: 'Programming Logic', skill: 'System Reliability Design', question: 'A consumer complaint processing system must handle 15,000 daily complaints from multiple channels. Some data feeds fail or arrive late. Which approach ensures reliable daily reporting?' },
+                { id: 20, category: 'Programming Logic', skill: 'Algorithm Optimization', question: 'A consumer complaint search system queries 8 million complaint records by phone number, taking 55 seconds per search. You could: add more servers, create a phone number index, cache frequent searches, or upgrade hardware. What provides the biggest performance improvement?' }
             ];
 
             const questionStats = questions.map(q => {
@@ -1495,19 +1502,19 @@
             const skillAreaMapping = {
                 'Data Analysis': {
                     questions: [1, 2, 3, 4, 5, 6, 7, 8],
-                    description: 'Statistical thinking, bias recognition, data interpretation'
+                    description: 'Statistical thinking, Excel/Pivot tables, bias recognition, consumer data interpretation'
                 },
                 'M&E (Monitoring & Evaluation)': {
                     questions: [9, 10, 11, 12, 13],
-                    description: 'Theory of change, outcome measurement, logical frameworks'
+                    description: 'Program evaluation, outcome measurement, consumer protection M&E frameworks'
                 },
                 'RCT/Impact Evaluation': {
                     questions: [14, 15, 16],
-                    description: 'Randomized controlled trials, research design'
+                    description: 'Randomized controlled trials, impact evaluation, research design for policy'
                 },
                 'Programming Logic': {
                     questions: [17, 18, 19, 20],
-                    description: 'System design, optimization, data integrity'
+                    description: 'Programming syntax (if/else, boolean logic), system optimization, algorithm design'
                 }
             };
 
@@ -1860,7 +1867,7 @@
                     const a = document.createElement('a');
                     a.style.display = 'none';
                     a.href = url;
-                    a.download = `technical_assessment_results_${new Date().toISOString().split('T')[0]}.csv`;
+                    a.download = `consumer_protection_assessment_results_${new Date().toISOString().split('T')[0]}.csv`;
                     document.body.appendChild(a);
                     a.click();
                     window.URL.revokeObjectURL(url);
@@ -1895,7 +1902,7 @@
                 return;
             }
 
-            const confirmed = confirm(`Are you sure you want to delete all ${quizResults.length} quiz results?\n\nThis action cannot be undone.`);
+            const confirmed = confirm(`Are you sure you want to delete all ${quizResults.length} assessment results?\n\nThis action cannot be undone.`);
             
             if (confirmed) {
                 try {
@@ -1922,7 +1929,7 @@
         });
 
         window.addEventListener('load', () => {
-            console.log('Enhanced Admin dashboard loaded');
+            console.log('Consumer Protection Assessment admin dashboard loaded');
         });
     </script>
 </body>
