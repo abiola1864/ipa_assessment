@@ -635,118 +635,123 @@
         // Technical assessment questions
       // Consumer Protection Technical Assessment Questions
 const questions = [
-    // Data Analysis Questions (8) - Including Excel/Pivot Table skills
-    {
-        id: 1,
-        category: 'Data Analysis',
-        skill: 'Understanding Correlation vs Causation',
-        question: 'Your analysis shows states with more telecom tower installations have higher consumer satisfaction rates. Lagos has 8,500 towers and 82% satisfaction, while Kebbi has 150 towers and 31% satisfaction. Before recommending more towers for Kebbi, what should you examine first?',
-        options: [
-            'The cost of installing towers in each state',
-            'Whether states with more towers also have better electricity, higher incomes, and urban infrastructure that affect service quality',
-            'The population density of each state',
-            'How many service providers operate in each state'
-        ],
-        correct: 'B',
-        explanation: 'States with better infrastructure attract more tower investments AND naturally have better service quality for multiple reasons. You must control for these confounding factors or your tower recommendation might fail due to missing infrastructure prerequisites.'
-    },
+
+
+
+{
+    id: 1,
+    category: 'Data Analysis',
+    skill: 'Understanding Confounding Variables',
+    question: 'You want to prove telecom towers improve satisfaction by comparing Lagos (8,500 towers, 82% satisfaction) with Kebbi (150 towers, 31% satisfaction). Your boss says "This comparison has problems." What is the most likely issue?',
+    options: [
+        'Wealthier states attract more towers and their consumers tend to be more satisfied',
+        'Areas with stronger infrastructure (roads, electricity) both enable more towers and create better customer experiences',
+        'Regions with higher education levels both demand more telecom services and report higher satisfaction',
+        'More urbanized states both support more tower investment and provide conditions for higher satisfaction'
+    ],
+    correct: 'A',
+    explanation: 'This is a confounding problem: Lagos is wealthier, and wealth is linked to both more tower investment and higher satisfaction. Without controlling for wealth (and related factors), you cannot isolate the true effect of towers.'
+},
+
+    // Data Analysis Questions (8)
+
     {
         id: 2,
         category: 'Data Analysis',
         skill: 'Excel Pivot Table Analysis',
-        question: 'You have 50,000 consumer complaint records in Excel. You need to find which service type has the highest complaint resolution rate by region. Which Excel feature and approach is most efficient?',
+        question: 'You have 50,000 complaint records and need a report showing average resolution days by service type and region. What is the most efficient approach in Excel?',
         options: [
-            'Use COUNTIF formulas to count resolved complaints manually',
-            'Create a Pivot Table with Service Type in Rows, Region in Columns, and Resolution Rate as Values',
-            'Sort the data by complaint type and manually calculate percentages',
-            'Use basic filters to examine each region separately'
+            'VLOOKUP functions to match service types with resolution times',
+            'Pivot Tables to automatically calculate averages across multiple categories',
+            'Conditional formatting to highlight resolution times above average',
+            'Data validation to filter records by service type and region'
         ],
         correct: 'B',
-        explanation: 'Pivot Tables are designed exactly for this multi-dimensional analysis. They automatically calculate resolution rates across service types and regions, handle large datasets efficiently, and provide dynamic analysis capabilities that manual formulas cannot match.'
+        explanation: 'Pivot Tables are designed for this type of multidimensional analysis, automatically calculating averages across service types and regions. Other options require manual work or don\'t perform the necessary calculations.'
     },
     {
         id: 3,
         category: 'Data Analysis',
         skill: 'Statistical vs Practical Significance',
-        question: 'A consumer education campaign improved complaint resolution knowledge from 62% to 64% in a survey of 45,000 consumers. The result is statistically significant (p<0.001). What is the most accurate interpretation?',
+        question: 'Your campaign improved knowledge from 62% to 64% with 45,000 people surveyed (p<0.001). Your manager says "Great results!" What should you consider about this finding?',
         options: [
-            'The campaign had a meaningful impact since it\'s statistically significant',
-            'The 2% improvement is small and may not justify the campaign cost despite statistical significance',
-            'Large sample sizes can make tiny effects statistically significant',
-            'Both B and C are correct'
+            'The sample size is too large, making the test unreliable',
+            'Small p-values only mean the result isn\'t due to chance, not that the 2% improvement is meaningful',
+            'We need to check if the data meets the assumptions for this test',
+            'The confidence interval would give more accurate information than the p-value'
         ],
-        correct: 'D',
-        explanation: 'With 45,000 respondents, even a 2% change achieves statistical significance. However, statistical significance doesn\'t equal practical importance. You need cost-benefit analysis to determine if a 2% knowledge improvement justifies the campaign investment.'
+        correct: 'B',
+        explanation: 'Statistical significance (p<0.001) only indicates the result is unlikely due to chance. With large samples, even tiny differences become statistically significant. Whether 2% improvement matters for policy is a separate question about practical significance.'
     },
     {
         id: 4,
         category: 'Data Analysis',
         skill: 'Self-Selection Bias Recognition',
-        question: 'Your data shows consumers who use online complaint portals get 45% faster resolution times than those who call customer service. Before concluding that online portals are more efficient, what should you consider?',
+        question: 'Your data shows online complaint users get 45% faster resolution than phone users. Before recommending everyone switch to online, what should concern you most?',
         options: [
-            'The technical requirements for using online portals',
-            'Consumers who use online portals may be more tech-savvy and provide better-documented complaints',
-            'The cost difference between online and phone support',
-            'Whether all service providers offer online portals'
+            'Online systems may record timestamps differently than phone systems',
+            'People who choose online forms may be systematically different from phone users',
+            'The sample sizes for online and phone users may not be equal',
+            'Seasonal patterns may affect online and phone complaint resolution differently'
         ],
         correct: 'B',
-        explanation: 'Self-selection bias: consumers who choose online portals likely provide more detailed, well-documented complaints and may be more persistent in follow-up. Their faster resolution might reflect their complaint quality, not portal efficiency.'
+        explanation: 'Self-selection bias is the key concern - online users likely differ systematically in tech skills, writing ability, and persistence. These user characteristics, not the channel itself, may drive the faster resolution.'
     },
     {
         id: 5,
         category: 'Data Analysis',
-        skill: 'Excel Data Analysis - Simpson\'s Paradox',
-        question: 'Your Excel analysis shows Provider A resolves 75% of complaints vs Provider B at 78%. But examining by complaint type: billing issues (A: 85%, B: 82%) and service issues (A: 90%, B: 88%). Provider A performs better in both categories but worse overall. How do you explain this in your report?',
+        skill: 'Understanding Simpson\'s Paradox',
+        question: 'Provider A has higher resolution rates than B for billing complaints (85% vs 80%) AND service complaints (90% vs 85%), yet has lower overall resolution (75% vs 78%). How is this possible?',
         options: [
-            'There are calculation errors in the Excel spreadsheet',
-            'Provider A handles mostly billing complaints while Provider B handles more service complaints, and billing complaints are harder to resolve',
-            'Provider A handles mostly service complaints while Provider B handles more billing complaints, and billing complaints are harder to resolve',
-            'Providers discriminate based on complaint type'
+            'There are systematic errors in how resolution rates are calculated',
+            'Provider A handles different proportions of complaint types than Provider B',
+            'The confidence intervals for these estimates likely overlap significantly',
+            'Outlier complaints are affecting the averages differently for each provider'
         ],
         correct: 'B',
-        explanation: 'This is Simpson\'s Paradox. Provider A excels in each complaint category but handles a higher proportion of difficult billing complaints, making their overall rate appear lower. Proper analysis requires examining both category-specific and overall performance.'
+        explanation: 'This is Simpson\'s Paradox. Provider A excels in both categories but handles more difficult billing complaints (lower base resolution rate), while Provider B handles more easier service complaints, affecting overall averages despite A\'s category-level superiority.'
     },
     {
         id: 6,
         category: 'Data Analysis',
         skill: 'Measurement Error Impact',
-        question: 'You\'re analyzing the relationship between household income and telecom service spending from consumer surveys. Many respondents understate their income to avoid appearing wealthy. How does this affect your analysis?',
+        question: 'You\'re studying how income affects telecom spending using survey data where people typically underreport their income. How does this affect your analysis?',
         options: [
-            'No effect since everyone understates income equally',
+            'Creates systematic bias by shifting all income values downward',
             'Makes the income-spending relationship appear weaker than it actually is',
-            'Makes the relationship appear stronger than reality',
-            'Only affects the average income calculation'
+            'Reduces statistical power by effectively decreasing the sample size',
+            'Violates the independence assumption needed for correlation analysis'
         ],
         correct: 'B',
-        explanation: 'When income is measured with systematic error (underreporting), its correlation with spending appears weaker than the true relationship. This could lead to underestimating price sensitivity in your consumer protection policies.'
+        explanation: 'Measurement error in predictor variables (income) creates attenuation bias, making observed correlations weaker than the true relationships. This affects your ability to detect real income-spending patterns.'
     },
     {
         id: 7,
         category: 'Data Analysis',
         skill: 'Base Rate Understanding',
-        question: 'Your fraud detection algorithm correctly identifies 92% of fraudulent telecom accounts and has 6% false alarms. In a market where only 0.3% of accounts are fraudulent, what percentage of flagged accounts are actually fraudulent?',
+        question: 'Your fraud detection system catches 92% of fraudulent accounts and has 6% false alarms. In a market where only 0.3% of accounts are fraudulent, what will most flagged accounts actually be?',
         options: [
-            '92% (the algorithm\'s accuracy rate)',
-            'About 4% (most flagged accounts are actually legitimate)',
-            'About 86% (92% minus 6%)',
-            '99.7% (since fraud is very rare)'
+            'Fraudulent accounts because the 92% detection rate is very high',
+            'Legitimate accounts because false alarms outnumber true fraud when fraud is rare',
+            'About evenly split between fraudulent and legitimate accounts',
+            'Cannot be determined without knowing the negative predictive value'
         ],
         correct: 'B',
-        explanation: 'With 0.3% fraud rate: in 100,000 accounts, 300 are fraudulent (276 detected) and 99,700 are legitimate (5,982 false alarms). Total flagged: 6,258. True fraud: 276. So 276/6,258 = 4.4% of flagged accounts are actually fraudulent.'
+        explanation: 'With very low fraud rates (0.3%), the 6% false alarm rate applied to 99.7% legitimate accounts creates far more false positives than the actual fraud cases detected, despite the high sensitivity.'
     },
     {
         id: 8,
         category: 'Data Analysis',
         skill: 'Regression to the Mean',
-        question: 'After implementing a consumer protection intervention, you notice the worst-performing service providers improved significantly while top performers showed little change. Should the regulator focus all future interventions on poor performers?',
+        question: 'After training, your worst-performing centers improved dramatically while top centers barely changed. What should you consider before crediting the training?',
         options: [
-            'Yes, poor performers clearly benefit more from intervention',
-            'Need to be cautious - extreme performers naturally tend toward average performance over time, regardless of intervention',
-            'No, good performers should get priority to maintain standards',
-            'The intervention only works for poor performers'
+            'Ceiling effects may prevent top performers from showing additional improvement',
+            'Extreme scores naturally tend to become more average on repeat measurement',
+            'The training materials may have been designed specifically for poor performers',
+            'Measurement reliability may be lower for extreme performance scores'
         ],
         correct: 'B',
-        explanation: 'Regression to the mean: extremely poor or good performers tend to move toward average performance on re-measurement due to natural variation. Need a proper control group to separate intervention effects from natural performance changes.'
+        explanation: 'Regression to the mean explains why extreme performers (good or bad) tend to move toward average on remeasurement due to natural statistical variation, independent of any intervention effect.'
     },
 
     // M&E Questions (5)
@@ -754,177 +759,175 @@ const questions = [
         id: 9,
         category: 'M&E',
         skill: 'Pre-test and Post-test Purpose',
-        question: 'Why is it important to conduct pre-tests and post-tests when evaluating consumer education programs?',
+        question: 'You want to demonstrate that your consumer education program improved knowledge. Why is measuring knowledge only after the program insufficient?',
         options: [
-            'To measure changes in consumer knowledge and behavior attributable to the program',
-            'To check whether consumers understood the educational materials',
-            'To evaluate how well trainers delivered the content',
-            'To compare different groups of consumers'
+            'Post-only designs lack sufficient statistical power to detect program effects',
+            'You cannot determine how much knowledge changed without knowing the starting point',
+            'Single measurement cannot establish the proper temporal sequence',
+            'Post-test responses may be biased by social desirability effects'
         ],
-        correct: 'A',
-        explanation: 'Pre- and post-tests establish baseline knowledge and measure learning gains, allowing you to isolate the program\'s impact from existing consumer knowledge and external factors.'
+        correct: 'B',
+        explanation: 'Without baseline measurement, you cannot attribute observed knowledge levels to the program versus pre-existing knowledge. Pre-post comparison is necessary to measure actual change and isolate program impact.'
     },
     {
         id: 10,
         category: 'M&E',
-        skill: 'Output vs Outcome vs Impact',
-        question: 'You evaluate a consumer awareness campaign about telecom billing rights. After 6 months: 85% can identify billing errors correctly, 68% now dispute incorrect charges, and overall billing complaints decreased 15%. How do you classify these results?',
+        skill: 'Output vs Outcome vs Impact Distinction',
+        question: 'Your program achieved: 85% gained knowledge, 68% changed behavior, 15% system-wide complaint reduction. Which represents what the program directly produced?',
         options: [
-            'All three demonstrate program impact',
-            'Knowledge is outcome, disputing is output, complaint reduction is impact',
-            'Knowledge is output, disputing is outcome, complaint reduction is impact',
-            'Only complaint reduction matters for program evaluation'
+            'The 15% system change because it shows the program\'s ultimate effectiveness',
+            'The 85% knowledge gain because this is what training sessions directly created',
+            'All three results equally demonstrate program accomplishments',
+            'The 68% behavior change because it proves the program worked as intended'
         ],
-        correct: 'C',
-        explanation: 'In M&E logic: outputs are immediate deliverables (knowledge gained), outcomes are behavior changes (disputing charges), impacts are system-level effects (reduced complaints). Each requires different measurement approaches and timing.'
+        correct: 'B',
+        explanation: 'In the results chain: outputs are immediate products (knowledge from training), outcomes are subsequent changes (behavior), impacts are broader effects (system-wide changes). Knowledge is the direct program product.'
     },
     {
         id: 11,
         category: 'M&E',
         skill: 'Complex Outcome Measurement',
-        question: 'You need to measure whether consumer protection efforts have improved "consumer empowerment" in the telecom sector. Which indicator set best captures this complex outcome?',
+        question: 'You need to measure whether consumers are "empowered" to handle telecom issues. What is the main limitation of using only satisfaction surveys?',
         options: [
-            'Only measure number of complaints filed',
-            'Only measure consumer satisfaction survey scores',
-            'Combine: consumers\' knowledge of rights + willingness to switch providers + ability to resolve disputes + usage of protection mechanisms',
-            'Survey consumers about whether they feel empowered'
+            'Satisfaction surveys typically have response rates too low for reliable measurement',
+            'Empowerment includes multiple dimensions that one indicator cannot fully capture',
+            'Satisfaction questions often contain wording that creates measurement bias',
+            'Survey data collection costs too much for routine program monitoring'
         ],
-        correct: 'C',
-        explanation: 'Complex outcomes like "empowerment" require multiple indicators capturing different dimensions. Single measures miss the full picture. Good M&E combines knowledge, behavior, capacity, and utilization indicators.'
+        correct: 'B',
+        explanation: 'Complex constructs like "empowerment" require multiple indicators across different dimensions (knowledge, behavior, capacity, outcomes). Single measures, regardless of quality, cannot capture multidimensional concepts adequately.'
     },
     {
         id: 12,
         category: 'M&E',
         skill: 'Monitoring vs Evaluation Distinction',
-        question: 'What is the fundamental difference between monitoring and evaluation in consumer protection programs?',
+        question: 'For 6 months, you\'ve been tracking training sessions, participant numbers, and immediate feedback scores. What type of M&E activity is this?',
         options: [
-            'Monitoring tracks program activities and progress regularly; evaluation assesses overall effectiveness and impact',
-            'Monitoring measures consumer satisfaction; evaluation measures knowledge gained',
-            'Monitoring is done internally; evaluation is done by external parties',
-            'Monitoring focuses on complaints; evaluation focuses on resolutions'
+            'Evaluation because you are measuring program performance over time',
+            'Monitoring because you are tracking ongoing implementation activities and immediate outputs',
+            'Baseline research because you are establishing program performance benchmarks',
+            'Cost-effectiveness analysis because you are tracking resource use over time'
         ],
-        correct: 'A',
-        explanation: 'Monitoring is ongoing tracking of implementation progress and immediate outputs, while evaluation examines whether the program achieved its intended outcomes and impact on consumer protection.'
+        correct: 'B',
+        explanation: 'This describes monitoring - regular tracking of implementation activities and immediate outputs. Evaluation would examine whether the program achieved its intended outcomes and impacts, typically done periodically.'
     },
     {
         id: 13,
         category: 'M&E',
         skill: 'Logical Framework Design',
-        question: 'Your logical framework for improving telecom service quality has this impact: "Enhanced consumer satisfaction with telecom services." The outcome is "Service providers improve response times." What is the most appropriate output indicator?',
+        question: 'Your program logic: train staff → faster response → higher satisfaction. What should you measure first to track program progress?',
         options: [
-            'Percentage of consumers satisfied with service nationwide',
-            'Number of providers reporting improved customer satisfaction',
-            'Number of service providers trained in customer service standards',
-            'Average response time across all providers'
+            'Consumer satisfaction scores across the telecom sector',
+            'Average response times from all service providers',
+            'Number of customer service staff who completed training',
+            'Cost per complaint resolved before and after training'
         ],
         correct: 'C',
-        explanation: 'Logical framework hierarchy: outputs are direct program deliverables (providers trained), outcomes are behavior changes (improved response times), impacts are system-level changes (enhanced satisfaction). Training is the direct output that enables the outcome.'
+        explanation: 'Following the logical framework sequence, you measure outputs (staff trained) first, then outcomes (response times), then impacts (satisfaction). Outputs are the immediate, directly measurable products of program activities.'
     },
 
     // RCT/Impact Evaluation Questions (3)
     {
         id: 14,
         category: 'RCT/Impact',
-        skill: 'Randomization Design Trade-offs',
-        question: 'You want to test a new consumer complaint resolution process across 300 customer service centers in 50 cities. You could randomize individual centers or entire cities. What is the key trade-off?',
+        skill: 'Randomization Unit Trade-offs',
+        question: 'You\'re testing complaint resolution across 300 centers in 50 cities. You could randomly assign individual centers or entire cities to treatment. What is the main advantage of city-level randomization?',
         options: [
-            'Individual randomization gives better statistical power but centers might share practices with each other; city randomization prevents sharing but needs more cities for same power',
-            'City randomization is always superior',
-            'Individual randomization eliminates all contamination',
-            'Both approaches yield identical results'
+            'City randomization provides larger sample sizes for statistical analysis',
+            'City randomization prevents centers from learning practices from nearby treated centers',
+            'City randomization improves the representativeness of the sample',
+            'City randomization reduces the complexity of implementation logistics'
         ],
-        correct: 'A',
-        explanation: 'Individual randomization maximizes statistical power but creates spillover risk (treated centers sharing practices with controls). City randomization prevents contamination but reduces effective sample size, requiring larger studies for equivalent statistical power.'
+        correct: 'B',
+        explanation: 'City-level (cluster) randomization prevents spillover effects where treated centers share new practices with nearby control centers. This contamination prevention is the key methodological advantage, though it reduces statistical power.'
     },
     {
         id: 15,
         category: 'RCT/Impact',
-        skill: 'Intent-to-Treat Analysis',
-        question: 'In a consumer education RCT, 78% of assigned participants attended training, while 22% of the control group received similar training elsewhere. For policy decisions, which analysis approach is most valuable?',
+        skill: 'Intent-to-Treat Analysis Logic',
+        question: 'In your RCT, 78% of treatment group attended training while 22% of controls got similar training elsewhere. For policy decisions, which analysis approach is most useful?',
         options: [
-            'Compare only those who actually received training vs those who didn\'t',
-            'Compare based on original random assignment regardless of actual participation',
-            'Exclude participants who didn\'t follow their assignment',
-            'Weight results by actual participation rates'
+            'Per-protocol analysis comparing actual training participants versus pure controls',
+            'Intent-to-treat analysis comparing original assignments regardless of participation',
+            'As-treated analysis comparing everyone who got training versus those who didn\'t',
+            'Dose-response analysis examining effects by hours of training received'
         ],
         correct: 'B',
-        explanation: 'Intent-to-treat analysis preserves randomization and answers the policy question: "What happens when we offer this program?" Real implementation will have non-compliance too. Comparing actual participants introduces selection bias.'
+        explanation: 'Intent-to-treat analysis preserves randomization and estimates the effect of offering the program, including real-world non-compliance that will occur during policy implementation.'
     },
     {
         id: 16,
         category: 'RCT/Impact',
-        skill: 'Research vs Implementation Effects',
-        question: 'A consumer protection helpline RCT showed 85% issue resolution with intensive monitoring and support. When scaled nationally with normal operations, resolution dropped to 45%. This difference most likely reflects:',
+        skill: 'External Validity vs Research Conditions',
+        question: 'Your closely monitored pilot program achieved 85% complaint resolution, but national rollout achieved only 45%. What most likely explains this large difference?',
         options: [
-            'The RCT design was flawed',
-            'Research attention effects - intensive RCT monitoring created artificial conditions absent in normal implementation',
-            'National rollout was poorly executed',
-            'The helpline concept doesn\'t work'
+            'National implementation teams had lower qualifications than pilot staff',
+            'Research monitoring created performance conditions not replicable in normal operations',
+            'The complaint types changed between pilot and rollout periods',
+            'Budget constraints limited resources available for national implementation'
         ],
         correct: 'B',
-        explanation: 'Hawthorne effects occur when research attention changes behavior. RCTs with intensive monitoring and researcher support create ideal conditions. Effective evaluation tests interventions under realistic implementation conditions to predict real-world results.'
+        explanation: 'Hawthorne effects from intensive research monitoring, frequent check-ins, and special attention often create artificially high performance that cannot be sustained under normal operating conditions without researchers present.'
     },
 
-    // Programming Logic Questions (4) - Including actual programming skills
+    // Programming Logic Questions (4)
     {
         id: 17,
         category: 'Programming Logic',
         skill: 'Conditional Logic Programming',
-        question: 'You\'re writing code to categorize consumer complaints by urgency. Complete this logic: if complaint_type == "billing" and amount > 10000: priority = "high" elif complaint_type == "service" and downtime > 24: priority = "high" else: priority = "normal". A service complaint with 30 hours downtime gets what priority?',
+        question: 'Code: if complaint_type == "billing" and amount > 10000: priority = "high"; elif complaint_type == "service" and downtime > 24: priority = "high"; else: priority = "normal". What priority does a service complaint with 30-hour downtime receive?',
         options: [
-            'normal (because it\'s not a billing complaint)',
-            'high (because downtime > 24 and complaint_type == "service")',
-            'The code will produce an error',
-            'It depends on the amount value'
+            'normal because the amount variable is undefined for service complaints',
+            'high because it satisfies the service complaint condition in the elif statement',
+            'error because the code tries to access an undefined amount variable',
+            'depends on whether the priority variable was initialized before this code'
         ],
         correct: 'B',
-        explanation: 'The elif condition checks if complaint_type == "service" AND downtime > 24. Since both conditions are true (service complaint with 30 > 24 hours), priority is set to "high". Understanding conditional logic is essential for automated complaint processing systems.'
+        explanation: 'Following conditional logic: first if fails (complaint_type != "billing"), elif succeeds (complaint_type == "service" AND downtime > 24 both true), so priority = "high". The amount variable is never evaluated.'
     },
     {
         id: 18,
         category: 'Programming Logic',
         skill: 'Boolean Logic and Operators',
-        question: 'In a consumer protection database, you need to flag accounts where: (account_age < 6 months) AND (complaints != 0) AND NOT (resolved_complaints >= total_complaints). For an account with age=3, complaints=5, resolved=5, total=5, what does this expression evaluate to?',
+        question: 'Expression: (account_age < 6) AND (complaints != 0) AND NOT (resolved >= total). For account with age=3, complaints=5, resolved=5, total=5, what is the result?',
         options: [
-            'True (account gets flagged)',
-            'False (account doesn\'t get flagged)',
-            'Error (invalid comparison)',
-            'Cannot determine without more information'
+            'True because the account meets the age and complaint criteria',
+            'False because the NOT (resolved >= total) part evaluates to false',
+            'Error because comparing resolved to total creates invalid logic',
+            'Undefined because the expression contains contradictory conditions'
         ],
         correct: 'B',
-        explanation: 'Breaking it down: (3 < 6) = True, (5 != 0) = True, (5 >= 5) = True so NOT(True) = False. The full expression: True AND True AND False = False. The account doesn\'t get flagged because all complaints are resolved.'
+        explanation: 'Evaluating: (3 < 6) = True, (5 != 0) = True, (5 >= 5) = True so NOT(True) = False. Complete expression: True AND True AND False = False. Account not flagged because all complaints are resolved.'
     },
     {
         id: 19,
         category: 'Programming Logic',
         skill: 'System Reliability Design',
-        question: 'A consumer complaint processing system must handle 15,000 daily complaints from multiple channels. Some data feeds fail or arrive late. Which approach ensures reliable daily reporting?',
+        question: 'Your system processes 15,000 daily complaints from 10 data sources. Some sources occasionally fail, but you must produce daily reports regardless. What design approach ensures this?',
         options: [
-            'Wait for all channels before processing any complaints',
-            'Process each channel independently with retry capability for failed channels without reprocessing successful ones',
-            'Process channels sequentially - if any fails, restart from beginning',
-            'Process complaints as received and manually handle missing data'
+            'Implement comprehensive logging to track all system operations',
+            'Process each source independently so failures don\'t prevent other sources from completing',
+            'Use database transactions to maintain consistency across all operations',
+            'Set up automated alerts to notify administrators of any failures immediately'
         ],
         correct: 'B',
-        explanation: 'Reliable systems use modular processing with checkpointing. This allows retry of specific failures without losing successful work, ensuring timely reports even when some data sources have issues. Critical for regulatory compliance that cannot wait for perfect data.'
+        explanation: 'Independent processing with failure isolation allows successful sources to complete while failed sources are retried, ensuring daily reports are generated even when some data sources have problems.'
     },
     {
         id: 20,
         category: 'Programming Logic',
-        skill: 'Algorithm Optimization',
-        question: 'A consumer complaint search system queries 8 million complaint records by phone number, taking 55 seconds per search. You could: add more servers, create a phone number index, cache frequent searches, or upgrade hardware. What provides the biggest performance improvement?',
+        skill: 'Algorithm Optimization Strategy',
+        question: 'Phone number searches take 55 seconds to scan through 8 million records sequentially. What change would provide the biggest performance improvement?',
         options: [
-            'More servers to distribute query load',
-            'Phone number index to enable instant lookups',
-            'Caching to store recent search results',
-            'Hardware upgrade for faster processing'
+            'Use parallel processing to distribute searches across multiple processors',
+            'Create an index structure for direct record lookup instead of scanning everything',
+            'Add more memory to reduce the need for disk access during searches',
+            'Optimize database connections to reduce network communication overhead'
         ],
         correct: 'B',
-        explanation: 'Algorithmic improvements beat hardware solutions. Searching 8M records linearly is inefficient compared to indexed search. A properly designed index provides 1000x+ improvement (from 55 seconds to milliseconds), while hardware might give 2-5x improvement. Smart algorithms beat expensive hardware.'
+        explanation: 'Creating an index changes the algorithm from O(n) sequential scanning to O(log n) or O(1) direct lookup - a fundamental algorithmic improvement that typically provides 100x-1000x performance gains versus hardware optimizations.'
     }
 ];
-
-
 
 
 
