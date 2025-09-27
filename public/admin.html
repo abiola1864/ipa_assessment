@@ -1301,9 +1301,17 @@
 
                 <div class="card">
                     <div class="participant-controls">
-                        <div style="display: flex; align-items: center; gap: 8px;">
-                            <i class="fas fa-info-circle" style="color: var(--primary-green);"></i>
-                            <span style="color: var(--text-secondary); font-weight: 500;">Click on any participant to view detailed breakdown</span>
+                        <div style="display: flex; align-items: center; gap: 16px;">
+                            <div class="form-group" style="margin-bottom: 0;">
+                                <label for="participantProjectFilter" style="margin-bottom: 4px; font-size: 0.9rem;">Filter by Project:</label>
+                                <select id="participantProjectFilter" onchange="refreshParticipantAnalysis()" style="padding: 8px 12px; border: 2px solid var(--border-light); border-radius: 8px; font-size: 0.95rem; background: var(--surface);">
+                                    <option value="all">All Projects</option>
+                                </select>
+                            </div>
+                            <div style="display: flex; align-items: center; gap: 8px;">
+                                <i class="fas fa-info-circle" style="color: var(--primary-green);"></i>
+                                <span style="color: var(--text-secondary); font-weight: 500;">Click on any participant to view detailed breakdown</span>
+                            </div>
                         </div>
                         <div class="sort-controls">
                             <button class="btn btn-outline" onclick="sortParticipants('highest')">
@@ -1330,27 +1338,42 @@
                     <p class="section-subtitle" id="resultsSubtitle">Complete results overview</p>
                 </div>
 
-                <div class="table-container">
-                    <table>
-                        <thead>
-                            <tr>
-                                <th><i class="fas fa-user"></i> Participant</th>
-                                <th><i class="fas fa-project-diagram"></i> Project</th>
-                                <th><i class="fas fa-timeline"></i> Period</th>
-                                <th><i class="fas fa-hashtag"></i> Score</th>
-                                <th><i class="fas fa-percentage"></i> Percentage</th>
-                                <th><i class="fas fa-chart-bar"></i> Data Analysis</th>
-                                <th><i class="fas fa-tasks"></i> M&E</th>
-                                <th><i class="fas fa-flask"></i> RCT/Impact</th>
-                                <th><i class="fas fa-code"></i> Programming</th>
-                                <th><i class="fas fa-medal"></i> Grade</th>
-                                <th><i class="fas fa-clock"></i> Completed</th>
-                            </tr>
-                        </thead>
-                        <tbody id="resultsTableBody">
-                            <!-- Populated by JavaScript -->
-                        </tbody>
-                    </table>
+                <div class="card">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px;">
+                        <div class="form-group" style="margin-bottom: 0;">
+                            <label for="resultsProjectFilter" style="margin-bottom: 4px; font-size: 0.9rem;">Filter by Project:</label>
+                            <select id="resultsProjectFilter" onchange="refreshResultsTable()" style="padding: 8px 12px; border: 2px solid var(--border-light); border-radius: 8px; font-size: 0.95rem; background: var(--surface);">
+                                <option value="all">All Projects</option>
+                            </select>
+                        </div>
+                        <button class="btn btn-outline" onclick="downloadCSV()">
+                            <i class="fas fa-download"></i> Download Current View
+                        </button>
+                    </div>
+
+                    <div class="table-container">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th><i class="fas fa-user"></i> Participant</th>
+                                    <th><i class="fas fa-project-diagram"></i> Project</th>
+                                    <th><i class="fas fa-timeline"></i> Period</th>
+                                    <th><i class="fas fa-hashtag"></i> Score</th>
+                                    <th><i class="fas fa-percentage"></i> Percentage</th>
+                                    <th><i class="fas fa-chart-bar"></i> Data Analysis</th>
+                                    <th><i class="fas fa-tasks"></i> M&E</th>
+                                    <th><i class="fas fa-flask"></i> RCT/Impact</th>
+                                    <th><i class="fas fa-code"></i> Programming</th>
+                                    <th><i class="fas fa-medal"></i> Grade</th>
+                                    <th><i class="fas fa-clock"></i> Completed</th>
+                                    <th><i class="fas fa-cogs"></i> Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="resultsTableBody">
+                                <!-- Populated by JavaScript -->
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
             </div>
 
@@ -1384,18 +1407,23 @@
                 <div class="card">
                     <div class="card-header">
                         <h3 class="card-title">
-                            <i class="fas fa-exclamation-triangle"></i> Data Management
+                            <i class="fas fa-shield-alt"></i> Protected Operations
                         </h3>
                     </div>
                     <p style="color: #dc2626; margin-bottom: 24px; font-weight: 600;">
-                        <i class="fas fa-warning"></i> Danger Zone: These actions cannot be undone.
+                        <i class="fas fa-lock"></i> These operations require admin password and cannot be undone.
                     </p>
-                    <button class="btn" onclick="clearProjectData()" style="background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%); color: white;" id="clearProjectBtn" disabled>
-                        <i class="fas fa-trash-alt"></i> Clear Current Project Data
-                    </button>
-                    <button class="btn" onclick="clearAllData()" style="background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%); color: white; margin-left: 16px;">
-                        <i class="fas fa-trash-alt"></i> Clear All Data
-                    </button>
+                    <div style="display: flex; gap: 16px; flex-wrap: wrap;">
+                        <button class="btn" onclick="showDeleteProjectModal()" style="background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%); color: white;">
+                            <i class="fas fa-folder-minus"></i> Delete Project
+                        </button>
+                        <button class="btn" onclick="showClearProjectDataModal()" style="background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%); color: white;" id="clearProjectBtn2" disabled>
+                            <i class="fas fa-trash-alt"></i> Clear Project Data
+                        </button>
+                        <button class="btn" onclick="showClearAllDataModal()" style="background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%); color: white;">
+                            <i class="fas fa-database"></i> Clear All Data
+                        </button>
+                    </div>
                 </div>
 
                 <div id="actionMessage2" class="hidden"></div>
@@ -1422,14 +1450,21 @@
                               placeholder="Brief description of the project and its objectives"></textarea>
                 </div>
                 <div class="form-group">
-                    <label for="projectTimeLimit">Time Limit (minutes) *</label>
-                    <select id="projectTimeLimit" name="time_limit" required>
-                        <option value="1800">30 minutes</option>
-                        <option value="2700">45 minutes</option>
-                        <option value="3600">60 minutes</option>
-                        <option value="5400">90 minutes</option>
-                        <option value="7200">120 minutes</option>
-                    </select>
+                    <label for="projectTimeLimit">Time Limit *</label>
+                    <div style="display: flex; gap: 12px; align-items: center;">
+                        <select id="projectTimeLimit" name="time_limit" required onchange="toggleCustomTime()" style="flex: 1;">
+                            <option value="600">10 minutes</option>
+                            <option value="1200">20 minutes</option>
+                            <option value="1800">30 minutes</option>
+                            <option value="2700">45 minutes</option>
+                            <option value="3600">60 minutes</option>
+                            <option value="5400">90 minutes</option>
+                            <option value="7200">120 minutes</option>
+                            <option value="custom">Custom...</option>
+                        </select>
+                        <input type="number" id="customTimeLimit" placeholder="Minutes" min="5" max="300" 
+                               style="display: none; width: 100px; padding: 8px; border: 2px solid var(--border-light); border-radius: 6px;">
+                    </div>
                 </div>
                 <div style="display: flex; gap: 16px; justify-content: flex-end; margin-top: 32px;">
                     <button type="button" class="btn btn-secondary" onclick="closeCreateProjectModal()">
@@ -1575,51 +1610,201 @@
         </div>
     </div>
 
-    <!-- Copy Questions Modal -->
-    <div id="copyQuestionsModal" class="modal">
+    <!-- Password Protection Modals -->
+    <div id="deleteProjectModal" class="modal">
         <div class="modal-content">
             <div class="modal-header">
-                <h3 class="modal-title">Copy Questions from NCC Embedded Lab</h3>
-                <button class="modal-close" onclick="closeCopyQuestionsModal()">&times;</button>
+                <h3 class="modal-title">Delete Project</h3>
+                <button class="modal-close" onclick="closeDeleteProjectModal()">&times;</button>
             </div>
             <div>
-                <p style="margin-bottom: 24px; color: var(--text-secondary); font-weight: 500;">
-                    Select questions from the NCC Embedded Lab project to copy to your current project. This is useful for creating similar assessments or building on existing questions.
+                <p style="margin-bottom: 24px; color: #dc2626; font-weight: 600;">
+                    <i class="fas fa-exclamation-triangle"></i> This will permanently delete the selected project and all its associated data.
                 </p>
-                
                 <div class="form-group">
-                    <label for="targetProject">Copy to Project:</label>
-                    <select id="targetProject" disabled style="background: var(--surface-alt);">
-                        <option id="targetProjectName">Loading...</option>
+                    <label for="deleteProjectSelect">Select Project to Delete:</label>
+                    <select id="deleteProjectSelect" style="width: 100%; padding: 12px; border: 2px solid var(--border-light); border-radius: 8px;">
+                        <option value="">Choose project...</option>
                     </select>
                 </div>
-                
-                <div style="max-height: 400px; overflow-y: auto; border: 1px solid var(--border-light); border-radius: 8px; padding: 16px; background: var(--surface-alt);">
-                    <h4 style="margin-bottom: 16px; color: var(--text-primary);">NCC Embedded Lab Questions:</h4>
-                    <div id="nccQuestionsList">
-                        <!-- Will be populated by JavaScript -->
-                    </div>
+                <div class="form-group">
+                    <label for="deleteProjectPassword">Admin Password:</label>
+                    <input type="password" id="deleteProjectPassword" placeholder="Enter admin password" style="width: 100%; padding: 12px; border: 2px solid var(--border-light); border-radius: 8px;">
                 </div>
-                
-                <div style="display: flex; gap: 16px; justify-content: space-between; margin-top: 24px;">
-                    <div>
-                        <button type="button" class="btn btn-secondary" onclick="selectAllNccQuestions()">
-                            <i class="fas fa-check-square"></i> Select All
-                        </button>
-                        <button type="button" class="btn btn-secondary" onclick="deselectAllNccQuestions()">
-                            <i class="fas fa-square"></i> Deselect All
-                        </button>
-                    </div>
-                    <div>
-                        <button type="button" class="btn btn-secondary" onclick="closeCopyQuestionsModal()">
-                            Cancel
-                        </button>
-                        <button type="button" class="btn btn-primary" onclick="copySelectedQuestions()">
-                            <i class="fas fa-copy"></i> Copy Selected
-                        </button>
-                    </div>
+                <div style="display: flex; gap: 16px; justify-content: flex-end; margin-top: 24px;">
+                    <button type="button" class="btn btn-secondary" onclick="closeDeleteProjectModal()">Cancel</button>
+                    <button type="button" class="btn" onclick="executeDeleteProject()" style="background: #dc2626; color: white;">
+                        <i class="fas fa-trash"></i> Delete Project
+                    </button>
                 </div>
             </div>
+        </div>
+    </div>
+
+    <div id="clearProjectDataModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">Clear Project Data</h3>
+                <button class="modal-close" onclick="closeClearProjectDataModal()">&times;</button>
+            </div>
+            <div>
+                <p style="margin-bottom: 24px; color: #dc2626; font-weight: 600;">
+                    <i class="fas fa-exclamation-triangle"></i> This will permanently delete all quiz results for the current project.
+                </p>
+                <div class="form-group">
+                    <label>Current Project:</label>
+                    <div id="clearProjectDataName" style="padding: 12px; background: var(--surface-alt); border-radius: 8px; font-weight: 600;">
+                        Loading...
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="clearProjectDataPassword">Admin Password:</label>
+                    <input type="password" id="clearProjectDataPassword" placeholder="Enter admin password" style="width: 100%; padding: 12px; border: 2px solid var(--border-light); border-radius: 8px;">
+                </div>
+                <div style="display: flex; gap: 16px; justify-content: flex-end; margin-top: 24px;">
+                    <button type="button" class="btn btn-secondary" onclick="closeClearProjectDataModal()">Cancel</button>
+                    <button type="button" class="btn" onclick="executeClearProjectData()" style="background: #dc2626; color: white;">
+                        <i class="fas fa-trash"></i> Clear Data
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="clearAllDataModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">Clear All Data</h3>
+                <button class="modal-close" onclick="closeClearAllDataModal()">&times;</button>
+            </div>
+            <div>
+                <p style="margin-bottom: 24px; color: #dc2626; font-weight: 600;">
+                    <i class="fas fa-exclamation-triangle"></i> This will permanently delete ALL quiz results across ALL projects.
+                </p>
+                <div class="form-group">
+                    <label for="clearAllDataPassword">Admin Password:</label>
+                    <input type="password" id="clearAllDataPassword" placeholder="Enter admin password" style="width: 100%; padding: 12px; border: 2px solid var(--border-light); border-radius: 8px;">
+                </div>
+                <div style="display: flex; gap: 16px; justify-content: flex-end; margin-top: 24px;">
+                    <button type="button" class="btn btn-secondary" onclick="closeClearAllDataModal()">Cancel</button>
+                    <button type="button" class="btn" onclick="executeClearAllData()" style="background: #dc2626; color: white;">
+                        <i class="fas fa-trash"></i> Clear All Data
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Delete Individual Record Modal -->
+    <div id="deleteRecordModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">Delete Individual Record</h3>
+                <button class="modal-close" onclick="closeDeleteRecordModal()">&times;</button>
+            </div>
+            <div>
+                <p style="margin-bottom: 24px; color: #dc2626; font-weight: 600;">
+                    <i class="fas fa-exclamation-triangle"></i> This will permanently delete the selected participant's record.
+                </p>
+                <div class="form-group">
+                    <label>Participant:</label>
+                    <div id="deleteRecordName" style="padding: 12px; background: var(--surface-alt); border-radius: 8px; font-weight: 600;">
+                        Loading...
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="deleteRecordPassword">Admin Password:</label>
+                    <input type="password" id="deleteRecordPassword" placeholder="Enter admin password" style="width: 100%; padding: 12px; border: 2px solid var(--border-light); border-radius: 8px;">
+                </div>
+                <div style="display: flex; gap: 16px; justify-content: flex-end; margin-top: 24px;">
+                    <button type="button" class="btn btn-secondary" onclick="closeDeleteRecordModal()">Cancel</button>
+                    <button type="button" class="btn" onclick="executeDeleteRecord()" style="background: #dc2626; color: white;">
+                        <i class="fas fa-trash"></i> Delete Record
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Edit Question Modal -->
+    <div id="editQuestionModal" class="modal">
+        <div class="modal-content" style="max-width: 800px;">
+            <div class="modal-header">
+                <h3 class="modal-title">Edit Question</h3>
+                <button class="modal-close" onclick="closeEditQuestionModal()">&times;</button>
+            </div>
+            <form id="editQuestionForm" onsubmit="updateQuestion(event)">
+                <input type="hidden" id="editQuestionId" name="question_id">
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+                    <div class="form-group">
+                        <label for="editQuestionCategory">Category *</label>
+                        <select id="editQuestionCategory" name="category" required onchange="toggleEditCustomCategory()">
+                            <option value="">Select Category</option>
+                            <option value="Data Analysis">Data Analysis</option>
+                            <option value="M&E">M&E (Monitoring & Evaluation)</option>
+                            <option value="RCT/Impact">RCT/Impact Evaluation</option>
+                            <option value="Programming Logic">Programming Logic</option>
+                            <option value="Other">Other (Custom)</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="editCustomCategory" id="editCustomCategoryLabel" style="display: none;">Custom Category Name *</label>
+                        <input type="text" id="editCustomCategory" name="custom_category" maxlength="100" 
+                               placeholder="Enter custom category name" style="display: none;">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="editQuestionSkill">Skill/Topic *</label>
+                    <input type="text" id="editQuestionSkill" name="skill" required maxlength="200">
+                </div>
+                <div class="form-group">
+                    <label for="editQuestionText">Question Text *</label>
+                    <textarea id="editQuestionText" name="question_text" required maxlength="1000" rows="4" style="font-family: inherit; resize: vertical;"></textarea>
+                </div>
+                <div class="form-group">
+                    <label>Answer Options *</label>
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
+                        <div style="background: var(--surface-alt); padding: 16px; border-radius: 12px; border: 1px solid var(--border-light);">
+                            <label style="font-weight: 600; color: var(--primary-green); margin-bottom: 8px; display: block;">Option A:</label>
+                            <textarea id="editOptionA" name="option_A" required maxlength="500" rows="3" style="width: 100%; border: 1px solid var(--border-light); border-radius: 6px; padding: 8px; font-family: inherit; resize: vertical;"></textarea>
+                        </div>
+                        <div style="background: var(--surface-alt); padding: 16px; border-radius: 12px; border: 1px solid var(--border-light);">
+                            <label style="font-weight: 600; color: var(--primary-green); margin-bottom: 8px; display: block;">Option B:</label>
+                            <textarea id="editOptionB" name="option_B" required maxlength="500" rows="3" style="width: 100%; border: 1px solid var(--border-light); border-radius: 6px; padding: 8px; font-family: inherit; resize: vertical;"></textarea>
+                        </div>
+                        <div style="background: var(--surface-alt); padding: 16px; border-radius: 12px; border: 1px solid var(--border-light);">
+                            <label style="font-weight: 600; color: var(--primary-green); margin-bottom: 8px; display: block;">Option C:</label>
+                            <textarea id="editOptionC" name="option_C" required maxlength="500" rows="3" style="width: 100%; border: 1px solid var(--border-light); border-radius: 6px; padding: 8px; font-family: inherit; resize: vertical;"></textarea>
+                        </div>
+                        <div style="background: var(--surface-alt); padding: 16px; border-radius: 12px; border: 1px solid var(--border-light);">
+                            <label style="font-weight: 600; color: var(--primary-green); margin-bottom: 8px; display: block;">Option D:</label>
+                            <textarea id="editOptionD" name="option_D" required maxlength="500" rows="3" style="width: 100%; border: 1px solid var(--border-light); border-radius: 6px; padding: 8px; font-family: inherit; resize: vertical;"></textarea>
+                        </div>
+                    </div>
+                </div>
+                <div style="display: grid; grid-template-columns: 1fr 2fr; gap: 20px;">
+                    <div class="form-group">
+                        <label for="editCorrectAnswer">Correct Answer *</label>
+                        <select id="editCorrectAnswer" name="correct_answer" required style="font-size: 1.1rem; font-weight: 600;">
+                            <option value="">Select correct answer</option>
+                            <option value="A">A</option>
+                            <option value="B">B</option>
+                            <option value="C">C</option>
+                            <option value="D">D</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="editQuestionExplanation">Explanation (Recommended)</label>
+                        <textarea id="editQuestionExplanation" name="explanation" maxlength="1000" rows="3" style="font-family: inherit; resize: vertical;"></textarea>
+                    </div>
+                </div>
+                <div style="display: flex; gap: 16px; justify-content: flex-end; margin-top: 32px; padding-top: 20px; border-top: 2px solid var(--border-light);">
+                    <button type="button" class="btn btn-secondary" onclick="closeEditQuestionModal()">Cancel</button>
+                    <button type="submit" class="btn btn-primary" style="padding: 14px 28px;">
+                        <i class="fas fa-save"></i> Update Question
+                    </button>
+                </div>
+            </form>
         </div>
     </div>
 
@@ -1875,6 +2060,477 @@
             } catch (error) {
                 console.error('Error creating project:', error);
                 showActionMessage('Failed to create project: ' + error.message, true);
+            }
+        }
+
+        // Password-protected operations
+        const SECURE_PASSWORD = 'KK@www1203'pw';
+        let currentRecordToDelete = null;
+
+        // Custom time limit functionality
+        function toggleCustomTime() {
+            const timeSelect = document.getElementById('projectTimeLimit');
+            const customInput = document.getElementById('customTimeLimit');
+            
+            if (timeSelect.value === 'custom') {
+                customInput.style.display = 'block';
+                customInput.required = true;
+            } else {
+                customInput.style.display = 'none';
+                customInput.required = false;
+                customInput.value = '';
+            }
+        }
+
+        // Enhanced project creation with custom time
+        async function createProject(event) {
+            event.preventDefault();
+            
+            const formData = new FormData(event.target);
+            let timeLimit = formData.get('time_limit');
+            
+            if (timeLimit === 'custom') {
+                const customTime = document.getElementById('customTimeLimit').value;
+                if (!customTime || customTime < 5 || customTime > 300) {
+                    showActionMessage('Please enter a valid time limit between 5 and 300 minutes.', true);
+                    return;
+                }
+                timeLimit = parseInt(customTime) * 60; // Convert to seconds
+            } else {
+                timeLimit = parseInt(timeLimit);
+            }
+            
+            const projectData = {
+                name: formData.get('name'),
+                description: formData.get('description'),
+                time_limit: timeLimit
+            };
+            
+            try {
+                const response = await fetch('/api/projects', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(projectData)
+                });
+                
+                if (response.ok) {
+                    const result = await response.json();
+                    showActionMessage(`Project "${projectData.name}" created successfully! Access code: ${result.project.access_code}`);
+                    closeCreateProjectModal();
+                    await loadProjects();
+                } else {
+                    throw new Error('Failed to create project');
+                }
+            } catch (error) {
+                console.error('Error creating project:', error);
+                showActionMessage('Failed to create project: ' + error.message, true);
+            }
+        }
+
+        // Project filtering functions
+        function updateProjectFilters() {
+            const participantFilter = document.getElementById('participantProjectFilter');
+            const resultsFilter = document.getElementById('resultsProjectFilter');
+            const deleteProjectSelect = document.getElementById('deleteProjectSelect');
+            
+            if (participantFilter) {
+                participantFilter.innerHTML = '<option value="all">All Projects</option>';
+                projects.forEach(project => {
+                    const option = document.createElement('option');
+                    option.value = project._id;
+                    option.textContent = project.name;
+                    participantFilter.appendChild(option);
+                });
+            }
+            
+            if (resultsFilter) {
+                resultsFilter.innerHTML = '<option value="all">All Projects</option>';
+                projects.forEach(project => {
+                    const option = document.createElement('option');
+                    option.value = project._id;
+                    option.textContent = project.name;
+                    resultsFilter.appendChild(option);
+                });
+            }
+            
+            if (deleteProjectSelect) {
+                deleteProjectSelect.innerHTML = '<option value="">Choose project...</option>';
+                projects.forEach(project => {
+                    const option = document.createElement('option');
+                    option.value = project._id;
+                    option.textContent = `${project.name} (${project.participant_count || 0} participants)`;
+                    deleteProjectSelect.appendChild(option);
+                });
+            }
+        }
+
+        function refreshParticipantAnalysis() {
+            const selectedProject = document.getElementById('participantProjectFilter').value;
+            let filteredResults = quizResults;
+            
+            if (selectedProject !== 'all') {
+                filteredResults = quizResults.filter(result => result.project_id === selectedProject);
+            }
+            
+            if (filteredResults.length > 0) {
+                generateSkillAnalytics(filteredResults);
+            } else {
+                document.getElementById('participantAnalysis').innerHTML = `
+                    <div style="text-align: center; padding: 60px; color: var(--text-muted);">
+                        <i class="fas fa-users" style="font-size: 3rem; margin-bottom: 16px;"></i>
+                        <h3>No Participants Found</h3>
+                        <p style="margin-top: 12px;">No participants found for the selected project filter.</p>
+                    </div>
+                `;
+            }
+        }
+
+        function refreshResultsTable() {
+            const selectedProject = document.getElementById('resultsProjectFilter').value;
+            let filteredResults = quizResults;
+            
+            if (selectedProject !== 'all') {
+                filteredResults = quizResults.filter(result => result.project_id === selectedProject);
+            }
+            
+            updateResultsTable(filteredResults);
+        }
+
+        // Enhanced results table with individual delete buttons
+        function updateResultsTable(results) {
+            const tbody = document.getElementById('resultsTableBody');
+            if (!tbody) return;
+            
+            tbody.innerHTML = '';
+
+            results.forEach(result => {
+                const categories = {
+                    'Data Analysis': [1,2,3,4,5,6,7,8],
+                    'M&E': [9,10,11,12,13],
+                    'RCT/Impact': [14,15,16],
+                    'Programming Logic': [17,18,19,20]
+                };
+
+                const scores = {};
+                Object.entries(categories).forEach(([category, questions]) => {
+                    let correct = 0;
+                    questions.forEach(qNum => {
+                        if (result[`Q${qNum}`] === result[`Q${qNum}_correct`]) {
+                            correct++;
+                        }
+                    });
+                    scores[category] = `${correct}/${questions.length}`;
+                });
+
+                const projectName = projects.find(p => p._id === result.project_id)?.name || 'Unknown';
+
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td><i class="fas fa-user" style="margin-right: 8px; color: var(--primary-green);"></i>${result.participant_name}</td>
+                    <td>${projectName}</td>
+                    <td><span style="background: var(--surface-alt); padding: 4px 8px; border-radius: 6px; font-size: 0.8rem; font-weight: 600; text-transform: uppercase;">${result.period || 'baseline'}</span></td>
+                    <td>${result.total_score}/20</td>
+                    <td>${result.percentage}%</td>
+                    <td>${scores['Data Analysis']}</td>
+                    <td>${scores['M&E']}</td>
+                    <td>${scores['RCT/Impact']}</td>
+                    <td>${scores['Programming Logic']}</td>
+                    <td>
+                        <span class="grade-badge ${getGradeClass(result.percentage)}">
+                            ${getGradeText(result.percentage)}
+                        </span>
+                    </td>
+                    <td>${formatDateTime(result.completed_at)}</td>
+                    <td>
+                        <button class="btn" onclick="showDeleteRecordModal('${result.id}', '${result.participant_name}')" 
+                                style="background: #dc2626; color: white; padding: 6px 12px; font-size: 0.8rem;">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </td>
+                `;
+                tbody.appendChild(row);
+            });
+        }
+
+        // Password-protected modal functions
+        function showDeleteProjectModal() {
+            updateProjectFilters();
+            document.getElementById('deleteProjectModal').classList.add('active');
+        }
+
+        function closeDeleteProjectModal() {
+            document.getElementById('deleteProjectModal').classList.remove('active');
+            document.getElementById('deleteProjectPassword').value = '';
+            document.getElementById('deleteProjectSelect').value = '';
+        }
+
+        function showClearProjectDataModal() {
+            if (currentProjectId === 'all') {
+                showActionMessage('Please select a specific project first.', true);
+                return;
+            }
+            
+            const project = projects.find(p => p._id === currentProjectId);
+            document.getElementById('clearProjectDataName').textContent = project?.name || 'Current Project';
+            document.getElementById('clearProjectDataModal').classList.add('active');
+        }
+
+        function closeClearProjectDataModal() {
+            document.getElementById('clearProjectDataModal').classList.remove('active');
+            document.getElementById('clearProjectDataPassword').value = '';
+        }
+
+        function showClearAllDataModal() {
+            document.getElementById('clearAllDataModal').classList.add('active');
+        }
+
+        function closeClearAllDataModal() {
+            document.getElementById('clearAllDataModal').classList.remove('active');
+            document.getElementById('clearAllDataPassword').value = '';
+        }
+
+        function showDeleteRecordModal(recordId, participantName) {
+            currentRecordToDelete = recordId;
+            document.getElementById('deleteRecordName').textContent = participantName;
+            document.getElementById('deleteRecordModal').classList.add('active');
+        }
+
+        function closeDeleteRecordModal() {
+            document.getElementById('deleteRecordModal').classList.remove('active');
+            document.getElementById('deleteRecordPassword').value = '';
+            currentRecordToDelete = null;
+        }
+
+        // Password-protected execution functions
+        async function executeDeleteProject() {
+            const password = document.getElementById('deleteProjectPassword').value;
+            const projectId = document.getElementById('deleteProjectSelect').value;
+            
+            if (!projectId) {
+                showActionMessage('Please select a project to delete.', true);
+                return;
+            }
+            
+            if (password !== SECURE_PASSWORD) {
+                showActionMessage('Invalid admin password.', true);
+                return;
+            }
+            
+            try {
+                const response = await fetch(`/api/projects/${projectId}`, {
+                    method: 'DELETE',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ password })
+                });
+                
+                if (response.ok) {
+                    const result = await response.json();
+                    showActionMessage(result.message);
+                    closeDeleteProjectModal();
+                    await loadProjects();
+                    await refreshData();
+                } else {
+                    throw new Error('Failed to delete project');
+                }
+            } catch (error) {
+                console.error('Error deleting project:', error);
+                showActionMessage('Failed to delete project: ' + error.message, true);
+            }
+        }
+
+        async function executeClearProjectData() {
+            const password = document.getElementById('clearProjectDataPassword').value;
+            
+            if (password !== SECURE_PASSWORD) {
+                showActionMessage('Invalid admin password.', true);
+                return;
+            }
+            
+            try {
+                const response = await fetch(`/api/results/${currentProjectId}`, {
+                    method: 'DELETE',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ password })
+                });
+                
+                if (response.ok) {
+                    const result = await response.json();
+                    showActionMessage(result.message);
+                    closeClearProjectDataModal();
+                    await refreshData();
+                } else {
+                    throw new Error('Failed to clear project data');
+                }
+            } catch (error) {
+                console.error('Error clearing project data:', error);
+                showActionMessage('Failed to clear project data: ' + error.message, true);
+            }
+        }
+
+        async function executeClearAllData() {
+            const password = document.getElementById('clearAllDataPassword').value;
+            
+            if (password !== SECURE_PASSWORD) {
+                showActionMessage('Invalid admin password.', true);
+                return;
+            }
+            
+            try {
+                const response = await fetch('/api/results', {
+                    method: 'DELETE',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ password })
+                });
+                
+                if (response.ok) {
+                    const result = await response.json();
+                    showActionMessage(result.message);
+                    closeClearAllDataModal();
+                    await refreshData();
+                } else {
+                    throw new Error('Failed to clear all data');
+                }
+            } catch (error) {
+                console.error('Error clearing all data:', error);
+                showActionMessage('Failed to clear all data: ' + error.message, true);
+            }
+        }
+
+        async function executeDeleteRecord() {
+            const password = document.getElementById('deleteRecordPassword').value;
+            
+            if (password !== SECURE_PASSWORD) {
+                showActionMessage('Invalid admin password.', true);
+                return;
+            }
+            
+            if (!currentRecordToDelete) {
+                showActionMessage('No record selected for deletion.', true);
+                return;
+            }
+            
+            try {
+                const response = await fetch(`/api/results/record/${currentRecordToDelete}`, {
+                    method: 'DELETE',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ password })
+                });
+                
+                if (response.ok) {
+                    const result = await response.json();
+                    showActionMessage(result.message);
+                    closeDeleteRecordModal();
+                    await refreshData();
+                    refreshResultsTable();
+                } else {
+                    throw new Error('Failed to delete record');
+                }
+            } catch (error) {
+                console.error('Error deleting record:', error);
+                showActionMessage('Failed to delete record: ' + error.message, true);
+            }
+        }
+
+        // Question editing functionality
+        function editQuestion(questionId) {
+            const question = currentProjectQuestions.find(q => q._id === questionId);
+            if (!question) {
+                showActionMessage('Question not found.', true);
+                return;
+            }
+            
+            // Populate edit form
+            document.getElementById('editQuestionId').value = questionId;
+            document.getElementById('editQuestionCategory').value = question.category;
+            document.getElementById('editQuestionSkill').value = question.skill;
+            document.getElementById('editQuestionText').value = question.question_text;
+            document.getElementById('editOptionA').value = question.options[0] || '';
+            document.getElementById('editOptionB').value = question.options[1] || '';
+            document.getElementById('editOptionC').value = question.options[2] || '';
+            document.getElementById('editOptionD').value = question.options[3] || '';
+            document.getElementById('editCorrectAnswer').value = question.correct_answer;
+            document.getElementById('editQuestionExplanation').value = question.explanation || '';
+            
+            // Handle custom category
+            if (!['Data Analysis', 'M&E', 'RCT/Impact', 'Programming Logic'].includes(question.category)) {
+                document.getElementById('editQuestionCategory').value = 'Other';
+                document.getElementById('editCustomCategory').value = question.category;
+                toggleEditCustomCategory();
+            }
+            
+            document.getElementById('editQuestionModal').classList.add('active');
+        }
+
+        function toggleEditCustomCategory() {
+            const categorySelect = document.getElementById('editQuestionCategory');
+            const customCategoryInput = document.getElementById('editCustomCategory');
+            const customCategoryLabel = document.getElementById('editCustomCategoryLabel');
+            
+            if (categorySelect.value === 'Other') {
+                customCategoryInput.style.display = 'block';
+                customCategoryLabel.style.display = 'block';
+                customCategoryInput.required = true;
+            } else {
+                customCategoryInput.style.display = 'none';
+                customCategoryLabel.style.display = 'none';
+                customCategoryInput.required = false;
+                customCategoryInput.value = '';
+            }
+        }
+
+        function closeEditQuestionModal() {
+            document.getElementById('editQuestionModal').classList.remove('active');
+            document.getElementById('editQuestionForm').reset();
+        }
+
+        async function updateQuestion(event) {
+            event.preventDefault();
+            
+            const formData = new FormData(event.target);
+            const questionId = formData.get('question_id');
+            let category = formData.get('category');
+            
+            // Handle custom category
+            if (category === 'Other') {
+                const customCategory = formData.get('custom_category');
+                if (!customCategory || !customCategory.trim()) {
+                    showActionMessage('Please enter a custom category name.', true);
+                    return;
+                }
+                category = customCategory.trim();
+            }
+            
+            const questionData = {
+                category: category,
+                skill: formData.get('skill'),
+                question_text: formData.get('question_text'),
+                options: [
+                    formData.get('option_A'),
+                    formData.get('option_B'),
+                    formData.get('option_C'),
+                    formData.get('option_D')
+                ],
+                correct_answer: formData.get('correct_answer'),
+                explanation: formData.get('explanation')
+            };
+            
+            try {
+                const response = await fetch(`/api/questions/${questionId}`, {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(questionData)
+                });
+                
+                if (response.ok) {
+                    showActionMessage('Question updated successfully!');
+                    closeEditQuestionModal();
+                    await loadQuestionsForProject();
+                } else {
+                    throw new Error('Failed to update question');
+                }
+            } catch (error) {
+                console.error('Error updating question:', error);
+                showActionMessage('Failed to update question: ' + error.message, true);
             }
         }
 

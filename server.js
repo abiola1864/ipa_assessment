@@ -914,6 +914,32 @@ app.delete('/api/questions/:question_id', async (req, res) => {
     }
 });
 
+// API: Health check
+app.get('/api/health', async (req, res) => {
+    try {
+        if (!db) {
+            throw new Error('Database not initialized');
+        }
+        
+        await db.admin().ping();
+        
+        res.json({ 
+            status: 'OK', 
+            message: 'Database connected and operational',
+            timestamp: new Date().toISOString(),
+            database: 'MongoDB'
+        });
+    } catch (err) {
+        console.error('❌ Database health check failed:', err);
+        res.status(500).json({ 
+            status: 'ERROR', 
+            message: 'Database connection failed',
+            timestamp: new Date().toISOString(),
+            error: err.message
+        });
+    }
+});
+
 // API: Migrate existing data to baseline period
 app.post('/api/migrate-to-baseline', async (req, res) => {
     console.log('🔄 Admin requesting migration of existing data to baseline period');
@@ -1053,6 +1079,122 @@ app.get('/api/period-comparison/:project_id', async (req, res) => {
     }
 });
 
+// API: Delete project (password protected)
+app.delete('/api/projects/:project_id', async (req, res) => {
+    const { password } = req.body;
+    const SECURE_PASSWORD = 'KK@www1203'pw';
+    
+    if (password !== SECURE_PASSWORD) {
+        return res.status(401).json({ error: 'Invalid admin password' });
+    }
+    
+    console.log('🗑️ Admin deleting project:', req.params.project_id);
+    
+    try {
+        const projectsCollection = db.collection('projects');
+        const resultsCollection = db.collection('quiz_results');
+        const questionsCollection = db.collection('questions');
+        const projectId = new ObjectId(req.params.project_id);
+        
+        // Get project name for response
+        const project = await projectsCollection.findOne({ _id: projectId });
+        if (!project) {
+            return res.status(404).json({ error: 'Project not found' });
+        }
+        
+        // Delete all related data
+        const resultsDeleted = await resultsCollection.deleteMany({ project_id: projectId });
+        const questionsDeleted = await questionsCollection.deleteMany({ project_id: projectId });
+        const projectDeleted = await projectsCollection.deleteOne({ _id: projectId });
+        
+        console.log(`✅ Deleted project "${project.name}" and ${resultsDeleted.deletedCount} results, ${questionsDeleted.deletedCount} questions`);
+        
+        res.json({
+            success: true,
+            message: `Project "${project.name}" and all associated data deleted (${resultsDeleted.deletedCount} results, ${questionsDeleted.deletedCount} questions)`
+        });
+        
+    } catch (err) {
+        console.error('❌ Error deleting project:', err);
+        res.status(500).json({ error: 'Database error', details: err.message });
+    }
+});
+
+// API: Delete individual record (password protected)
+app.delete('/api/results/record/:record_id', async (req, res) => {
+    const { password } = req.body;
+    const SECURE_PASSWORD = 'KK@www1203'pw';
+    
+    if (password !== SECURE_PASSWORD) {
+        return res.status(401).json({ error: 'Invalid admin password' });
+    }
+    
+    console.log('🗑️ Admin deleting individual record:', req.params.record_id);
+    
+    try {
+        const resultsCollection = db.collection('quiz_results');
+        const recordId = new ObjectId(req.params.record_id);
+        
+        // Get participant name for response
+        const record = await resultsCollection.findOne({ _id: recordId });
+        if (!record) {
+            return res.status(404).json({ error: 'Record not found' });
+        }
+        
+        const result = await resultsCollection.deleteOne({ _id: recordId });
+        
+        if (result.deletedCount === 0) {
+            return res.status(404).json({ error: 'Record not found' });
+        }
+        
+        console.log(`✅ Deleted record for participant: ${record.participant_name}`);
+        res.json({
+            success: true,
+            message: `Record for "${record.participant_name}" deleted successfully`
+        });
+        
+    } catch (err) {
+        console.error('❌ Error deleting record:', err);
+        res.status(500).json({ error: 'Database error', details: err.message });
+    }
+});
+
+// API: Clear project data (password protected)
+app.delete('/api/results/:project_id', async (req, res) => {
+    const { password } = req.body;
+    const SECURE_PASSWORD = 'KK@www1203'pw';
+    
+    if (password !== SECURE_PASSWORD) {
+        return res.status(401).json({ error: 'Invalid admin password' });
+    }
+    
+    console.log('🗑️ Admin clearing data for project:', req.params.project_id);
+    
+    try {
+        const resultsCollection = db.collection('quiz_results');
+        const projectsCollection = db.collection('projects');
+        const projectId = new ObjectId(req.params.project_id);
+        
+        // Get project name for response
+        const project = await projectsCollection.findOne({ _id: projectId });
+        if (!project) {
+            return res.status(404).json({ error: 'Project not found' });
+        }
+        
+        const result = await resultsCollection.deleteMany({ project_id: projectId });
+        
+        console.log(`✅ Cleared ${result.deletedCount} results for project: ${project.name}`);
+        res.json({
+            success: true,
+            message: `All data cleared for project "${project.name}" (${result.deletedCount} records)`
+        });
+        
+    } catch (err) {
+        console.error('❌ Error clearing project data:', err);
+        res.status(500).json({ error: 'Database error', details: err.message });
+    }
+});
+
 // Handle graceful shutdown
 process.on('SIGINT', async () => {
     console.log('🛑 Shutting down gracefully...');
@@ -1062,6 +1204,22 @@ process.on('SIGINT', async () => {
     }
     process.exit(0);
 });
+
+// Initialize database and start server
+initDatabase()
+    .then(() => {
+        app.listen(PORT, () => {
+            console.log(`🚀 Server running on port ${PORT}`);
+            console.log(`📊 Quiz available at: http://localhost:${PORT}`);
+            console.log(`👨‍💼 Admin panel at: http://localhost:${PORT}/admin.html`);
+            console.log(`💾 Database: MongoDB (persistent with project management)`);
+            console.log('✅ System ready for quiz submissions with project-based access control');
+        });
+    })
+    .catch(err => {
+        console.error('💥 Failed to initialize database:', err);
+        process.exit(1);
+    });
 
 // Initialize database and start server
 initDatabase()
