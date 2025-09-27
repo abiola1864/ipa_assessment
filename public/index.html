@@ -15,6 +15,21 @@
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
             background-color: #f5f5f5;
             line-height: 1.6;
+            /* Copy protection styles */
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
+            -webkit-touch-callout: none;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        /* Disable right-click context menu */
+        body {
+            -webkit-context-menu: none;
+            -moz-context-menu: none;
+            -ms-context-menu: none;
+            context-menu: none;
         }
 
         .container {
@@ -61,6 +76,29 @@
             font-size: 1.2em;
             margin-bottom: 10px;
             font-weight: 500;
+        }
+
+        .project-info {
+            background: linear-gradient(135deg, #e3f2fd 0%, #f8fbff 100%);
+            border-left: 5px solid #2196F3;
+            padding: 25px;
+            margin-bottom: 30px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(33, 150, 243, 0.1);
+        }
+
+        .project-info h4 {
+            color: #1976d2;
+            margin-bottom: 12px;
+            font-size: 1.2em;
+            font-weight: 600;
+        }
+
+        .project-info p {
+            color: #555;
+            font-size: 15px;
+            margin: 0;
+            line-height: 1.7;
         }
 
         .organization-info {
@@ -125,6 +163,8 @@
             line-height: 1.7;
             white-space: pre-line;
             color: #333;
+            /* Additional copy protection for questions */
+            pointer-events: none;
         }
 
         .options {
@@ -140,6 +180,8 @@
             cursor: pointer;
             transition: all 0.3s ease;
             background: white;
+            /* Allow interaction for options */
+            pointer-events: auto;
         }
 
         .option:hover {
@@ -433,17 +475,29 @@
             display: none;
         }
 
-        .footer-logos {
+        .access-code-input {
             text-align: center;
-            margin-top: 50px;
-            padding-top: 30px;
-            border-top: 1px solid #eee;
+            text-transform: uppercase;
+            font-size: 1.2em;
+            font-weight: bold;
+            letter-spacing: 2px;
         }
 
-        .footer-logos p {
-            color: #666;
-            font-size: 14px;
-            margin-bottom: 20px;
+        /* Copy protection overlay */
+        .protection-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.8);
+            color: white;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 10000;
+            font-size: 1.5em;
+            text-align: center;
         }
 
         @media (max-width: 768px) {
@@ -474,7 +528,7 @@
                 font-size: 2.2em;
             }
 
-            .organization-info {
+            .project-info, .organization-info {
                 padding: 20px;
             }
 
@@ -485,43 +539,80 @@
     </style>
 </head>
 <body>
+    <!-- Copy Protection Overlay -->
+    <div id="protectionOverlay" class="protection-overlay">
+        <div>
+            <h2>⚠️ Copying Disabled</h2>
+            <p>This assessment is protected. Please use only your own knowledge.</p>
+        </div>
+    </div>
+
     <div class="container">
-        <!-- Start Screen -->
-        <div id="startScreen" class="card">
+        <!-- Access Code Screen -->
+        <div id="accessScreen" class="card">
             <div class="header">
-            <!-- Logo Section -->
-<!-- Logo Section -->
-<div class="logo-section">
-    <!-- IPA Logo -->
-   <img src="images/ipalogo.png" 
-     alt="IPA - Innovations for Poverty Action" 
-     class="ipa-logo">
-
-</div>
-
-
-
+                <div class="logo-section">
+                    <img src="images/ipalogo.png" 
+                         alt="IPA - Innovations for Poverty Action" 
+                         class="ipa-logo">
+                </div>
                 <h1>Technical Assessment</h1>
                 <p class="subtitle">Innovations for Poverty Action</p>
             </div>
 
-            <!-- Organization Information -->
+            <div class="organization-info">
+                <h4>Project Access Required</h4>
+                <p>This technical assessment requires a valid project access code. Please enter the code provided by your administrator to begin the assessment.</p>
+            </div>
+
+            <div class="form-group">
+                <label for="accessCode">Project Access Code:</label>
+                <input type="text" 
+                       id="accessCode" 
+                       class="access-code-input"
+                       placeholder="Enter access code" 
+                       maxlength="10">
+            </div>
+
+            <div id="accessError" class="validation-error hidden">
+                ⚠️ Invalid access code. Please check your code and try again.
+            </div>
+
+            <div style="text-align: center;">
+                <button class="btn btn-primary" onclick="validateAccess()" id="accessBtn">
+                    Validate Access Code
+                </button>
+            </div>
+        </div>
+
+        <!-- Start Screen -->
+        <div id="startScreen" class="card hidden">
+            <div class="header">
+                <div class="logo-section">
+                    <img src="images/ipalogo.png" 
+                         alt="IPA - Innovations for Poverty Action" 
+                         class="ipa-logo">
+                </div>
+                <h1>Technical Assessment</h1>
+                <p class="subtitle">Innovations for Poverty Action</p>
+            </div>
+
+            <!-- Project Information -->
+            <div id="projectInfo" class="project-info">
+                <h4 id="projectName">Loading Project...</h4>
+                <p id="projectDescription">Project details will appear here.</p>
+            </div>
+
+            <!-- Assessment Information -->
             <div class="organization-info">
                 <h4>Assessment Overview</h4>
                 <p>This technical assessment evaluates expertise in data analysis, monitoring & evaluation, impact evaluation methodology, and programming logic for evidence-based research and policy implementation.</p>
             </div>
 
-            <div class="quiz-info">
+            <div class="quiz-info" id="quizInfo">
                 <h3>Assessment Information:</h3>
-                <ul>
-                    <li>20 Multiple Choice Questions</li>
-                    <li>30 Minutes Time Limit</li>
-                    <li>40% Data Analysis, 25% M&E/Impact Evaluation, 35% Programming Logic</li>
-                    <li>Tests expertise in research methodology and implementation</li>
-                    <li>Covers statistical analysis, evaluation design, and technical problem-solving</li>
-                    <li>All questions are required</li>
-                    <li>Detailed results with explanations provided at the end</li>
-                    <li>You can move between questions before submitting</li>
+                <ul id="assessmentDetails">
+                    <li>Loading assessment details...</li>
                 </ul>
             </div>
 
@@ -632,313 +723,111 @@
     </div>
 
     <script>
-        // Technical assessment questions
-      // Consumer Protection Technical Assessment Questions
-const questions = [
-
-
-
-{
-    id: 1,
-    category: 'Data Analysis',
-    skill: 'Understanding Confounding Variables',
-    question: 'You want to prove telecom towers improve satisfaction by comparing Lagos (8,500 towers, 82% satisfaction) with Kebbi (150 towers, 31% satisfaction). Your boss says "This comparison has problems." What is the most likely issue?',
-    options: [
-        'Wealthier states attract more towers and their consumers tend to be more satisfied',
-        'Areas with stronger infrastructure (roads, electricity) both enable more towers and create better customer experiences',
-        'Regions with higher education levels both demand more telecom services and report higher satisfaction',
-        'More urbanized states both support more tower investment and provide conditions for higher satisfaction'
-    ],
-    correct: 'A',
-    explanation: 'This is a confounding problem: Lagos is wealthier, and wealth is linked to both more tower investment and higher satisfaction. Without controlling for wealth (and related factors), you cannot isolate the true effect of towers.'
-},
-
-    // Data Analysis Questions (8)
-
-    {
-        id: 2,
-        category: 'Data Analysis',
-        skill: 'Excel Pivot Table Analysis',
-        question: 'You have 50,000 complaint records and need a report showing average resolution days by service type and region. What is the most efficient approach in Excel?',
-        options: [
-            'VLOOKUP functions to match service types with resolution times',
-            'Pivot Tables to automatically calculate averages across multiple categories',
-            'Conditional formatting to highlight resolution times above average',
-            'Data validation to filter records by service type and region'
-        ],
-        correct: 'B',
-        explanation: 'Pivot Tables are designed for this type of multidimensional analysis, automatically calculating averages across service types and regions. Other options require manual work or don\'t perform the necessary calculations.'
-    },
-    {
-        id: 3,
-        category: 'Data Analysis',
-        skill: 'Statistical vs Practical Significance',
-        question: 'Your campaign improved knowledge from 62% to 64% with 45,000 people surveyed (p<0.001). Your manager says "Great results!" What should you consider about this finding?',
-        options: [
-            'The sample size is too large, making the test unreliable',
-            'Small p-values only mean the result isn\'t due to chance, not that the 2% improvement is meaningful',
-            'We need to check if the data meets the assumptions for this test',
-            'The confidence interval would give more accurate information than the p-value'
-        ],
-        correct: 'B',
-        explanation: 'Statistical significance (p<0.001) only indicates the result is unlikely due to chance. With large samples, even tiny differences become statistically significant. Whether 2% improvement matters for policy is a separate question about practical significance.'
-    },
-    {
-        id: 4,
-        category: 'Data Analysis',
-        skill: 'Self-Selection Bias Recognition',
-        question: 'Your data shows online complaint users get 45% faster resolution than phone users. Before recommending everyone switch to online, what should concern you most?',
-        options: [
-            'Online systems may record timestamps differently than phone systems',
-            'People who choose online forms may be systematically different from phone users',
-            'The sample sizes for online and phone users may not be equal',
-            'Seasonal patterns may affect online and phone complaint resolution differently'
-        ],
-        correct: 'B',
-        explanation: 'Self-selection bias is the key concern - online users likely differ systematically in tech skills, writing ability, and persistence. These user characteristics, not the channel itself, may drive the faster resolution.'
-    },
-    {
-        id: 5,
-        category: 'Data Analysis',
-        skill: 'Understanding Simpson\'s Paradox',
-        question: 'Provider A has higher resolution rates than B for billing complaints (85% vs 80%) AND service complaints (90% vs 85%), yet has lower overall resolution (75% vs 78%). How is this possible?',
-        options: [
-            'There are systematic errors in how resolution rates are calculated',
-            'Provider A handles different proportions of complaint types than Provider B',
-            'The confidence intervals for these estimates likely overlap significantly',
-            'Outlier complaints are affecting the averages differently for each provider'
-        ],
-        correct: 'B',
-        explanation: 'This is Simpson\'s Paradox. Provider A excels in both categories but handles more difficult billing complaints (lower base resolution rate), while Provider B handles more easier service complaints, affecting overall averages despite A\'s category-level superiority.'
-    },
-    {
-        id: 6,
-        category: 'Data Analysis',
-        skill: 'Measurement Error Impact',
-        question: 'You\'re studying how income affects telecom spending using survey data where people typically underreport their income. How does this affect your analysis?',
-        options: [
-            'Creates systematic bias by shifting all income values downward',
-            'Makes the income-spending relationship appear weaker than it actually is',
-            'Reduces statistical power by effectively decreasing the sample size',
-            'Violates the independence assumption needed for correlation analysis'
-        ],
-        correct: 'B',
-        explanation: 'Measurement error in predictor variables (income) creates attenuation bias, making observed correlations weaker than the true relationships. This affects your ability to detect real income-spending patterns.'
-    },
-    {
-        id: 7,
-        category: 'Data Analysis',
-        skill: 'Base Rate Understanding',
-        question: 'Your fraud detection system catches 92% of fraudulent accounts and has 6% false alarms. In a market where only 0.3% of accounts are fraudulent, what will most flagged accounts actually be?',
-        options: [
-            'Fraudulent accounts because the 92% detection rate is very high',
-            'Legitimate accounts because false alarms outnumber true fraud when fraud is rare',
-            'About evenly split between fraudulent and legitimate accounts',
-            'Cannot be determined without knowing the negative predictive value'
-        ],
-        correct: 'B',
-        explanation: 'With very low fraud rates (0.3%), the 6% false alarm rate applied to 99.7% legitimate accounts creates far more false positives than the actual fraud cases detected, despite the high sensitivity.'
-    },
-    {
-        id: 8,
-        category: 'Data Analysis',
-        skill: 'Regression to the Mean',
-        question: 'After training, your worst-performing centers improved dramatically while top centers barely changed. What should you consider before crediting the training?',
-        options: [
-            'Ceiling effects may prevent top performers from showing additional improvement',
-            'Extreme scores naturally tend to become more average on repeat measurement',
-            'The training materials may have been designed specifically for poor performers',
-            'Measurement reliability may be lower for extreme performance scores'
-        ],
-        correct: 'B',
-        explanation: 'Regression to the mean explains why extreme performers (good or bad) tend to move toward average on remeasurement due to natural statistical variation, independent of any intervention effect.'
-    },
-
-    // M&E Questions (5)
-    {
-        id: 9,
-        category: 'M&E',
-        skill: 'Pre-test and Post-test Purpose',
-        question: 'You want to demonstrate that your consumer education program improved knowledge. Why is measuring knowledge only after the program insufficient?',
-        options: [
-            'Post-only designs lack sufficient statistical power to detect program effects',
-            'You cannot determine how much knowledge changed without knowing the starting point',
-            'Single measurement cannot establish the proper temporal sequence',
-            'Post-test responses may be biased by social desirability effects'
-        ],
-        correct: 'B',
-        explanation: 'Without baseline measurement, you cannot attribute observed knowledge levels to the program versus pre-existing knowledge. Pre-post comparison is necessary to measure actual change and isolate program impact.'
-    },
-    {
-        id: 10,
-        category: 'M&E',
-        skill: 'Output vs Outcome vs Impact Distinction',
-        question: 'Your program achieved: 85% gained knowledge, 68% changed behavior, 15% system-wide complaint reduction. Which represents what the program directly produced?',
-        options: [
-            'The 15% system change because it shows the program\'s ultimate effectiveness',
-            'The 85% knowledge gain because this is what training sessions directly created',
-            'All three results equally demonstrate program accomplishments',
-            'The 68% behavior change because it proves the program worked as intended'
-        ],
-        correct: 'B',
-        explanation: 'In the results chain: outputs are immediate products (knowledge from training), outcomes are subsequent changes (behavior), impacts are broader effects (system-wide changes). Knowledge is the direct program product.'
-    },
-    {
-        id: 11,
-        category: 'M&E',
-        skill: 'Complex Outcome Measurement',
-        question: 'You need to measure whether consumers are "empowered" to handle telecom issues. What is the main limitation of using only satisfaction surveys?',
-        options: [
-            'Satisfaction surveys typically have response rates too low for reliable measurement',
-            'Empowerment includes multiple dimensions that one indicator cannot fully capture',
-            'Satisfaction questions often contain wording that creates measurement bias',
-            'Survey data collection costs too much for routine program monitoring'
-        ],
-        correct: 'B',
-        explanation: 'Complex constructs like "empowerment" require multiple indicators across different dimensions (knowledge, behavior, capacity, outcomes). Single measures, regardless of quality, cannot capture multidimensional concepts adequately.'
-    },
-    {
-        id: 12,
-        category: 'M&E',
-        skill: 'Monitoring vs Evaluation Distinction',
-        question: 'For 6 months, you\'ve been tracking training sessions, participant numbers, and immediate feedback scores. What type of M&E activity is this?',
-        options: [
-            'Evaluation because you are measuring program performance over time',
-            'Monitoring because you are tracking ongoing implementation activities and immediate outputs',
-            'Baseline research because you are establishing program performance benchmarks',
-            'Cost-effectiveness analysis because you are tracking resource use over time'
-        ],
-        correct: 'B',
-        explanation: 'This describes monitoring - regular tracking of implementation activities and immediate outputs. Evaluation would examine whether the program achieved its intended outcomes and impacts, typically done periodically.'
-    },
-    {
-        id: 13,
-        category: 'M&E',
-        skill: 'Logical Framework Design',
-        question: 'Your program logic: train staff → faster response → higher satisfaction. What should you measure first to track program progress?',
-        options: [
-            'Consumer satisfaction scores across the telecom sector',
-            'Average response times from all service providers',
-            'Number of customer service staff who completed training',
-            'Cost per complaint resolved before and after training'
-        ],
-        correct: 'C',
-        explanation: 'Following the logical framework sequence, you measure outputs (staff trained) first, then outcomes (response times), then impacts (satisfaction). Outputs are the immediate, directly measurable products of program activities.'
-    },
-
-    // RCT/Impact Evaluation Questions (3)
-    {
-        id: 14,
-        category: 'RCT/Impact',
-        skill: 'Randomization Unit Trade-offs',
-        question: 'You\'re testing complaint resolution across 300 centers in 50 cities. You could randomly assign individual centers or entire cities to treatment. What is the main advantage of city-level randomization?',
-        options: [
-            'City randomization provides larger sample sizes for statistical analysis',
-            'City randomization prevents centers from learning practices from nearby treated centers',
-            'City randomization improves the representativeness of the sample',
-            'City randomization reduces the complexity of implementation logistics'
-        ],
-        correct: 'B',
-        explanation: 'City-level (cluster) randomization prevents spillover effects where treated centers share new practices with nearby control centers. This contamination prevention is the key methodological advantage, though it reduces statistical power.'
-    },
-    {
-        id: 15,
-        category: 'RCT/Impact',
-        skill: 'Intent-to-Treat Analysis Logic',
-        question: 'In your RCT, 78% of treatment group attended training while 22% of controls got similar training elsewhere. For policy decisions, which analysis approach is most useful?',
-        options: [
-            'Per-protocol analysis comparing actual training participants versus pure controls',
-            'Intent-to-treat analysis comparing original assignments regardless of participation',
-            'As-treated analysis comparing everyone who got training versus those who didn\'t',
-            'Dose-response analysis examining effects by hours of training received'
-        ],
-        correct: 'B',
-        explanation: 'Intent-to-treat analysis preserves randomization and estimates the effect of offering the program, including real-world non-compliance that will occur during policy implementation.'
-    },
-    {
-        id: 16,
-        category: 'RCT/Impact',
-        skill: 'External Validity vs Research Conditions',
-        question: 'Your closely monitored pilot program achieved 85% complaint resolution, but national rollout achieved only 45%. What most likely explains this large difference?',
-        options: [
-            'National implementation teams had lower qualifications than pilot staff',
-            'Research monitoring created performance conditions not replicable in normal operations',
-            'The complaint types changed between pilot and rollout periods',
-            'Budget constraints limited resources available for national implementation'
-        ],
-        correct: 'B',
-        explanation: 'Hawthorne effects from intensive research monitoring, frequent check-ins, and special attention often create artificially high performance that cannot be sustained under normal operating conditions without researchers present.'
-    },
-
-    // Programming Logic Questions (4)
-    {
-        id: 17,
-        category: 'Programming Logic',
-        skill: 'Conditional Logic Programming',
-        question: 'Code: if complaint_type == "billing" and amount > 10000: priority = "high"; elif complaint_type == "service" and downtime > 24: priority = "high"; else: priority = "normal". What priority does a service complaint with 30-hour downtime receive?',
-        options: [
-            'normal because the amount variable is undefined for service complaints',
-            'high because it satisfies the service complaint condition in the elif statement',
-            'error because the code tries to access an undefined amount variable',
-            'depends on whether the priority variable was initialized before this code'
-        ],
-        correct: 'B',
-        explanation: 'Following conditional logic: first if fails (complaint_type != "billing"), elif succeeds (complaint_type == "service" AND downtime > 24 both true), so priority = "high". The amount variable is never evaluated.'
-    },
-    {
-        id: 18,
-        category: 'Programming Logic',
-        skill: 'Boolean Logic and Operators',
-        question: 'Expression: (account_age < 6) AND (complaints != 0) AND NOT (resolved >= total). For account with age=3, complaints=5, resolved=5, total=5, what is the result?',
-        options: [
-            'True because the account meets the age and complaint criteria',
-            'False because the NOT (resolved >= total) part evaluates to false',
-            'Error because comparing resolved to total creates invalid logic',
-            'Undefined because the expression contains contradictory conditions'
-        ],
-        correct: 'B',
-        explanation: 'Evaluating: (3 < 6) = True, (5 != 0) = True, (5 >= 5) = True so NOT(True) = False. Complete expression: True AND True AND False = False. Account not flagged because all complaints are resolved.'
-    },
-    {
-        id: 19,
-        category: 'Programming Logic',
-        skill: 'System Reliability Design',
-        question: 'Your system processes 15,000 daily complaints from 10 data sources. Some sources occasionally fail, but you must produce daily reports regardless. What design approach ensures this?',
-        options: [
-            'Implement comprehensive logging to track all system operations',
-            'Process each source independently so failures don\'t prevent other sources from completing',
-            'Use database transactions to maintain consistency across all operations',
-            'Set up automated alerts to notify administrators of any failures immediately'
-        ],
-        correct: 'B',
-        explanation: 'Independent processing with failure isolation allows successful sources to complete while failed sources are retried, ensuring daily reports are generated even when some data sources have problems.'
-    },
-    {
-        id: 20,
-        category: 'Programming Logic',
-        skill: 'Algorithm Optimization Strategy',
-        question: 'Phone number searches take 55 seconds to scan through 8 million records sequentially. What change would provide the biggest performance improvement?',
-        options: [
-            'Use parallel processing to distribute searches across multiple processors',
-            'Create an index structure for direct record lookup instead of scanning everything',
-            'Add more memory to reduce the need for disk access during searches',
-            'Optimize database connections to reduce network communication overhead'
-        ],
-        correct: 'B',
-        explanation: 'Creating an index changes the algorithm from O(n) sequential scanning to O(log n) or O(1) direct lookup - a fundamental algorithmic improvement that typically provides 100x-1000x performance gains versus hardware optimizations.'
-    }
-];
-
-
-
-
-
+        // Global variables
         let currentQuestionIndex = 0;
         let answers = {};
         let participantName = '';
-        let timeLeft = 1800; // 30 minutes in seconds
+        let timeLeft = 1800; // Default 30 minutes, will be updated from project
         let timerInterval;
         let quizStartTime;
+        let questions = [];
+        let projectData = null;
+
+        // Copy protection
+        document.addEventListener('contextmenu', e => e.preventDefault());
+        document.addEventListener('keydown', function(e) {
+            // Disable F12, Ctrl+Shift+I, Ctrl+Shift+J, Ctrl+U, Ctrl+S, Ctrl+A, Ctrl+C, Ctrl+V
+            if (e.keyCode === 123 || 
+                (e.ctrlKey && e.shiftKey && (e.keyCode === 73 || e.keyCode === 74)) || 
+                (e.ctrlKey && (e.keyCode === 85 || e.keyCode === 83 || e.keyCode === 65 || e.keyCode === 67 || e.keyCode === 86))) {
+                e.preventDefault();
+                showProtectionOverlay();
+                return false;
+            }
+        });
+
+        document.addEventListener('selectstart', e => e.preventDefault());
+        document.addEventListener('dragstart', e => e.preventDefault());
+
+        function showProtectionOverlay() {
+            const overlay = document.getElementById('protectionOverlay');
+            overlay.style.display = 'flex';
+            setTimeout(() => {
+                overlay.style.display = 'none';
+            }, 2000);
+        }
+
+        // Validate access code
+        async function validateAccess() {
+            const accessCode = document.getElementById('accessCode').value.trim();
+            const accessBtn = document.getElementById('accessBtn');
+            const errorDiv = document.getElementById('accessError');
+            
+            if (!accessCode) {
+                showAccessError('Please enter an access code.');
+                return;
+            }
+
+            accessBtn.disabled = true;
+            accessBtn.textContent = 'Validating...';
+            errorDiv.classList.add('hidden');
+
+            try {
+                const response = await fetch('/api/validate-access-code', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ access_code: accessCode })
+                });
+
+                const result = await response.json();
+
+                if (result.success) {
+                    // Store project data and questions
+                    projectData = result.project;
+                    questions = result.questions;
+                    timeLeft = projectData.time_limit;
+                    
+                    // Update UI with project information
+                    updateProjectInfo();
+                    
+                    // Hide access screen, show start screen
+                    document.getElementById('accessScreen').classList.add('hidden');
+                    document.getElementById('startScreen').classList.remove('hidden');
+                } else {
+                    showAccessError(result.error || 'Invalid access code.');
+                }
+            } catch (error) {
+                console.error('Error validating access code:', error);
+                showAccessError('Connection error. Please try again.');
+            } finally {
+                accessBtn.disabled = false;
+                accessBtn.textContent = 'Validate Access Code';
+            }
+        }
+
+        function showAccessError(message) {
+            const errorDiv = document.getElementById('accessError');
+            errorDiv.textContent = '⚠️ ' + message;
+            errorDiv.classList.remove('hidden');
+        }
+
+        function updateProjectInfo() {
+            document.getElementById('projectName').textContent = projectData.name;
+            document.getElementById('projectDescription').textContent = `Assessment for ${projectData.name} project`;
+            
+            const timeMinutes = Math.floor(projectData.time_limit / 60);
+            document.getElementById('assessmentDetails').innerHTML = `
+                <li>${questions.length} Multiple Choice Questions</li>
+                <li>${timeMinutes} Minutes Time Limit</li>
+                <li>Tests expertise in research methodology and implementation</li>
+                <li>Covers statistical analysis, evaluation design, and technical problem-solving</li>
+                <li>All questions are required</li>
+                <li>Detailed results with explanations provided at the end</li>
+                <li>You can move between questions before submitting</li>
+            `;
+        }
 
         // Initialize the quiz
         function startQuiz() {
@@ -1228,13 +1117,16 @@ const questions = [
             // Create detailed results
             createDetailedResults(score, questions.length);
             
-            // Prepare data for submission
+            // Prepare data for submission with project context
             const quizResult = {
                 participant_name: participantName,
+                project_id: projectData.id,
+                period: 'baseline', // Default period, could be made configurable
                 completed_at: quizEndTime.toISOString(),
                 total_score: score,
                 percentage: Math.round((score / questions.length) * 100),
-                time_taken: timeTakenSeconds
+                time_taken: timeTakenSeconds,
+                total_questions: questions.length
             };
             
             // Add individual question responses
@@ -1341,47 +1233,53 @@ const questions = [
             currentQuestionIndex = 0;
             answers = {};
             participantName = '';
-            timeLeft = 2100;
+            timeLeft = projectData ? projectData.time_limit : 1800;
             quizStartTime = null;
             
             // Clear timer
             clearInterval(timerInterval);
             
-            // Reset form
+            // Reset forms
             document.getElementById('participantName').value = '';
+            document.getElementById('accessCode').value = '';
             
             // Hide status message
             document.getElementById('submissionStatus').classList.add('hidden');
             
-            // Show start screen
+            // Show access screen
             document.getElementById('completionScreen').classList.add('hidden');
-            document.getElementById('startScreen').classList.remove('hidden');
+            document.getElementById('accessScreen').classList.remove('hidden');
+            
+            // Reset project data
+            projectData = null;
+            questions = [];
         }
 
         // Initialize when page loads
         window.addEventListener('load', () => {
-            console.log('IPA Technical Assessment loaded successfully');
-            console.log('Questions available:', questions.length);
-            console.log('Focus areas: Data Analysis, M&E, RCT/Impact, Programming Logic');
+            console.log('IPA Technical Assessment with Project Access Control loaded successfully');
         });
 
         // Prevent accidental page refresh during quiz
         window.addEventListener('beforeunload', function (e) {
-            if (document.getElementById('quizScreen').classList.contains('hidden')) {
-                return; // Quiz not in progress
+            if (!document.getElementById('quizScreen').classList.contains('hidden')) {
+                const confirmationMessage = 'Are you sure you want to leave? Your assessment progress will be lost.';
+                e.returnValue = confirmationMessage;
+                return confirmationMessage;
             }
-            
-            const confirmationMessage = 'Are you sure you want to leave? Your assessment progress will be lost.';
-            e.returnValue = confirmationMessage;
-            return confirmationMessage;
         });
 
         // Handle page visibility change (tab switching, etc.)
         document.addEventListener('visibilitychange', function() {
             if (document.hidden && !document.getElementById('quizScreen').classList.contains('hidden')) {
                 console.log('User switched tabs during assessment at:', new Date().toISOString());
-                // You could implement additional security measures here
+                showProtectionOverlay();
             }
+        });
+
+        // Allow Enter key to submit access code
+        document.getElementById('accessCode').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') validateAccess();
         });
     </script>
 </body>

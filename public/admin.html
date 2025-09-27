@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Consumer Protection Technical Assessment - Admin Dashboard</title>
+    <title>IPA Assessment Admin Dashboard - Project Management</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <style>
@@ -180,6 +180,38 @@
             display: flex;
             align-items: center;
             justify-content: center;
+        }
+
+        .project-selector {
+            background: linear-gradient(135deg, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0.05) 100%);
+            padding: 20px;
+            border-radius: 16px;
+            margin-bottom: 24px;
+            border: 1px solid rgba(255,255,255,0.1);
+            backdrop-filter: blur(10px);
+        }
+
+        .project-selector h4 {
+            font-size: 0.875rem;
+            font-weight: 600;
+            margin-bottom: 12px;
+            color: rgba(255,255,255,0.9);
+        }
+
+        .project-selector select {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid rgba(255,255,255,0.2);
+            border-radius: 8px;
+            background: rgba(255,255,255,0.1);
+            color: white;
+            font-size: 0.875rem;
+            font-weight: 500;
+        }
+
+        .project-selector select option {
+            background: var(--surface-dark);
+            color: white;
         }
 
         .stats-mini {
@@ -492,358 +524,224 @@
             box-shadow: none;
         }
 
-        /* Enhanced Question Analytics */
-        .question-analytics {
+        /* Project Management */
+        .project-grid {
             display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 32px;
-            margin-bottom: 40px;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 24px;
+            margin-bottom: 32px;
         }
 
-        .question-list {
-            list-style: none;
-            display: flex;
-            flex-direction: column;
-            gap: 16px;
-        }
-
-        .question-item {
-            padding: 24px;
+        .project-card {
             background: var(--surface);
-            border-radius: 16px;
             border: 1px solid var(--border-light);
-            box-shadow: var(--shadow-md);
+            border-radius: 16px;
+            padding: 24px;
             transition: all 0.3s ease;
             position: relative;
             overflow: hidden;
         }
 
-        .question-item::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            bottom: 0;
-            width: 5px;
-            background: var(--border-light);
-            transition: background 0.3s ease;
-        }
-
-        .question-item.hardest::before {
-            background: linear-gradient(180deg, #dc2626 0%, #b91c1c 100%);
-        }
-
-        .question-item.easiest::before {
-            background: linear-gradient(180deg, var(--primary-green) 0%, var(--primary-green-light) 100%);
-        }
-
-        .question-item:hover {
-            transform: translateX(8px);
-            box-shadow: var(--shadow-lg);
-        }
-
-        .question-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: flex-start;
-            margin-bottom: 12px;
-            gap: 16px;
-        }
-
-        .question-number {
-            font-weight: 700;
-            color: var(--text-primary);
-            font-size: 0.95rem;
-        }
-
-        .question-success-rate {
-            font-weight: 800;
-            font-size: 1.25rem;
-            padding: 8px 16px;
-            border-radius: 20px;
-            min-width: 80px;
-            text-align: center;
-        }
-
-        .question-success-rate.low { 
-            color: white;
-            background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%);
-        }
-
-        .question-success-rate.high { 
-            color: white;
-            background: linear-gradient(135deg, var(--primary-green) 0%, var(--primary-green-light) 100%);
-        }
-
-        .question-preview {
-            font-size: 0.9rem;
-            color: var(--text-secondary);
-            line-height: 1.5;
-            font-weight: 500;
-        }
-
-        /* Enhanced Participant Cards */
-        .participant-controls {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 24px;
-            flex-wrap: wrap;
-            gap: 16px;
-        }
-
-        .sort-controls {
-            display: flex;
-            gap: 8px;
-            flex-wrap: wrap;
-        }
-
-        .participant-card {
-            background: var(--surface);
-            border: 1px solid var(--border-light);
-            border-radius: 16px;
-            padding: 24px;
-            margin-bottom: 16px;
-            cursor: pointer;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            position: relative;
-            overflow: hidden;
-        }
-
-        .participant-card::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: -100%;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(5, 150, 105, 0.05), transparent);
-            transition: left 0.5s;
-        }
-
-        .participant-card:hover::before {
-            left: 100%;
-        }
-
-        .participant-card:hover {
-            transform: translateY(-4px);
-            box-shadow: var(--shadow-xl);
-            border-color: var(--primary-green);
-        }
-
-        .participant-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: flex-start;
-            margin-bottom: 16px;
-            gap: 20px;
-        }
-
-        .participant-info {
-            flex: 1;
-        }
-
-        .participant-name {
-            font-weight: 700;
-            font-size: 1.1rem;
-            color: var(--text-primary);
-            margin-bottom: 6px;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .participant-name i {
-            color: var(--primary-green);
-            font-size: 1rem;
-        }
-
-        .participant-date {
-            font-size: 0.875rem;
-            color: var(--text-muted);
-            font-weight: 500;
-        }
-
-        .participant-score {
-            text-align: right;
-            display: flex;
-            flex-direction: column;
-            align-items: flex-end;
-            gap: 12px;
-        }
-
-        .score-badge {
-            padding: 10px 20px;
-            border-radius: 25px;
-            color: white;
-            font-weight: 700;
-            font-size: 1rem;
-            box-shadow: var(--shadow-md);
-            position: relative;
-            overflow: hidden;
-        }
-
-        .score-badge::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: -100%;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
-            transition: left 0.5s;
-        }
-
-        .score-badge:hover::before {
-            left: 100%;
-        }
-
-        .score-badge.excellent { 
-            background: linear-gradient(135deg, var(--primary-green) 0%, var(--primary-green-light) 100%);
-        }
-
-        .score-badge.good { 
-            background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
-        }
-
-        .score-badge.needs-improvement { 
-            background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%);
-        }
-
-        .expand-toggle {
-            color: var(--text-muted);
-            font-size: 0.875rem;
-            font-weight: 500;
-            display: flex;
-            align-items: center;
-            gap: 4px;
-        }
-
-        .participant-details {
-            display: none;
-            margin-top: 24px;
-            padding-top: 24px;
-            border-top: 2px solid var(--border-light);
-        }
-
-        .participant-details.expanded {
-            display: block;
-            animation: expandIn 0.3s ease;
-        }
-
-        @keyframes expandIn {
-            from { opacity: 0; max-height: 0; }
-            to { opacity: 1; max-height: 500px; }
-        }
-
-        .skill-breakdown {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-            gap: 20px;
-        }
-
-        .skill-item {
-            background: var(--surface-alt);
-            padding: 20px;
-            border-radius: 16px;
-            text-align: center;
-            border: 2px solid var(--border-light);
-            transition: all 0.3s ease;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .skill-item::before {
+        .project-card::before {
             content: '';
             position: absolute;
             top: 0;
             left: 0;
             right: 0;
             height: 4px;
-            background: var(--border-light);
-            transition: background 0.3s ease;
-        }
-
-        .skill-item:hover {
-            border-color: var(--primary-green);
-            transform: translateY(-4px);
-            box-shadow: var(--shadow-lg);
-        }
-
-        .skill-item:hover::before {
             background: linear-gradient(90deg, var(--primary-green) 0%, var(--accent-green) 100%);
         }
 
-        .skill-percentage {
-            font-size: 1.75rem;
-            font-weight: 800;
-            margin-bottom: 8px;
+        .project-card:hover {
+            transform: translateY(-4px);
+            box-shadow: var(--shadow-lg);
+            border-color: var(--primary-green);
         }
 
-        .skill-percentage.excellent { color: var(--primary-green); }
-        .skill-percentage.good { color: #f59e0b; }
-        .skill-percentage.needs-improvement { color: #dc2626; }
+        .project-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 16px;
+        }
 
-        .skill-name {
-            font-size: 0.95rem;
+        .project-name {
+            font-weight: 700;
+            font-size: 1.1rem;
             color: var(--text-primary);
-            font-weight: 600;
             margin-bottom: 4px;
         }
 
-        .skill-score {
-            font-size: 0.8rem;
-            color: var(--text-muted);
-            font-weight: 500;
-        }
-
-        /* Enhanced Results Table */
-        .table-container {
-            overflow-x: auto;
-            background: var(--surface);
-            border-radius: 20px;
-            box-shadow: var(--shadow-lg);
+        .project-code {
+            font-family: 'JetBrains Mono', monospace;
+            background: var(--surface-alt);
+            padding: 4px 12px;
+            border-radius: 8px;
+            font-size: 0.875rem;
+            font-weight: 600;
+            color: var(--primary-green);
             border: 1px solid var(--border-light);
         }
 
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            font-family: 'JetBrains Mono', monospace;
+        .project-stats {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 16px;
+            margin-top: 16px;
         }
 
-        th, td {
-            padding: 20px 16px;
-            text-align: left;
-            border-bottom: 1px solid var(--border-light);
+        .project-stat {
+            text-align: center;
+            padding: 12px 8px;
+            background: var(--surface-alt);
+            border-radius: 12px;
+            border: 1px solid var(--border-light);
         }
 
-        th {
-            background: linear-gradient(135deg, var(--surface-alt) 0%, #f1f5f9 100%);
-            font-weight: 700;
-            color: var(--text-primary);
-            font-size: 0.875rem;
+        .project-stat-number {
+            font-size: 1.5rem;
+            font-weight: 800;
+            color: var(--primary-green);
+            margin-bottom: 4px;
+        }
+
+        .project-stat-label {
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+            font-weight: 600;
             text-transform: uppercase;
             letter-spacing: 0.05em;
         }
 
-        tr:hover {
-            background: var(--surface-alt);
+        /* Form Elements */
+        .form-group {
+            margin-bottom: 24px;
         }
 
-        td:first-child {
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        .form-group input, .form-group select, .form-group textarea {
+            width: 100%;
+            padding: 12px 16px;
+            border: 2px solid var(--border-light);
+            border-radius: 8px;
+            font-size: 0.95rem;
+            font-weight: 500;
+            transition: border-color 0.3s ease;
+            background: var(--surface);
+        }
+
+        .form-group input:focus, .form-group select:focus, .form-group textarea:focus {
+            outline: none;
+            border-color: var(--primary-green);
+            box-shadow: 0 0 0 3px rgba(5, 150, 105, 0.1);
+        }
+
+        .form-group textarea {
+            resize: vertical;
+            min-height: 80px;
+        }
+
+        /* Modal */
+        .modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 2000;
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: var(--surface);
+            border-radius: 20px;
+            padding: 32px;
+            max-width: 600px;
+            width: 90%;
+            max-height: 80vh;
+            overflow-y: auto;
+            box-shadow: var(--shadow-xl);
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 24px;
+            padding-bottom: 16px;
+            border-bottom: 2px solid var(--border-light);
+        }
+
+        .modal-title {
+            font-size: 1.5rem;
             font-weight: 700;
             color: var(--text-primary);
         }
 
-        .grade-badge {
-            padding: 6px 14px;
-            border-radius: 16px;
-            color: white;
-            font-size: 0.8rem;
-            font-weight: 700;
+        .modal-close {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: var(--text-muted);
+            padding: 8px;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+        }
+
+        .modal-close:hover {
+            background: var(--surface-alt);
+            color: var(--text-primary);
+        }
+
+        /* Period Tabs */
+        .period-tabs {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 24px;
+            background: var(--surface-alt);
+            padding: 8px;
+            border-radius: 12px;
+            border: 1px solid var(--border-light);
+        }
+
+        .period-tab {
+            flex: 1;
+            padding: 12px 16px;
+            border: none;
+            background: transparent;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 0.875rem;
             text-transform: uppercase;
-            letter-spacing: 0.025em;
+            letter-spacing: 0.05em;
+            transition: all 0.3s ease;
+            color: var(--text-secondary);
+        }
+
+        .period-tab.active {
+            background: var(--primary-green);
+            color: white;
+            box-shadow: 0 2px 8px rgba(5, 150, 105, 0.3);
+        }
+
+        .period-tab:hover:not(.active) {
+            background: rgba(5, 150, 105, 0.1);
+            color: var(--primary-green);
         }
 
         /* Password Screen */
@@ -994,6 +892,59 @@
 
         .hidden { display: none; }
 
+        /* Enhanced Tables */
+        .table-container {
+            overflow-x: auto;
+            background: var(--surface);
+            border-radius: 20px;
+            box-shadow: var(--shadow-lg);
+            border: 1px solid var(--border-light);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        th, td {
+            padding: 20px 16px;
+            text-align: left;
+            border-bottom: 1px solid var(--border-light);
+        }
+
+        th {
+            background: linear-gradient(135deg, var(--surface-alt) 0%, #f1f5f9 100%);
+            font-weight: 700;
+            color: var(--text-primary);
+            font-size: 0.875rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        tr:hover {
+            background: var(--surface-alt);
+        }
+
+        td:first-child {
+            font-weight: 700;
+            color: var(--text-primary);
+        }
+
+        .grade-badge {
+            padding: 6px 14px;
+            border-radius: 16px;
+            color: white;
+            font-size: 0.8rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.025em;
+        }
+
+        .excellent { background: linear-gradient(135deg, var(--primary-green) 0%, var(--primary-green-light) 100%); }
+        .good { background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%); }
+        .needs-improvement { background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%); }
+
         /* Responsive Design */
         @media (max-width: 1200px) {
             .sidebar {
@@ -1019,7 +970,7 @@
                 padding: 24px;
             }
 
-            .question-analytics {
+            .project-grid {
                 grid-template-columns: 1fr;
             }
 
@@ -1033,17 +984,13 @@
                 font-size: 1.875rem;
             }
 
-            .participant-controls {
-                flex-direction: column;
-                align-items: stretch;
-            }
-
-            .skill-breakdown {
-                grid-template-columns: 1fr;
-            }
-
             .card {
                 padding: 24px;
+            }
+
+            .modal-content {
+                padding: 24px;
+                width: 95%;
             }
         }
     </style>
@@ -1076,12 +1023,21 @@
         <div class="sidebar">
             <div class="sidebar-header">
                 <div class="sidebar-header-content">
-                    <h1><i class="fas fa-chart-line"></i> Consumer Protection Assessment</h1>
-                    <p>Advanced Analytics Dashboard</p>
+                    <h1><i class="fas fa-chart-line"></i> IPA Assessment Dashboard</h1>
+                    <p>Project-Based Analytics & Management</p>
                 </div>
             </div>
 
             <div class="sidebar-content">
+                <!-- Project Selector -->
+                <div class="project-selector">
+                    <h4><i class="fas fa-project-diagram"></i> Current Project</h4>
+                    <select id="projectSelector" onchange="switchProject()">
+                        <option value="all">All Projects</option>
+                        <!-- Will be populated by JavaScript -->
+                    </select>
+                </div>
+
                 <div class="nav-section">
                     <div class="nav-section-title">Overview</div>
                     <div class="nav-item active" onclick="showSection('overview')">
@@ -1089,6 +1045,19 @@
                     </div>
                     <div class="nav-item" onclick="showSection('analytics')">
                         <i class="fas fa-chart-bar"></i> Question Analytics
+                    </div>
+                    <div class="nav-item" onclick="showSection('periods')">
+                        <i class="fas fa-timeline"></i> Period Comparison
+                    </div>
+                </div>
+
+                <div class="nav-section">
+                    <div class="nav-section-title">Project Management</div>
+                    <div class="nav-item" onclick="showSection('projects')">
+                        <i class="fas fa-folder-plus"></i> Manage Projects
+                    </div>
+                    <div class="nav-item" onclick="showSection('questions')">
+                        <i class="fas fa-question-circle"></i> Question Bank
                     </div>
                 </div>
 
@@ -1146,7 +1115,7 @@
             <div id="overviewSection" class="content-section active">
                 <div class="section-header">
                     <h2 class="section-title">Dashboard Overview</h2>
-                    <p class="section-subtitle">Consumer Protection Technical Assessment Performance Summary</p>
+                    <p class="section-subtitle" id="overviewSubtitle">Project-based assessment performance summary</p>
                 </div>
 
                 <!-- Statistics Grid -->
@@ -1190,29 +1159,101 @@
                         <button class="btn btn-secondary" onclick="checkHealth()">
                             <i class="fas fa-heartbeat"></i> Health Check
                         </button>
-                        <button class="btn btn-outline" onclick="showSection('analytics')">
-                            <i class="fas fa-chart-line"></i> View Analytics
+                        <button class="btn btn-outline" onclick="showSection('projects')">
+                            <i class="fas fa-plus"></i> New Project
                         </button>
                     </div>
                     <div id="actionMessage" class="hidden"></div>
                 </div>
+            </div>
 
-                <!-- Empty State -->
-                <div id="emptyState" class="card hidden" style="text-align: center; padding: 80px;">
-                    <i class="fas fa-clipboard-list" style="font-size: 4rem; color: var(--text-muted); margin-bottom: 24px;"></i>
-                    <h3>No Results Yet</h3>
-                    <p style="margin: 20px 0; color: var(--text-secondary);">Results will appear here once participants complete the assessment.</p>
-                    <a href="/" target="_blank" class="btn btn-primary">
-                        <i class="fas fa-external-link-alt"></i> Open Assessment Page
-                    </a>
+            <!-- Projects Section -->
+            <div id="projectsSection" class="content-section">
+                <div class="section-header">
+                    <h2 class="section-title">Project Management</h2>
+                    <p class="section-subtitle">Create and manage assessment projects</p>
+                </div>
+
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">
+                            <i class="fas fa-plus"></i> Create New Project
+                        </h3>
+                        <button class="btn btn-primary" onclick="showCreateProjectModal()">
+                            <i class="fas fa-plus"></i> New Project
+                        </button>
+                    </div>
+                    <p style="color: var(--text-secondary); font-weight: 500;">Projects organize assessments and generate unique access codes for participants. Each project can have custom questions, time limits, and tracking periods.</p>
+                </div>
+
+                <div class="project-grid" id="projectGrid">
+                    <!-- Will be populated by JavaScript -->
                 </div>
             </div>
 
-            <!-- Question Analytics Section -->
+            <!-- Periods Section -->
+            <div id="periodsSection" class="content-section">
+                <div class="section-header">
+                    <h2 class="section-title">Period Comparison</h2>
+                    <p class="section-subtitle">Track changes across baseline, intermediate, and endline assessments</p>
+                </div>
+
+                <div class="card">
+                    <div class="period-tabs">
+                        <button class="period-tab active" data-period="baseline">Baseline</button>
+                        <button class="period-tab" data-period="intermediate">Intermediate</button>
+                        <button class="period-tab" data-period="endline">Endline</button>
+                    </div>
+                    <div id="periodContent">
+                        <!-- Period-specific content will be loaded here -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- Questions Section -->
+            <div id="questionsSection" class="content-section">
+                <div class="section-header">
+                    <h2 class="section-title">Question Bank</h2>
+                    <p class="section-subtitle">Manage questions for each project and period</p>
+                </div>
+
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">
+                            <i class="fas fa-question-circle"></i> Questions Overview
+                        </h3>
+                        <div style="display: flex; gap: 12px;">
+                            <button class="btn btn-secondary" onclick="showCopyQuestionsModal()" id="copyQuestionsBtn" disabled>
+                                <i class="fas fa-copy"></i> Copy from NCC Project
+                            </button>
+                            <button class="btn btn-primary" onclick="showQuestionModal()">
+                                <i class="fas fa-plus"></i> Add Question
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div style="margin-bottom: 24px;">
+                        <label for="questionProjectFilter" style="display: block; margin-bottom: 8px; font-weight: 600;">Select Project:</label>
+                        <select id="questionProjectFilter" onchange="loadQuestionsForProject()" style="padding: 8px 12px; border: 2px solid var(--border-light); border-radius: 8px; font-size: 0.95rem; background: var(--surface);">
+                            <option value="">Select a project...</option>
+                        </select>
+                    </div>
+                    
+                    <div id="questionsContent">
+                        <div style="text-align: center; padding: 60px; color: var(--text-muted);">
+                            <i class="fas fa-question-circle" style="font-size: 3rem; margin-bottom: 16px;"></i>
+                            <h3>Select a Project</h3>
+                            <p style="margin-top: 12px;">Choose a project above to view and manage its questions.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Analytics Section -->
             <div id="analyticsSection" class="content-section">
                 <div class="section-header">
                     <h2 class="section-title">Question Analytics</h2>
-                    <p class="section-subtitle">Performance insights by question and skill area</p>
+                    <p class="section-subtitle" id="analyticsSubtitle">Performance insights by question and skill area</p>
                 </div>
 
                 <div class="question-analytics">
@@ -1255,7 +1296,7 @@
             <div id="participantsSection" class="content-section">
                 <div class="section-header">
                     <h2 class="section-title">Individual Analysis</h2>
-                    <p class="section-subtitle">Detailed participant performance breakdown</p>
+                    <p class="section-subtitle" id="participantsSubtitle">Detailed participant performance breakdown</p>
                 </div>
 
                 <div class="card">
@@ -1286,7 +1327,7 @@
             <div id="resultsSection" class="content-section">
                 <div class="section-header">
                     <h2 class="section-title">Results Table</h2>
-                    <p class="section-subtitle">Complete results overview</p>
+                    <p class="section-subtitle" id="resultsSubtitle">Complete results overview</p>
                 </div>
 
                 <div class="table-container">
@@ -1294,6 +1335,8 @@
                         <thead>
                             <tr>
                                 <th><i class="fas fa-user"></i> Participant</th>
+                                <th><i class="fas fa-project-diagram"></i> Project</th>
+                                <th><i class="fas fa-timeline"></i> Period</th>
                                 <th><i class="fas fa-hashtag"></i> Score</th>
                                 <th><i class="fas fa-percentage"></i> Percentage</th>
                                 <th><i class="fas fa-chart-bar"></i> Data Analysis</th>
@@ -1329,6 +1372,9 @@
                         <button class="btn btn-primary" onclick="downloadCSV()" id="downloadBtn2" disabled>
                             <i class="fas fa-file-csv"></i> Download Enhanced CSV
                         </button>
+                        <button class="btn btn-secondary" onclick="downloadProjectCSV()" id="downloadProjectBtn" disabled>
+                            <i class="fas fa-download"></i> Current Project Only
+                        </button>
                         <button class="btn btn-secondary" onclick="checkHealth()">
                             <i class="fas fa-stethoscope"></i> System Health Check
                         </button>
@@ -1344,7 +1390,10 @@
                     <p style="color: #dc2626; margin-bottom: 24px; font-weight: 600;">
                         <i class="fas fa-warning"></i> Danger Zone: These actions cannot be undone.
                     </p>
-                    <button class="btn" onclick="clearAllData()" style="background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%); color: white;">
+                    <button class="btn" onclick="clearProjectData()" style="background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%); color: white;" id="clearProjectBtn" disabled>
+                        <i class="fas fa-trash-alt"></i> Clear Current Project Data
+                    </button>
+                    <button class="btn" onclick="clearAllData()" style="background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%); color: white; margin-left: 16px;">
                         <i class="fas fa-trash-alt"></i> Clear All Data
                     </button>
                 </div>
@@ -1354,9 +1403,150 @@
         </div>
     </div>
 
+    <!-- Add Question Modal -->
+    <div id="addQuestionModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">Add New Question</h3>
+                <button class="modal-close" onclick="closeQuestionModal()">&times;</button>
+            </div>
+            <form id="addQuestionForm" onsubmit="createQuestion(event)">
+                <div class="form-group">
+                    <label for="questionProject">Project *</label>
+                    <select id="questionProject" name="project_id" required>
+                        <option value="">Select Project</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="questionPeriod">Period</label>
+                    <select id="questionPeriod" name="period">
+                        <option value="baseline">Baseline</option>
+                        <option value="intermediate">Intermediate</option>
+                        <option value="endline">Endline</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="questionCategory">Category *</label>
+                    <select id="questionCategory" name="category" required>
+                        <option value="">Select Category</option>
+                        <option value="Data Analysis">Data Analysis</option>
+                        <option value="M&E">M&E (Monitoring & Evaluation)</option>
+                        <option value="RCT/Impact">RCT/Impact Evaluation</option>
+                        <option value="Programming Logic">Programming Logic</option>
+                        <option value="Other">Other</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="questionSkill">Skill/Topic *</label>
+                    <input type="text" id="questionSkill" name="skill" required maxlength="200" 
+                           placeholder="e.g., Understanding Confounding Variables">
+                </div>
+                <div class="form-group">
+                    <label for="questionText">Question Text *</label>
+                    <textarea id="questionText" name="question_text" required maxlength="1000" rows="4"
+                              placeholder="Enter the full question text..."></textarea>
+                </div>
+                <div class="form-group">
+                    <label>Answer Options *</label>
+                    <div id="questionOptions">
+                        <div class="option-input" data-option="A">
+                            <label>Option A:</label>
+                            <textarea name="option_A" required maxlength="500" rows="2" placeholder="First option..."></textarea>
+                        </div>
+                        <div class="option-input" data-option="B">
+                            <label>Option B:</label>
+                            <textarea name="option_B" required maxlength="500" rows="2" placeholder="Second option..."></textarea>
+                        </div>
+                        <div class="option-input" data-option="C">
+                            <label>Option C:</label>
+                            <textarea name="option_C" required maxlength="500" rows="2" placeholder="Third option..."></textarea>
+                        </div>
+                        <div class="option-input" data-option="D">
+                            <label>Option D:</label>
+                            <textarea name="option_D" required maxlength="500" rows="2" placeholder="Fourth option..."></textarea>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="correctAnswer">Correct Answer *</label>
+                    <select id="correctAnswer" name="correct_answer" required>
+                        <option value="">Select correct answer</option>
+                        <option value="A">A</option>
+                        <option value="B">B</option>
+                        <option value="C">C</option>
+                        <option value="D">D</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="questionExplanation">Explanation</label>
+                    <textarea id="questionExplanation" name="explanation" maxlength="1000" rows="3"
+                              placeholder="Explain why this is the correct answer (optional but recommended)..."></textarea>
+                </div>
+                <div style="display: flex; gap: 16px; justify-content: flex-end; margin-top: 32px;">
+                    <button type="button" class="btn btn-secondary" onclick="closeQuestionModal()">
+                        Cancel
+                    </button>
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fas fa-plus"></i> Add Question
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Copy Questions Modal -->
+    <div id="copyQuestionsModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">Copy Questions from NCC Embedded Lab</h3>
+                <button class="modal-close" onclick="closeCopyQuestionsModal()">&times;</button>
+            </div>
+            <div>
+                <p style="margin-bottom: 24px; color: var(--text-secondary); font-weight: 500;">
+                    Select questions from the NCC Embedded Lab project to copy to your current project. This is useful for creating similar assessments or building on existing questions.
+                </p>
+                
+                <div class="form-group">
+                    <label for="targetProject">Copy to Project:</label>
+                    <select id="targetProject" disabled style="background: var(--surface-alt);">
+                        <option id="targetProjectName">Loading...</option>
+                    </select>
+                </div>
+                
+                <div style="max-height: 400px; overflow-y: auto; border: 1px solid var(--border-light); border-radius: 8px; padding: 16px; background: var(--surface-alt);">
+                    <h4 style="margin-bottom: 16px; color: var(--text-primary);">NCC Embedded Lab Questions:</h4>
+                    <div id="nccQuestionsList">
+                        <!-- Will be populated by JavaScript -->
+                    </div>
+                </div>
+                
+                <div style="display: flex; gap: 16px; justify-content: space-between; margin-top: 24px;">
+                    <div>
+                        <button type="button" class="btn btn-secondary" onclick="selectAllNccQuestions()">
+                            <i class="fas fa-check-square"></i> Select All
+                        </button>
+                        <button type="button" class="btn btn-secondary" onclick="deselectAllNccQuestions()">
+                            <i class="fas fa-square"></i> Deselect All
+                        </button>
+                    </div>
+                    <div>
+                        <button type="button" class="btn btn-secondary" onclick="closeCopyQuestionsModal()">
+                            Cancel
+                        </button>
+                        <button type="button" class="btn btn-primary" onclick="copySelectedQuestions()">
+                            <i class="fas fa-copy"></i> Copy Selected
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <script>
         const ADMIN_PASSWORD = 'admin123';
         let quizResults = [];
+        let projects = [];
+        let currentProjectId = 'all';
         let analyticsData = null;
         let currentSort = 'recent';
 
@@ -1397,11 +1587,21 @@
 
             // Show the selected section
             document.getElementById(sectionName + 'Section').classList.add('active');
+
+            // Load section-specific data
+            if (sectionName === 'projects') {
+                loadProjects();
+            } else if (sectionName === 'questions') {
+                loadQuestions();
+            } else if (sectionName === 'periods') {
+                loadPeriodComparison();
+            }
         }
 
         // Dashboard Management
         async function loadDashboard() {
             await refreshData();
+            await loadProjects();
             setInterval(refreshData, 60000);
         }
 
@@ -1409,17 +1609,21 @@
             try {
                 showLoading();
                 
-                const statsResponse = await fetch('/api/stats');
+                // Load projects first
+                await loadProjects();
+                
+                // Load stats for current project
+                const statsResponse = await fetch(`/api/stats/${currentProjectId}`);
                 if (statsResponse.ok) {
                     const stats = await statsResponse.json();
                     updateStatistics(stats);
                 }
                 
-                const resultsResponse = await fetch('/api/results');
+                // Load results for current project
+                const resultsResponse = await fetch(`/api/results/${currentProjectId}`);
                 if (resultsResponse.ok) {
                     const results = await resultsResponse.json();
                     quizResults = results;
-                    updateResultsTable(results);
                     
                     if (results.length > 0) {
                         generateAnalytics(results);
@@ -1428,6 +1632,7 @@
                     throw new Error('Failed to fetch results');
                 }
                 
+                updateOverviewSubtitle();
                 toggleSections();
                 hideError();
                 
@@ -1439,63 +1644,613 @@
             }
         }
 
-        function generateAnalytics(results) {
-            const questions = [
-                // Data Analysis Questions (8) - Including Excel/Pivot Table skills
-                { id: 1, category: 'Data Analysis', skill: 'Understanding Correlation vs Causation', question: 'Your analysis shows states with more telecom tower installations have higher consumer satisfaction rates. Lagos has 8,500 towers and 82% satisfaction, while Kebbi has 150 towers and 31% satisfaction. Before recommending more towers for Kebbi, what should you examine first?' },
-                { id: 2, category: 'Data Analysis', skill: 'Excel Pivot Table Analysis', question: 'You have 50,000 consumer complaint records in Excel. You need to find which service type has the highest complaint resolution rate by region. Which Excel feature and approach is most efficient?' },
-                { id: 3, category: 'Data Analysis', skill: 'Statistical vs Practical Significance', question: 'A consumer education campaign improved complaint resolution knowledge from 62% to 64% in a survey of 45,000 consumers. The result is statistically significant (p<0.001). What is the most accurate interpretation?' },
-                { id: 4, category: 'Data Analysis', skill: 'Self-Selection Bias Recognition', question: 'Your data shows consumers who use online complaint portals get 45% faster resolution times than those who call customer service. Before concluding that online portals are more efficient, what should you consider?' },
-                { id: 5, category: 'Data Analysis', skill: 'Excel Data Analysis - Simpson\'s Paradox', question: 'Your Excel analysis shows Provider A resolves 75% of complaints vs Provider B at 78%. But examining by complaint type: billing issues (A: 85%, B: 82%) and service issues (A: 90%, B: 88%). Provider A performs better in both categories but worse overall. How do you explain this in your report?' },
-                { id: 6, category: 'Data Analysis', skill: 'Measurement Error Impact', question: 'You\'re analyzing the relationship between household income and telecom service spending from consumer surveys. Many respondents understate their income to avoid appearing wealthy. How does this affect your analysis?' },
-                { id: 7, category: 'Data Analysis', skill: 'Base Rate Understanding', question: 'Your fraud detection algorithm correctly identifies 92% of fraudulent telecom accounts and has 6% false alarms. In a market where only 0.3% of accounts are fraudulent, what percentage of flagged accounts are actually fraudulent?' },
-                { id: 8, category: 'Data Analysis', skill: 'Regression to the Mean', question: 'After implementing a consumer protection intervention, you notice the worst-performing service providers improved significantly while top performers showed little change. Should the regulator focus all future interventions on poor performers?' },
+        // Project Management
+        async function loadProjects() {
+            try {
+                const response = await fetch('/api/projects');
+                if (response.ok) {
+                    projects = await response.json();
+                    updateProjectSelector();
+                    updateProjectGrid();
+                }
+            } catch (error) {
+                console.error('Error loading projects:', error);
+            }
+        }
 
-                // M&E Questions (5)
-                { id: 9, category: 'M&E', skill: 'Pre-test and Post-test Purpose', question: 'Why is it important to conduct pre-tests and post-tests when evaluating consumer education programs?' },
-                { id: 10, category: 'M&E', skill: 'Output vs Outcome vs Impact', question: 'You evaluate a consumer awareness campaign about telecom billing rights. After 6 months: 85% can identify billing errors correctly, 68% now dispute incorrect charges, and overall billing complaints decreased 15%. How do you classify these results?' },
-                { id: 11, category: 'M&E', skill: 'Complex Outcome Measurement', question: 'You need to measure whether consumer protection efforts have improved "consumer empowerment" in the telecom sector. Which indicator set best captures this complex outcome?' },
-                { id: 12, category: 'M&E', skill: 'Monitoring vs Evaluation Distinction', question: 'What is the fundamental difference between monitoring and evaluation in consumer protection programs?' },
-                { id: 13, category: 'M&E', skill: 'Logical Framework Design', question: 'Your logical framework for improving telecom service quality has this impact: "Enhanced consumer satisfaction with telecom services." The outcome is "Service providers improve response times." What is the most appropriate output indicator?' },
+        function updateProjectSelector() {
+            const selector = document.getElementById('projectSelector');
+            const currentValue = selector.value;
+            
+            selector.innerHTML = '<option value="all">All Projects</option>';
+            
+            projects.forEach(project => {
+                const option = document.createElement('option');
+                option.value = project._id;
+                option.textContent = project.name;
+                selector.appendChild(option);
+            });
+            
+            // Restore selection or select first project if current selection no longer exists
+            if (projects.find(p => p._id === currentValue)) {
+                selector.value = currentValue;
+            } else if (projects.length > 0 && currentValue === 'all') {
+                selector.value = 'all';
+            }
+        }
 
-                // RCT/Impact Evaluation Questions (3)
-                { id: 14, category: 'RCT/Impact', skill: 'Randomization Design Trade-offs', question: 'You want to test a new consumer complaint resolution process across 300 customer service centers in 50 cities. You could randomize individual centers or entire cities. What is the key trade-off?' },
-                { id: 15, category: 'RCT/Impact', skill: 'Intent-to-Treat Analysis', question: 'In a consumer education RCT, 78% of assigned participants attended training, while 22% of the control group received similar training elsewhere. For policy decisions, which analysis approach is most valuable?' },
-                { id: 16, category: 'RCT/Impact', skill: 'Research vs Implementation Effects', question: 'A consumer protection helpline RCT showed 85% issue resolution with intensive monitoring and support. When scaled nationally with normal operations, resolution dropped to 45%. This difference most likely reflects:' },
+        function updateProjectGrid() {
+            const grid = document.getElementById('projectGrid');
+            if (!grid) return;
+            
+            grid.innerHTML = '';
+            
+            projects.forEach(project => {
+                const projectCard = document.createElement('div');
+                projectCard.className = 'project-card';
+                projectCard.innerHTML = `
+                    <div class="project-header">
+                        <div>
+                            <div class="project-name">${project.name}</div>
+                            <div style="font-size: 0.875rem; color: var(--text-secondary); margin-bottom: 8px;">
+                                Created: ${formatDateTime(project.created_at)}
+                            </div>
+                            <div style="font-size: 0.875rem; color: var(--text-secondary);">
+                                Time Limit: ${Math.floor(project.time_limit / 60)} minutes
+                            </div>
+                        </div>
+                        <div class="project-code">${project.access_code}</div>
+                    </div>
+                    <div style="margin: 16px 0;">
+                        <p style="color: var(--text-secondary); font-size: 0.9rem; line-height: 1.5;">
+                            ${project.description || 'No description provided'}
+                        </p>
+                    </div>
+                    <div class="project-stats">
+                        <div class="project-stat">
+                            <div class="project-stat-number">${project.participant_count || 0}</div>
+                            <div class="project-stat-label">Participants</div>
+                        </div>
+                        <div class="project-stat">
+                            <div class="project-stat-number">${project.question_count || 0}</div>
+                            <div class="project-stat-label">Questions</div>
+                        </div>
+                        <div class="project-stat">
+                            <div class="project-stat-number">${project.status}</div>
+                            <div class="project-stat-label">Status</div>
+                        </div>
+                    </div>
+                `;
+                grid.appendChild(projectCard);
+            });
+            
+            if (projects.length === 0) {
+                grid.innerHTML = `
+                    <div style="grid-column: 1 / -1; text-align: center; padding: 60px 20px; color: var(--text-muted);">
+                        <i class="fas fa-folder-open" style="font-size: 3rem; margin-bottom: 16px; color: var(--text-muted);"></i>
+                        <h3>No Projects Yet</h3>
+                        <p style="margin-top: 12px;">Create your first project to start organizing assessments.</p>
+                        <button class="btn btn-primary" onclick="showCreateProjectModal()" style="margin-top: 20px;">
+                            <i class="fas fa-plus"></i> Create First Project
+                        </button>
+                    </div>
+                `;
+            }
+        }
 
-                // Programming Logic Questions (4) - Including actual programming skills
-                { id: 17, category: 'Programming Logic', skill: 'Conditional Logic Programming', question: 'You\'re writing code to categorize consumer complaints by urgency. Complete this logic: if complaint_type == "billing" and amount > 10000: priority = "high" elif complaint_type == "service" and downtime > 24: priority = "high" else: priority = "normal". A service complaint with 30 hours downtime gets what priority?' },
-                { id: 18, category: 'Programming Logic', skill: 'Boolean Logic and Operators', question: 'In a consumer protection database, you need to flag accounts where: (account_age < 6 months) AND (complaints != 0) AND NOT (resolved_complaints >= total_complaints). For an account with age=3, complaints=5, resolved=5, total=5, what does this expression evaluate to?' },
-                { id: 19, category: 'Programming Logic', skill: 'System Reliability Design', question: 'A consumer complaint processing system must handle 15,000 daily complaints from multiple channels. Some data feeds fail or arrive late. Which approach ensures reliable daily reporting?' },
-                { id: 20, category: 'Programming Logic', skill: 'Algorithm Optimization', question: 'A consumer complaint search system queries 8 million complaint records by phone number, taking 55 seconds per search. You could: add more servers, create a phone number index, cache frequent searches, or upgrade hardware. What provides the biggest performance improvement?' }
-            ];
+        function switchProject() {
+            const selector = document.getElementById('projectSelector');
+            currentProjectId = selector.value;
+            refreshData();
+        }
 
-            const questionStats = questions.map(q => {
-                let correct = 0;
-                let total = 0;
-                
-                results.forEach(result => {
-                    if (result[`Q${q.id}`] && result[`Q${q.id}_correct`]) {
-                        total++;
-                        if (result[`Q${q.id}`] === result[`Q${q.id}_correct`]) {
-                            correct++;
-                        }
-                    }
+        function updateOverviewSubtitle() {
+            const subtitle = document.getElementById('overviewSubtitle');
+            if (currentProjectId === 'all') {
+                subtitle.textContent = 'Overview across all projects';
+            } else {
+                const project = projects.find(p => p._id === currentProjectId);
+                subtitle.textContent = project ? `${project.name} project overview` : 'Project overview';
+            }
+        }
+
+        // Modal Management
+        function showCreateProjectModal() {
+            document.getElementById('createProjectModal').classList.add('active');
+        }
+
+        function closeCreateProjectModal() {
+            document.getElementById('createProjectModal').classList.remove('active');
+            document.getElementById('createProjectForm').reset();
+        }
+
+        async function createProject(event) {
+            event.preventDefault();
+            
+            const formData = new FormData(event.target);
+            const projectData = {
+                name: formData.get('name'),
+                description: formData.get('description'),
+                time_limit: parseInt(formData.get('time_limit'))
+            };
+            
+            try {
+                const response = await fetch('/api/projects', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(projectData)
                 });
                 
-                return {
-                    ...q,
-                    correct,
-                    total,
-                    successRate: total > 0 ? Math.round((correct / total) * 100) : 0
-                };
-            }).filter(q => q.total > 0);
+                if (response.ok) {
+                    const result = await response.json();
+                    showActionMessage(`Project "${projectData.name}" created successfully! Access code: ${result.project.access_code}`);
+                    closeCreateProjectModal();
+                    await loadProjects();
+                } else {
+                    throw new Error('Failed to create project');
+                }
+            } catch (error) {
+                console.error('Error creating project:', error);
+                showActionMessage('Failed to create project: ' + error.message, true);
+            }
+        }
 
-            const hardest = questionStats.sort((a, b) => a.successRate - b.successRate).slice(0, 5);
-            const easiest = questionStats.sort((a, b) => b.successRate - a.successRate).slice(0, 5);
+        // Question Management Functions
+        let currentProjectQuestions = [];
+        let selectedProjectForQuestions = null;
+        let nccProjectId = null;
+
+        async function loadQuestions() {
+            await loadProjects(); // Ensure projects are loaded
+            updateQuestionProjectFilter();
+            
+            // Find NCC project for copy functionality
+            nccProjectId = projects.find(p => p.name === "NCC Embedded Lab")?._id;
+        }
+
+        function updateQuestionProjectFilter() {
+            const filter = document.getElementById('questionProjectFilter');
+            const questionProjectSelect = document.getElementById('questionProject');
+            
+            if (!filter || !questionProjectSelect) return;
+            
+            // Update filter dropdown
+            filter.innerHTML = '<option value="">Select a project...</option>';
+            questionProjectSelect.innerHTML = '<option value="">Select Project</option>';
+            
+            projects.forEach(project => {
+                const option1 = document.createElement('option');
+                option1.value = project._id;
+                option1.textContent = project.name;
+                filter.appendChild(option1);
+                
+                const option2 = document.createElement('option');
+                option2.value = project._id;
+                option2.textContent = project.name;
+                questionProjectSelect.appendChild(option2);
+            });
+        }
+
+        async function loadQuestionsForProject() {
+            const projectId = document.getElementById('questionProjectFilter').value;
+            const copyBtn = document.getElementById('copyQuestionsBtn');
+            
+            if (!projectId) {
+                document.getElementById('questionsContent').innerHTML = `
+                    <div style="text-align: center; padding: 60px; color: var(--text-muted);">
+                        <i class="fas fa-question-circle" style="font-size: 3rem; margin-bottom: 16px;"></i>
+                        <h3>Select a Project</h3>
+                        <p style="margin-top: 12px;">Choose a project above to view and manage its questions.</p>
+                    </div>
+                `;
+                copyBtn.disabled = true;
+                return;
+            }
+            
+            selectedProjectForQuestions = projectId;
+            copyBtn.disabled = !nccProjectId || projectId === nccProjectId;
+            
+            try {
+                const response = await fetch(`/api/questions/${projectId}`);
+                if (response.ok) {
+                    currentProjectQuestions = await response.json();
+                    displayQuestions(currentProjectQuestions);
+                } else {
+                    throw new Error('Failed to load questions');
+                }
+            } catch (error) {
+                console.error('Error loading questions:', error);
+                showActionMessage('Failed to load questions: ' + error.message, true);
+            }
+        }
+
+        function displayQuestions(questions) {
+            const container = document.getElementById('questionsContent');
+            
+            if (questions.length === 0) {
+                container.innerHTML = `
+                    <div style="text-align: center; padding: 60px; color: var(--text-muted);">
+                        <i class="fas fa-question-circle" style="font-size: 3rem; margin-bottom: 16px;"></i>
+                        <h3>No Questions Yet</h3>
+                        <p style="margin-top: 12px;">Add questions to this project or copy from the NCC Embedded Lab project.</p>
+                        <div style="margin-top: 20px;">
+                            <button class="btn btn-primary" onclick="showQuestionModal()">
+                                <i class="fas fa-plus"></i> Add First Question
+                            </button>
+                            ${nccProjectId && selectedProjectForQuestions !== nccProjectId ? `
+                            <button class="btn btn-secondary" onclick="showCopyQuestionsModal()">
+                                <i class="fas fa-copy"></i> Copy from NCC
+                            </button>
+                            ` : ''}
+                        </div>
+                    </div>
+                `;
+                return;
+            }
+            
+            let html = `<div style="margin-bottom: 24px; padding: 16px; background: var(--surface-alt); border-radius: 12px; border: 1px solid var(--border-light);">
+                <h4 style="color: var(--primary-green); margin-bottom: 8px;">
+                    <i class="fas fa-info-circle"></i> Project Questions (${questions.length})
+                </h4>
+                <p style="color: var(--text-secondary); margin: 0; font-size: 0.9rem;">
+                    Manage questions for this project. Click any question to edit or delete it.
+                </p>
+            </div>`;
+            
+            questions.forEach((question, index) => {
+                const categories = {
+                    'Data Analysis': { icon: 'chart-bar', color: '#059669' },
+                    'M&E': { icon: 'tasks', color: '#2563eb' },
+                    'RCT/Impact': { icon: 'flask', color: '#dc2626' },
+                    'Programming Logic': { icon: 'code', color: '#7c3aed' },
+                    'Other': { icon: 'question', color: '#6b7280' }
+                };
+                
+                const categoryInfo = categories[question.category] || categories['Other'];
+                
+                html += `
+                    <div style="background: var(--surface); border: 1px solid var(--border-light); border-radius: 12px; padding: 20px; margin-bottom: 16px; transition: all 0.3s ease;" 
+                         onmouseover="this.style.borderColor='var(--primary-green)'" 
+                         onmouseout="this.style.borderColor='var(--border-light)'">
+                        <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 12px;">
+                            <div style="display: flex; align-items: center; gap: 12px;">
+                                <div style="background: ${categoryInfo.color}; color: white; padding: 8px; border-radius: 8px; font-size: 1.1rem;">
+                                    <i class="fas fa-${categoryInfo.icon}"></i>
+                                </div>
+                                <div>
+                                    <h4 style="color: var(--text-primary); margin: 0; font-size: 1.1rem;">
+                                        Question ${question.question_number}: ${question.category}
+                                    </h4>
+                                    <p style="color: var(--text-secondary); margin: 4px 0 0 0; font-size: 0.9rem; font-weight: 500;">
+                                        ${question.skill}
+                                    </p>
+                                </div>
+                            </div>
+                            <div style="display: flex; gap: 8px;">
+                                <button class="btn btn-outline" onclick="editQuestion('${question._id}')" 
+                                        style="padding: 8px 12px; font-size: 0.8rem;">
+                                    <i class="fas fa-edit"></i> Edit
+                                </button>
+                                <button class="btn" onclick="deleteQuestion('${question._id}')" 
+                                        style="background: #dc2626; color: white; padding: 8px 12px; font-size: 0.8rem;">
+                                    <i class="fas fa-trash"></i> Delete
+                                </button>
+                            </div>
+                        </div>
+                        <div style="background: var(--surface-alt); padding: 16px; border-radius: 8px; margin-bottom: 12px;">
+                            <p style="color: var(--text-primary); font-weight: 500; line-height: 1.5; margin: 0;">
+                                ${question.question_text}
+                            </p>
+                        </div>
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 12px;">
+                            ${question.options.map((option, i) => `
+                                <div style="padding: 12px; border: 1px solid var(--border-light); border-radius: 8px; 
+                                           background: ${String.fromCharCode(65 + i) === question.correct_answer ? 'var(--surface-alt)' : 'white'};
+                                           border-color: ${String.fromCharCode(65 + i) === question.correct_answer ? 'var(--primary-green)' : 'var(--border-light)'};">
+                                    <span style="font-weight: bold; margin-right: 8px; color: var(--primary-green);">
+                                        ${String.fromCharCode(65 + i)}.
+                                    </span>
+                                    ${option}
+                                    ${String.fromCharCode(65 + i) === question.correct_answer ? 
+                                        '<span style="color: var(--primary-green); font-weight: bold; margin-left: 8px;">✓ Correct</span>' : ''}
+                                </div>
+                            `).join('')}
+                        </div>
+                        <div style="display: flex; justify-content: space-between; align-items: center; font-size: 0.8rem; color: var(--text-muted);">
+                            <span>
+                                <i class="fas fa-clock"></i> Period: ${question.period || 'baseline'} • 
+                                <i class="fas fa-calendar"></i> ${formatDateTime(question.created_at)}
+                            </span>
+                            <span style="background: var(--primary-green); color: white; padding: 4px 8px; border-radius: 12px; font-weight: 600;">
+                                Answer: ${question.correct_answer}
+                            </span>
+                        </div>
+                    </div>
+                `;
+            });
+            
+            container.innerHTML = html;
+        }
+
+        // Modal Management
+        function showQuestionModal() {
+            if (!selectedProjectForQuestions) {
+                showActionMessage('Please select a project first.', true);
+                return;
+            }
+            
+            document.getElementById('questionProject').value = selectedProjectForQuestions;
+            document.getElementById('addQuestionModal').classList.add('active');
+        }
+
+        function closeQuestionModal() {
+            document.getElementById('addQuestionModal').classList.remove('active');
+            document.getElementById('addQuestionForm').reset();
+        }
+
+        async function createQuestion(event) {
+            event.preventDefault();
+            
+            const formData = new FormData(event.target);
+            const questionData = {
+                project_id: formData.get('project_id'),
+                period: formData.get('period'),
+                category: formData.get('category'),
+                skill: formData.get('skill'),
+                question_text: formData.get('question_text'),
+                options: [
+                    formData.get('option_A'),
+                    formData.get('option_B'),
+                    formData.get('option_C'),
+                    formData.get('option_D')
+                ],
+                correct_answer: formData.get('correct_answer'),
+                explanation: formData.get('explanation')
+            };
+            
+            try {
+                const response = await fetch('/api/questions', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(questionData)
+                });
+                
+                if (response.ok) {
+                    const result = await response.json();
+                    showActionMessage(`Question added successfully!`);
+                    closeQuestionModal();
+                    await loadQuestionsForProject();
+                } else {
+                    throw new Error('Failed to create question');
+                }
+            } catch (error) {
+                console.error('Error creating question:', error);
+                showActionMessage('Failed to create question: ' + error.message, true);
+            }
+        }
+
+        async function showCopyQuestionsModal() {
+            if (!nccProjectId || !selectedProjectForQuestions) return;
+            
+            const project = projects.find(p => p._id === selectedProjectForQuestions);
+            document.getElementById('targetProjectName').textContent = project?.name || 'Current Project';
+            
+            try {
+                const response = await fetch(`/api/questions/${nccProjectId}`);
+                if (response.ok) {
+                    const nccQuestions = await response.json();
+                    displayNccQuestions(nccQuestions);
+                    document.getElementById('copyQuestionsModal').classList.add('active');
+                } else {
+                    throw new Error('Failed to load NCC questions');
+                }
+            } catch (error) {
+                console.error('Error loading NCC questions:', error);
+                showActionMessage('Failed to load NCC questions: ' + error.message, true);
+            }
+        }
+
+        function displayNccQuestions(questions) {
+            const container = document.getElementById('nccQuestionsList');
+            let html = '';
+            
+            questions.forEach(question => {
+                html += `
+                    <div style="margin-bottom: 12px; padding: 16px; border: 1px solid var(--border-light); border-radius: 8px; background: white;">
+                        <label style="display: flex; align-items: flex-start; gap: 12px; cursor: pointer;">
+                            <input type="checkbox" value="${question._id}" style="margin-top: 4px; transform: scale(1.2);">
+                            <div style="flex: 1;">
+                                <div style="font-weight: 600; color: var(--text-primary); margin-bottom: 4px;">
+                                    Q${question.question_number}: ${question.category} - ${question.skill}
+                                </div>
+                                <div style="color: var(--text-secondary); font-size: 0.9rem; line-height: 1.4;">
+                                    ${question.question_text.substring(0, 150)}${question.question_text.length > 150 ? '...' : ''}
+                                </div>
+                            </div>
+                        </label>
+                    </div>
+                `;
+            });
+            
+            container.innerHTML = html;
+        }
+
+        function closeCopyQuestionsModal() {
+            document.getElementById('copyQuestionsModal').classList.remove('active');
+        }
+
+        function selectAllNccQuestions() {
+            document.querySelectorAll('#nccQuestionsList input[type="checkbox"]').forEach(cb => cb.checked = true);
+        }
+
+        function deselectAllNccQuestions() {
+            document.querySelectorAll('#nccQuestionsList input[type="checkbox"]').forEach(cb => cb.checked = false);
+        }
+
+        async function copySelectedQuestions() {
+            const selectedIds = Array.from(document.querySelectorAll('#nccQuestionsList input[type="checkbox"]:checked'))
+                                   .map(cb => cb.value);
+            
+            if (selectedIds.length === 0) {
+                showActionMessage('Please select at least one question to copy.', true);
+                return;
+            }
+            
+            try {
+                const response = await fetch('/api/questions/copy', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        source_project_id: nccProjectId,
+                        target_project_id: selectedProjectForQuestions,
+                        question_ids: selectedIds
+                    })
+                });
+                
+                if (response.ok) {
+                    const result = await response.json();
+                    showActionMessage(`Successfully copied ${result.copied_count} questions!`);
+                    closeCopyQuestionsModal();
+                    await loadQuestionsForProject();
+                } else {
+                    throw new Error('Failed to copy questions');
+                }
+            } catch (error) {
+                console.error('Error copying questions:', error);
+                showActionMessage('Failed to copy questions: ' + error.message, true);
+            }
+        }
+
+        async function deleteQuestion(questionId) {
+            const confirmed = confirm('Are you sure you want to delete this question? This action cannot be undone.');
+            if (!confirmed) return;
+            
+            try {
+                const response = await fetch(`/api/questions/${questionId}`, {
+                    method: 'DELETE'
+                });
+                
+                if (response.ok) {
+                    showActionMessage('Question deleted successfully!');
+                    await loadQuestionsForProject();
+                } else {
+                    throw new Error('Failed to delete question');
+                }
+            } catch (error) {
+                console.error('Error deleting question:', error);
+                showActionMessage('Failed to delete question: ' + error.message, true);
+            }
+        }
+
+        function editQuestion(questionId) {
+            // TODO: Implement question editing functionality
+            showActionMessage('Question editing feature coming soon!', true);
+        }
+
+        // Enhanced placeholder functions for other features
+        function loadQuestions() {
+            updateQuestionProjectFilter();
+            nccProjectId = projects.find(p => p.name === "NCC Embedded Lab")?._id;
+            console.log('Questions section loaded, NCC Project ID:', nccProjectId);
+        }
+
+        function loadPeriodComparison() {
+            console.log('Loading period comparison for project:', currentProjectId);
+            // TODO: Implement period comparison
+        }
+
+        // Enhanced utility functions
+        function updateStatistics(stats) {
+            document.getElementById('totalParticipants').textContent = stats.total || 0;
+            document.getElementById('averageScore').textContent = (stats.average_score || 0) + '%';
+            document.getElementById('todayCount').textContent = stats.today_count || 0;
+            document.getElementById('excellentCount').textContent = stats.excellent_count || 0;
+
+            document.getElementById('sidebarTotal').textContent = stats.total || 0;
+            document.getElementById('sidebarAverage').textContent = (stats.average_score || 0) + '%';
+            document.getElementById('sidebarToday').textContent = stats.today_count || 0;
+
+            const hasData = (stats.total || 0) > 0;
+            document.getElementById('downloadBtn').disabled = !hasData;
+            const downloadBtn2 = document.getElementById('downloadBtn2');
+            const downloadProjectBtn = document.getElementById('downloadProjectBtn');
+            const clearProjectBtn = document.getElementById('clearProjectBtn');
+            
+            if (downloadBtn2) downloadBtn2.disabled = !hasData;
+            if (downloadProjectBtn) downloadProjectBtn.disabled = !hasData || currentProjectId === 'all';
+            if (clearProjectBtn) clearProjectBtn.disabled = !hasData || currentProjectId === 'all';
+        }
+
+        function generateAnalytics(results) {
+            if (!results.length) return;
+
+            // Create question analytics
+            const questionStats = {};
+            
+            results.forEach(result => {
+                // Count questions dynamically based on result data
+                for (let i = 1; i <= 20; i++) {
+                    const qKey = `Q${i}`;
+                    if (result[qKey] && result[`${qKey}_correct`]) {
+                        if (!questionStats[i]) {
+                            questionStats[i] = {
+                                id: i,
+                                category: result[`${qKey}_category`] || 'Unknown',
+                                skill: result[`${qKey}_skill`] || 'Unknown',
+                                correct: 0,
+                                total: 0
+                            };
+                        }
+                        questionStats[i].total++;
+                        if (result[qKey] === result[`${qKey}_correct`]) {
+                            questionStats[i].correct++;
+                        }
+                    }
+                }
+            });
+
+            const questions = Object.values(questionStats).map(q => ({
+                ...q,
+                successRate: q.total > 0 ? Math.round((q.correct / q.total) * 100) : 0
+            }));
+
+            const hardest = questions.sort((a, b) => a.successRate - b.successRate).slice(0, 5);
+            const easiest = questions.sort((a, b) => b.successRate - a.successRate).slice(0, 5);
 
             updateQuestionAnalytics(hardest, easiest);
             generateSkillAnalytics(results);
+            updateResultsTable(results);
+        }
+
+        function updateQuestionAnalytics(hardest, easiest) {
+            const hardestContainer = document.getElementById('hardestQuestions');
+            const easiestContainer = document.getElementById('easiestQuestions');
+
+            if (!hardestContainer || !easiestContainer) return;
+
+            hardestContainer.innerHTML = hardest.map(q => `
+                <li class="question-item hardest" style="padding: 20px; margin-bottom: 16px; background: var(--surface); border-radius: 12px; border-left: 4px solid #dc2626;">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+                        <span style="font-weight: 700; color: var(--text-primary);">Question ${q.id} - ${q.category}</span>
+                        <span style="background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%); color: white; padding: 8px 16px; border-radius: 20px; font-weight: 800; font-size: 1.1rem;">${q.successRate}%</span>
+                    </div>
+                    <div style="color: var(--text-secondary); font-size: 0.9rem; font-weight: 500;">${q.skill}</div>
+                    <div style="color: var(--text-muted); font-size: 0.8rem; margin-top: 8px;">${q.correct}/${q.total} correct</div>
+                </li>
+            `).join('');
+
+            easiestContainer.innerHTML = easiest.map(q => `
+                <li class="question-item easiest" style="padding: 20px; margin-bottom: 16px; background: var(--surface); border-radius: 12px; border-left: 4px solid var(--primary-green);">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+                        <span style="font-weight: 700; color: var(--text-primary);">Question ${q.id} - ${q.category}</span>
+                        <span style="background: linear-gradient(135deg, var(--primary-green) 0%, var(--primary-green-light) 100%); color: white; padding: 8px 16px; border-radius: 20px; font-weight: 800; font-size: 1.1rem;">${q.successRate}%</span>
+                    </div>
+                    <div style="color: var(--text-secondary); font-size: 0.9rem; font-weight: 500;">${q.skill}</div>
+                    <div style="color: var(--text-muted); font-size: 0.8rem; margin-top: 8px;">${q.correct}/${q.total} correct</div>
+                </li>
+            `).join('');
         }
 
         function generateSkillAnalytics(results) {
@@ -1504,11 +2259,11 @@
                     questions: [1, 2, 3, 4, 5, 6, 7, 8],
                     description: 'Statistical thinking, Excel/Pivot tables, bias recognition, consumer data interpretation'
                 },
-                'M&E (Monitoring & Evaluation)': {
+                'M&E': {
                     questions: [9, 10, 11, 12, 13],
                     description: 'Program evaluation, outcome measurement, consumer protection M&E frameworks'
                 },
-                'RCT/Impact Evaluation': {
+                'RCT/Impact': {
                     questions: [14, 15, 16],
                     description: 'Randomized controlled trials, impact evaluation, research design for policy'
                 },
@@ -1535,6 +2290,8 @@
                 const analysis = {
                     name: participant.participant_name,
                     id: participant.id,
+                    project_id: participant.project_id,
+                    period: participant.period || 'baseline',
                     totalScore: participant.total_score,
                     percentage: participant.percentage,
                     completedAt: participant.completed_at,
@@ -1589,33 +2346,10 @@
             updateParticipantAnalysis(analyticsData.participantAnalysis);
         }
 
-        function updateQuestionAnalytics(hardest, easiest) {
-            const hardestContainer = document.getElementById('hardestQuestions');
-            const easiestContainer = document.getElementById('easiestQuestions');
-
-            hardestContainer.innerHTML = hardest.map(q => `
-                <li class="question-item hardest">
-                    <div class="question-header">
-                        <span class="question-number">Question ${q.id} - ${q.category}</span>
-                        <span class="question-success-rate low">${q.successRate}%</span>
-                    </div>
-                    <div class="question-preview">${q.question.substring(0, 120)}...</div>
-                </li>
-            `).join('');
-
-            easiestContainer.innerHTML = easiest.map(q => `
-                <li class="question-item easiest">
-                    <div class="question-header">
-                        <span class="question-number">Question ${q.id} - ${q.category}</span>
-                        <span class="question-success-rate high">${q.successRate}%</span>
-                    </div>
-                    <div class="question-preview">${q.question.substring(0, 120)}...</div>
-                </li>
-            `).join('');
-        }
-
         function updateSkillAreas(skillAreas) {
             const container = document.getElementById('skillAreasChart');
+            if (!container) return;
+            
             let html = '';
             
             skillAreas.forEach(area => {
@@ -1626,7 +2360,7 @@
                            area.name.includes('RCT') ? 'flask' : 'code';
                 
                 html += `
-                    <div class="skill-item" style="margin-bottom: 24px; padding: 28px; border-left: 6px solid ${color}; background: var(--surface-alt);">
+                    <div style="margin-bottom: 24px; padding: 28px; border-left: 6px solid ${color}; background: var(--surface-alt); border-radius: 16px;">
                         <div style="display: flex; justify-content: space-between; align-items: center;">
                             <div>
                                 <h4 style="font-size: 1.2rem; margin-bottom: 8px; display: flex; align-items: center; gap: 12px;">
@@ -1657,6 +2391,8 @@
 
         function updateParticipantAnalysis(participants) {
             const container = document.getElementById('participantAnalysis');
+            if (!container) return;
+            
             let sortedParticipants = [...participants];
 
             if (currentSort === 'highest') {
@@ -1670,30 +2406,36 @@
             let html = '';
             
             sortedParticipants.forEach((participant, index) => {
+                const gradeClass = getGradeClass(participant.percentage);
+                const projectName = projects.find(p => p._id === participant.project_id)?.name || 'Unknown Project';
+                
                 html += `
-                    <div class="participant-card" onclick="toggleParticipantDetails(${index})">
-                        <div class="participant-header">
-                            <div class="participant-info">
-                                <div class="participant-name">
-                                    <i class="fas fa-user"></i> ${participant.name}
+                    <div class="participant-card" onclick="toggleParticipantDetails(${index})" style="margin-bottom: 16px; padding: 24px; background: var(--surface); border-radius: 16px; border: 1px solid var(--border-light); cursor: pointer; transition: all 0.3s ease;">
+                        <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 16px;">
+                            <div>
+                                <div style="font-weight: 700; font-size: 1.1rem; color: var(--text-primary); margin-bottom: 4px;">
+                                    <i class="fas fa-user" style="margin-right: 8px; color: var(--primary-green);"></i> ${participant.name}
                                 </div>
-                                <div class="participant-date">
-                                    <i class="fas fa-clock"></i> Completed: ${formatDateTime(participant.completedAt)}
+                                <div style="font-size: 0.875rem; color: var(--text-muted); margin-bottom: 4px;">
+                                    <i class="fas fa-project-diagram"></i> ${projectName} • ${participant.period}
+                                </div>
+                                <div style="font-size: 0.875rem; color: var(--text-muted);">
+                                    <i class="fas fa-clock"></i> ${formatDateTime(participant.completedAt)}
                                 </div>
                             </div>
-                            <div class="participant-score">
-                                <div class="score-badge ${getGradeClass(participant.percentage)}">
+                            <div style="text-align: right;">
+                                <div class="score-badge ${gradeClass}" style="padding: 10px 20px; border-radius: 25px; color: white; font-weight: 700; font-size: 1rem; margin-bottom: 8px;">
                                     ${participant.percentage}% (${participant.totalScore}/20)
                                 </div>
-                                <div class="expand-toggle">
+                                <div style="color: var(--text-muted); font-size: 0.875rem;">
                                     <span id="toggle-${index}">
                                         <i class="fas fa-chevron-down"></i> Click to expand
                                     </span>
                                 </div>
                             </div>
                         </div>
-                        <div class="participant-details" id="details-${index}">
-                            <div class="skill-breakdown">
+                        <div class="participant-details" id="details-${index}" style="display: none; margin-top: 24px; padding-top: 24px; border-top: 2px solid var(--border-light);">
+                            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 20px;">
                 `;
                 
                 Object.entries(participant.skillAreas).forEach(([area, data]) => {
@@ -1705,12 +2447,16 @@
                                area.includes('RCT') ? 'flask' : 'code';
                     
                     html += `
-                        <div class="skill-item">
-                            <div class="skill-percentage ${gradeClass}">${data.percentage}%</div>
-                            <div class="skill-name">
+                        <div style="background: var(--surface-alt); padding: 20px; border-radius: 16px; text-align: center; border: 2px solid var(--border-light); transition: all 0.3s ease;">
+                            <div style="font-size: 1.75rem; font-weight: 800; margin-bottom: 8px; color: ${data.percentage >= 80 ? 'var(--primary-green)' : data.percentage >= 60 ? '#f59e0b' : '#dc2626'};">
+                                ${data.percentage}%
+                            </div>
+                            <div style="font-size: 0.95rem; color: var(--text-primary); font-weight: 600; margin-bottom: 4px;">
                                 <i class="fas fa-${icon}"></i> ${area.replace('RCT/Impact', 'RCT')}
                             </div>
-                            <div class="skill-score">${data.correct}/${data.total} correct</div>
+                            <div style="font-size: 0.8rem; color: var(--text-muted); font-weight: 500;">
+                                ${data.correct}/${data.total} correct
+                            </div>
                         </div>
                     `;
                 });
@@ -1725,50 +2471,10 @@
             container.innerHTML = html;
         }
 
-        function sortParticipants(sortType) {
-            currentSort = sortType;
-            if (analyticsData && analyticsData.participantAnalysis) {
-                updateParticipantAnalysis(analyticsData.participantAnalysis);
-            }
-        }
-
-        function toggleParticipantDetails(index) {
-            const details = document.getElementById(`details-${index}`);
-            const toggle = document.getElementById(`toggle-${index}`);
-            
-            if (details.classList.contains('expanded')) {
-                details.classList.remove('expanded');
-                toggle.innerHTML = '<i class="fas fa-chevron-down"></i> Click to expand';
-            } else {
-                document.querySelectorAll('.participant-details').forEach((detail, i) => {
-                    if (i !== index && detail.classList.contains('expanded')) {
-                        detail.classList.remove('expanded');
-                        document.getElementById(`toggle-${i}`).innerHTML = '<i class="fas fa-chevron-down"></i> Click to expand';
-                    }
-                });
-                
-                details.classList.add('expanded');
-                toggle.innerHTML = '<i class="fas fa-chevron-up"></i> Click to collapse';
-            }
-        }
-
-        function updateStatistics(stats) {
-            document.getElementById('totalParticipants').textContent = stats.total || 0;
-            document.getElementById('averageScore').textContent = (stats.average_score || 0) + '%';
-            document.getElementById('todayCount').textContent = stats.today_count || 0;
-            document.getElementById('excellentCount').textContent = stats.excellent_count || 0;
-
-            document.getElementById('sidebarTotal').textContent = stats.total || 0;
-            document.getElementById('sidebarAverage').textContent = (stats.average_score || 0) + '%';
-            document.getElementById('sidebarToday').textContent = stats.today_count || 0;
-
-            const hasData = (stats.total || 0) > 0;
-            document.getElementById('downloadBtn').disabled = !hasData;
-            document.getElementById('downloadBtn2').disabled = !hasData;
-        }
-
         function updateResultsTable(results) {
             const tbody = document.getElementById('resultsTableBody');
+            if (!tbody) return;
+            
             tbody.innerHTML = '';
 
             results.forEach(result => {
@@ -1790,9 +2496,13 @@
                     scores[category] = `${correct}/${questions.length}`;
                 });
 
+                const projectName = projects.find(p => p._id === result.project_id)?.name || 'Unknown';
+
                 const row = document.createElement('tr');
                 row.innerHTML = `
                     <td><i class="fas fa-user" style="margin-right: 8px; color: var(--primary-green);"></i>${result.participant_name}</td>
+                    <td>${projectName}</td>
+                    <td><span style="background: var(--surface-alt); padding: 4px 8px; border-radius: 6px; font-size: 0.8rem; font-weight: 600; text-transform: uppercase;">${result.period || 'baseline'}</span></td>
                     <td>${result.total_score}/20</td>
                     <td>${result.percentage}%</td>
                     <td>${scores['Data Analysis']}</td>
@@ -1810,9 +2520,62 @@
             });
         }
 
+        function sortParticipants(sortType) {
+            currentSort = sortType;
+            if (analyticsData && analyticsData.participantAnalysis) {
+                updateParticipantAnalysis(analyticsData.participantAnalysis);
+            }
+        }
+
+        function toggleParticipantDetails(index) {
+            const details = document.getElementById(`details-${index}`);
+            const toggle = document.getElementById(`toggle-${index}`);
+            
+            if (!details || !toggle) return;
+            
+            if (details.style.display === 'none') {
+                // Close all other expanded details first
+                document.querySelectorAll('.participant-details').forEach((detail, i) => {
+                    if (i !== index && detail.style.display !== 'none') {
+                        detail.style.display = 'none';
+                        const otherToggle = document.getElementById(`toggle-${i}`);
+                        if (otherToggle) {
+                            otherToggle.innerHTML = '<i class="fas fa-chevron-down"></i> Click to expand';
+                        }
+                    }
+                });
+                
+                details.style.display = 'block';
+                toggle.innerHTML = '<i class="fas fa-chevron-up"></i> Click to collapse';
+            } else {
+                details.style.display = 'none';
+                toggle.innerHTML = '<i class="fas fa-chevron-down"></i> Click to expand';
+            }
+        }
+
         function toggleSections() {
             const hasResults = quizResults.length > 0;
-            document.getElementById('emptyState').classList.toggle('hidden', hasResults);
+            // Update subtitle based on current project and results
+            updateSectionSubtitles();
+        }
+
+        function updateSectionSubtitles() {
+            const projectName = currentProjectId === 'all' ? 'all projects' : 
+                              (projects.find(p => p._id === currentProjectId)?.name || 'current project');
+            
+            const analyticsSubtitle = document.getElementById('analyticsSubtitle');
+            const participantsSubtitle = document.getElementById('participantsSubtitle');
+            const resultsSubtitle = document.getElementById('resultsSubtitle');
+            
+            if (analyticsSubtitle) {
+                analyticsSubtitle.textContent = `Performance insights for ${projectName}`;
+            }
+            if (participantsSubtitle) {
+                participantsSubtitle.textContent = `Individual analysis for ${projectName}`;
+            }
+            if (resultsSubtitle) {
+                resultsSubtitle.textContent = `Complete results for ${projectName}`;
+            }
         }
 
         function getGradeClass(percentage) {
@@ -1849,25 +2612,150 @@
         }
 
         function showActionMessage(message, isError = false) {
-            const div = document.getElementById('actionMessage') || document.getElementById('actionMessage2');
-            if (div) {
-                div.textContent = message;
-                div.className = isError ? 'error-state' : 'success-state';
-                div.classList.remove('hidden');
-                setTimeout(() => div.classList.add('hidden'), 5000);
-            }
+            const actionDivs = [
+                document.getElementById('actionMessage'),
+                document.getElementById('actionMessage2')
+            ];
+            
+            actionDivs.forEach(div => {
+                if (div) {
+                    div.textContent = message;
+                    div.className = isError ? 'error-state' : 'success-state';
+                    div.classList.remove('hidden');
+                    setTimeout(() => div.classList.add('hidden'), 5000);
+                }
+            });
         }
 
-        async function downloadCSV() {
+        async function downloadProjectCSV() {
+            if (currentProjectId === 'all') {
+                showActionMessage('Please select a specific project to download its data.', true);
+                return;
+            }
+            
             try {
-                const response = await fetch('/api/download-csv');
+                const response = await fetch(`/api/download-csv?project_id=${currentProjectId}`);
                 if (response.ok) {
                     const blob = await response.blob();
                     const url = window.URL.createObjectURL(blob);
                     const a = document.createElement('a');
                     a.style.display = 'none';
                     a.href = url;
-                    a.download = `consumer_protection_assessment_results_${new Date().toISOString().split('T')[0]}.csv`;
+                    const project = projects.find(p => p._id === currentProjectId);
+                    const projectName = project ? project.name.replace(/\s+/g, '_') : 'project';
+                    a.download = `${projectName}_results_${new Date().toISOString().split('T')[0]}.csv`;
+                    document.body.appendChild(a);
+                    a.click();
+                    window.URL.revokeObjectURL(url);
+                    showActionMessage('Project CSV downloaded successfully!');
+                } else {
+                    throw new Error('Failed to download project CSV');
+                }
+            } catch (error) {
+                console.error('Error downloading project CSV:', error);
+                showActionMessage('Failed to download project CSV: ' + error.message, true);
+            }
+        }
+
+        async function clearProjectData() {
+            if (currentProjectId === 'all') {
+                showActionMessage('Please select a specific project to clear its data.', true);
+                return;
+            }
+            
+            const project = projects.find(p => p._id === currentProjectId);
+            const projectName = project ? project.name : 'current project';
+            const projectResults = quizResults.filter(r => r.project_id === currentProjectId);
+            
+            if (projectResults.length === 0) {
+                showActionMessage('No data to clear for this project.', true);
+                return;
+            }
+
+            const confirmed = confirm(`⚠️ WARNING ⚠️\n\nAre you sure you want to delete all ${projectResults.length} assessment results for "${projectName}"?\n\nThis action cannot be undone and will permanently remove all participant data for this project.`);
+            
+            if (!confirmed) return;
+
+            const doubleConfirmed = confirm(`This is your final warning!\n\nYou are about to delete ${projectResults.length} results from "${projectName}" permanently.\n\nType DELETE in the next dialog to confirm.`);
+            
+            if (!doubleConfirmed) return;
+
+            const finalConfirmation = prompt(`To confirm deletion of "${projectName}" data, type "DELETE" exactly (without quotes):`);
+            
+            if (finalConfirmation !== "DELETE") {
+                showActionMessage('Deletion cancelled - confirmation text did not match.', true);
+                return;
+            }
+
+            try {
+                const response = await fetch(`/api/results/${currentProjectId}`, {
+                    method: 'DELETE'
+                });
+                
+                if (response.ok) {
+                    const result = await response.json();
+                    showActionMessage(result.message);
+                    await refreshData();
+                } else {
+                    throw new Error('Failed to clear project data');
+                }
+            } catch (error) {
+                console.error('Error clearing project data:', error);
+                showActionMessage('Failed to clear project data: ' + error.message, true);
+            }
+        }
+
+        async function clearAllData() {
+            if (quizResults.length === 0) {
+                showActionMessage('No data to clear.', true);
+                return;
+            }
+
+            const confirmed = confirm(`⚠️ DANGER ZONE ⚠️\n\nAre you sure you want to delete all ${quizResults.length} assessment results across ALL projects?\n\nThis action cannot be undone and will permanently remove all participant data.`);
+            
+            if (!confirmed) return;
+
+            const doubleConfirmed = confirm(`This is your final warning!\n\nYou are about to delete ${quizResults.length} assessment results permanently.\n\nType YES in the next dialog to confirm.`);
+            
+            if (!doubleConfirmed) return;
+
+            const finalConfirmation = prompt(`To confirm deletion, type "DELETE ALL DATA" exactly (without quotes):`);
+            
+            if (finalConfirmation !== "DELETE ALL DATA") {
+                showActionMessage('Deletion cancelled - confirmation text did not match.', true);
+                return;
+            }
+
+            try {
+                const response = await fetch('/api/results', {
+                    method: 'DELETE'
+                });
+                
+                if (response.ok) {
+                    const result = await response.json();
+                    showActionMessage(result.message);
+                    await refreshData();
+                } else {
+                    throw new Error('Failed to clear all data');
+                }
+            } catch (error) {
+                console.error('Error clearing all data:', error);
+                showActionMessage('Failed to clear all data: ' + error.message, true);
+            }
+        }
+
+        async function downloadCSV() {
+            try {
+                const url = currentProjectId === 'all' ? '/api/download-csv' : `/api/download-csv?project_id=${currentProjectId}`;
+                const response = await fetch(url);
+                if (response.ok) {
+                    const blob = await response.blob();
+                    const url = window.URL.createObjectURL(blob);
+                    const a = document.createElement('a');
+                    a.style.display = 'none';
+                    a.href = url;
+                    const projectName = currentProjectId === 'all' ? 'all_projects' : (projects.find(p => p._id === currentProjectId)?.name || 'project').replace(/\s+/g, '_');
+                    a.download = `assessment_results_${projectName}_${new Date().toISOString().split('T')[0]}.csv`;
                     document.body.appendChild(a);
                     a.click();
                     window.URL.revokeObjectURL(url);
@@ -1896,60 +2784,12 @@
             }
         }
 
-       async function clearAllData() {
-    if (quizResults.length === 0) {
-        showActionMessage('No data to clear.', true);
-        return;
-    }
-
-    // First confirmation
-    const confirmed = confirm(`⚠️ DANGER ZONE ⚠️\n\nAre you sure you want to delete all ${quizResults.length} assessment results?\n\nThis action cannot be undone and will permanently remove all participant data.`);
-    
-    if (!confirmed) {
-        return; // User cancelled
-    }
-
-    // Second confirmation for extra safety
-    const doubleConfirmed = confirm(`This is your final warning!\n\nYou are about to delete ${quizResults.length} assessment results permanently.\n\nType YES in the next dialog to confirm.`);
-    
-    if (!doubleConfirmed) {
-        return; // User cancelled second confirmation
-    }
-
-    // Third confirmation requiring text input
-    const finalConfirmation = prompt(`To confirm deletion, type "DELETE ALL DATA" exactly (without quotes):`);
-    
-    if (finalConfirmation !== "DELETE ALL DATA") {
-        showActionMessage('Deletion cancelled - confirmation text did not match.', true);
-        return;
-    }
-
-    try {
-        const response = await fetch('/api/results', {
-            method: 'DELETE'
-        });
-        
-        if (response.ok) {
-            const result = await response.json();
-            showActionMessage(result.message);
-            await refreshData();
-        } else {
-            throw new Error('Failed to clear data');
-        }
-    } catch (error) {
-        console.error('Error clearing data:', error);
-        showActionMessage('Failed to clear data: ' + error.message, true);
-    }
-}
-
-
-
         document.getElementById('adminPassword').addEventListener('keypress', function(e) {
             if (e.key === 'Enter') login();
         });
 
         window.addEventListener('load', () => {
-            console.log('Consumer Protection Assessment admin dashboard loaded');
+            console.log('IPA Assessment admin dashboard with project management loaded');
         });
     </script>
 </body>
