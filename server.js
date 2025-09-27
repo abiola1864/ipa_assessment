@@ -736,32 +736,320 @@ app.get('/api/stats/:project_id?', async (req, res) => {
     }
 });
 
-// All other existing routes remain the same...
-// (health, download-csv, delete results, etc.)
-
-// API: Health check
-app.get('/api/health', async (req, res) => {
+// API: Get questions for a project
+app.get('/api/questions/:project_id', async (req, res) => {
+    console.log('📋 Fetching questions for project:', req.params.project_id);
+    
     try {
-        if (!db) {
-            throw new Error('Database not initialized');
+        const questionsCollection = db.collection('questions');
+        const questions = await questionsCollection.find({ 
+            project_id: new ObjectId(req.params.project_id) 
+        }).sort({ question_number: 1 }).toArray();
+        
+        res.json(questions);
+    } catch (err) {
+        console.error('❌ Error fetching questions:', err);
+        res.status(500).json({ error: 'Database error' });
+    }
+});
+
+// API: Create new question
+app.post('/api/questions', async (req, res) => {
+    const { project_id, period, category, skill, question_text, options, correct_answer, explanation } = req.body;
+    
+    if (!project_id || !question_text || !options || !correct_answer) {
+        return res.status(400).json({ error: 'Missing required fields' });
+    }
+    
+    try {
+        const questionsCollection = db.collection('questions');
+        
+        // Get next question number for this project
+        const lastQuestion = await questionsCollection.findOne(
+            { project_id: new ObjectId(project_id) },
+            { sort: { question_number: -1 } }
+        );
+        const nextQuestionNumber = (lastQuestion?.question_number || 0) + 1;
+        
+        const questionDoc = {
+            project_id: new ObjectId(project_id),
+            period: period || 'baseline',
+            question_number: nextQuestionNumber,
+            category: category || 'General',
+            skill: skill || '',
+            question_text,
+            options: Array.isArray(options) ? options : [],
+            correct_answer,
+            explanation: explanation || '',
+            created_at: new Date()
+        };
+        
+        const result = await questionsCollection.insertOne(questionDoc);
+        
+        console.log(`✅ Question ${nextQuestionNumber} created for project ${project_id}`);
+        res.json({
+            success: true,
+            question: { ...questionDoc, _id: result.insertedId }
+        });
+        
+    } catch (err) {
+        console.error('❌ Error creating question:', err);
+        res.status(500).json({ error: 'Database error' });
+    }
+});
+
+// API: Copy questions from one project to another
+app.post('/api/questions/copy', async (req, res) => {
+    const { source_project_id, target_project_id, question_ids } = req.body;
+    
+    if (!source_project_id || !target_project_id) {
+        return res.status(400).json({ error: 'Source and target project IDs required' });
+    }
+    
+    try {
+        const questionsCollection = db.collection('questions');
+        
+        // Get source questions
+        const sourceQuery = question_ids 
+            ? { project_id: new ObjectId(source_project_id), _id: { $in: question_ids.map(id => new ObjectId(id)) } }
+            : { project_id: new ObjectId(source_project_id) };
+            
+        const sourceQuestions = await questionsCollection.find(sourceQuery).toArray();
+        
+        if (sourceQuestions.length === 0) {
+            return res.status(404).json({ error: 'No questions found to copy' });
         }
         
-        await db.admin().ping();
+        // Get next question number for target project
+        const lastQuestion = await questionsCollection.findOne(
+            { project_id: new ObjectId(target_project_id) },
+            { sort: { question_number: -1 } }
+        );
+        let nextQuestionNumber = (lastQuestion?.question_number || 0) + 1;
         
-        res.json({ 
-            status: 'OK', 
-            message: 'Database connected and operational',
-            timestamp: new Date().toISOString(),
-            database: 'MongoDB'
+        // Prepare copied questions
+        const copiedQuestions = sourceQuestions.map(q => ({
+            project_id: new ObjectId(target_project_id),
+            period: q.period,
+            question_number: nextQuestionNumber++,
+            category: q.category,
+            skill: q.skill,
+            question_text: q.question_text,
+            options: q.options,
+            correct_answer: q.correct_answer,
+            explanation: q.explanation,
+            created_at: new Date(),
+            copied_from: q._id
+        }));
+        
+        const result = await questionsCollection.insertMany(copiedQuestions);
+        
+        console.log(`✅ Copied ${copiedQuestions.length} questions from ${source_project_id} to ${target_project_id}`);
+        res.json({
+            success: true,
+            copied_count: copiedQuestions.length,
+            questions: copiedQuestions
         });
+        
     } catch (err) {
-        console.error('❌ Database health check failed:', err);
-        res.status(500).json({ 
-            status: 'ERROR', 
-            message: 'Database connection failed',
-            timestamp: new Date().toISOString(),
-            error: err.message
+        console.error('❌ Error copying questions:', err);
+        res.status(500).json({ error: 'Database error' });
+    }
+});
+
+// API: Update question
+app.put('/api/questions/:question_id', async (req, res) => {
+    const { category, skill, question_text, options, correct_answer, explanation } = req.body;
+    
+    try {
+        const questionsCollection = db.collection('questions');
+        
+        const updateDoc = {
+            ...(category && { category }),
+            ...(skill && { skill }),
+            ...(question_text && { question_text }),
+            ...(options && { options }),
+            ...(correct_answer && { correct_answer }),
+            ...(explanation && { explanation }),
+            updated_at: new Date()
+        };
+        
+        const result = await questionsCollection.updateOne(
+            { _id: new ObjectId(req.params.question_id) },
+            { $set: updateDoc }
+        );
+        
+        if (result.matchedCount === 0) {
+            return res.status(404).json({ error: 'Question not found' });
+        }
+        
+        console.log(`✅ Question ${req.params.question_id} updated`);
+        res.json({ success: true, message: 'Question updated successfully' });
+        
+    } catch (err) {
+        console.error('❌ Error updating question:', err);
+        res.status(500).json({ error: 'Database error' });
+    }
+});
+
+// API: Delete question
+app.delete('/api/questions/:question_id', async (req, res) => {
+    try {
+        const questionsCollection = db.collection('questions');
+        
+        const result = await questionsCollection.deleteOne({
+            _id: new ObjectId(req.params.question_id)
         });
+        
+        if (result.deletedCount === 0) {
+            return res.status(404).json({ error: 'Question not found' });
+        }
+        
+        console.log(`✅ Question ${req.params.question_id} deleted`);
+        res.json({ success: true, message: 'Question deleted successfully' });
+        
+    } catch (err) {
+        console.error('❌ Error deleting question:', err);
+        res.status(500).json({ error: 'Database error' });
+    }
+});
+
+// API: Migrate existing data to baseline period
+app.post('/api/migrate-to-baseline', async (req, res) => {
+    console.log('🔄 Admin requesting migration of existing data to baseline period');
+    
+    try {
+        const resultsCollection = db.collection('quiz_results');
+        const projectsCollection = db.collection('projects');
+        
+        // Find NCC Embedded Lab project
+        const nccProject = await projectsCollection.findOne({ name: "NCC Embedded Lab" });
+        if (!nccProject) {
+            return res.status(404).json({ error: 'NCC Embedded Lab project not found' });
+        }
+        
+        // Update all results for NCC project that don't have a period set
+        const updateResult = await resultsCollection.updateMany(
+            { 
+                project_id: nccProject._id,
+                $or: [
+                    { period: { $exists: false } },
+                    { period: null },
+                    { period: "" }
+                ]
+            },
+            { 
+                $set: { 
+                    period: "baseline",
+                    updated_at: new Date()
+                }
+            }
+        );
+        
+        console.log(`✅ Migrated ${updateResult.modifiedCount} NCC results to baseline period`);
+        res.json({
+            success: true,
+            message: `Successfully migrated ${updateResult.modifiedCount} results to baseline period`,
+            updated_count: updateResult.modifiedCount
+        });
+        
+    } catch (err) {
+        console.error('❌ Error migrating data to baseline:', err);
+        res.status(500).json({ error: 'Database error', details: err.message });
+    }
+});
+
+// API: Get period comparison data
+app.get('/api/period-comparison/:project_id', async (req, res) => {
+    console.log('📊 Fetching period comparison for project:', req.params.project_id);
+    
+    try {
+        const resultsCollection = db.collection('quiz_results');
+        const projectId = new ObjectId(req.params.project_id);
+        
+        // Aggregate data by period
+        const periodData = await resultsCollection.aggregate([
+            { $match: { project_id: projectId } },
+            {
+                $group: {
+                    _id: {
+                        period: "$period",
+                        participant: "$participant_name"
+                    },
+                    totalScore: { $first: "$total_score" },
+                    percentage: { $first: "$percentage" },
+                    completedAt: { $first: "$completed_at" },
+                    questions: { $first: "$questions" }
+                }
+            },
+            {
+                $group: {
+                    _id: "$_id.period",
+                    participants: {
+                        $push: {
+                            name: "$_id.participant",
+                            totalScore: "$totalScore",
+                            percentage: "$percentage",
+                            completedAt: "$completedAt",
+                            questions: "$questions"
+                        }
+                    },
+                    averageScore: { $avg: "$percentage" },
+                    count: { $sum: 1 }
+                }
+            },
+            { $sort: { "_id": 1 } }
+        ]).toArray();
+        
+        // Calculate skill area performance by period
+        const skillAreaMapping = {
+            'Data Analysis': [1, 2, 3, 4, 5, 6, 7, 8],
+            'M&E': [9, 10, 11, 12, 13],
+            'RCT/Impact': [14, 15, 16],
+            'Programming Logic': [17, 18, 19, 20]
+        };
+        
+        const skillByPeriod = {};
+        
+        periodData.forEach(period => {
+            skillByPeriod[period._id] = {};
+            
+            Object.entries(skillAreaMapping).forEach(([skill, questionNumbers]) => {
+                let totalCorrect = 0;
+                let totalQuestions = 0;
+                
+                period.participants.forEach(participant => {
+                    questionNumbers.forEach(qNum => {
+                        const question = participant.questions[`Q${qNum}`];
+                        if (question) {
+                            totalQuestions++;
+                            if (question.is_correct) {
+                                totalCorrect++;
+                            }
+                        }
+                    });
+                });
+                
+                skillByPeriod[period._id][skill] = {
+                    percentage: totalQuestions > 0 ? Math.round((totalCorrect / totalQuestions) * 100) : 0,
+                    totalCorrect,
+                    totalQuestions
+                };
+            });
+        });
+        
+        res.json({
+            periodData,
+            skillByPeriod,
+            summary: {
+                periods: periodData.map(p => p._id),
+                totalParticipants: periodData.reduce((sum, p) => sum + p.count, 0)
+            }
+        });
+        
+    } catch (err) {
+        console.error('❌ Error fetching period comparison:', err);
+        res.status(500).json({ error: 'Database error', details: err.message });
     }
 });
 
