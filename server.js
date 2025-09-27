@@ -1082,7 +1082,7 @@ app.get('/api/period-comparison/:project_id', async (req, res) => {
 // API: Delete project (password protected)
 app.delete('/api/projects/:project_id', async (req, res) => {
     const { password } = req.body;
-    const SECURE_PASSWORD = 'KK@www1203'pw';
+    const SECURE_PASSWORD = 'KK@www1203pw';
     
     if (password !== SECURE_PASSWORD) {
         return res.status(401).json({ error: 'Invalid admin password' });
@@ -1123,7 +1123,7 @@ app.delete('/api/projects/:project_id', async (req, res) => {
 // API: Delete individual record (password protected)
 app.delete('/api/results/record/:record_id', async (req, res) => {
     const { password } = req.body;
-    const SECURE_PASSWORD = 'KK@www1203'pw';
+    const SECURE_PASSWORD = 'KK@www1203pw';
     
     if (password !== SECURE_PASSWORD) {
         return res.status(401).json({ error: 'Invalid admin password' });
@@ -1162,7 +1162,7 @@ app.delete('/api/results/record/:record_id', async (req, res) => {
 // API: Clear project data (password protected)
 app.delete('/api/results/:project_id', async (req, res) => {
     const { password } = req.body;
-    const SECURE_PASSWORD = 'KK@www1203'pw';
+    const SECURE_PASSWORD = 'KK@www1203pw';
     
     if (password !== SECURE_PASSWORD) {
         return res.status(401).json({ error: 'Invalid admin password' });
@@ -1204,22 +1204,6 @@ process.on('SIGINT', async () => {
     }
     process.exit(0);
 });
-
-// Initialize database and start server
-initDatabase()
-    .then(() => {
-        app.listen(PORT, () => {
-            console.log(`🚀 Server running on port ${PORT}`);
-            console.log(`📊 Quiz available at: http://localhost:${PORT}`);
-            console.log(`👨‍💼 Admin panel at: http://localhost:${PORT}/admin.html`);
-            console.log(`💾 Database: MongoDB (persistent with project management)`);
-            console.log('✅ System ready for quiz submissions with project-based access control');
-        });
-    })
-    .catch(err => {
-        console.error('💥 Failed to initialize database:', err);
-        process.exit(1);
-    });
 
 // Initialize database and start server
 initDatabase()
