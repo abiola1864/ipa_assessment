@@ -1256,27 +1256,27 @@
                     <p class="section-subtitle" id="analyticsSubtitle">Performance insights by question and skill area</p>
                 </div>
 
-                <div class="question-analytics">
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 32px; margin-bottom: 40px;">
                     <div class="card">
                         <div class="card-header">
                             <h3 class="card-title">
-                                <i class="fas fa-exclamation-triangle"></i> Most Challenging Questions
+                                <i class="fas fa-exclamation-triangle" style="color: #dc2626;"></i> Most Challenging Questions
                             </h3>
                         </div>
-                        <ul class="question-list" id="hardestQuestions">
+                        <div id="hardestQuestions" style="max-height: 500px; overflow-y: auto;">
                             <!-- Populated by JavaScript -->
-                        </ul>
+                        </div>
                     </div>
 
                     <div class="card">
                         <div class="card-header">
                             <h3 class="card-title">
-                                <i class="fas fa-check-circle"></i> Best Performing Questions
+                                <i class="fas fa-check-circle" style="color: var(--primary-green);"></i> Best Performing Questions
                             </h3>
                         </div>
-                        <ul class="question-list" id="easiestQuestions">
+                        <div id="easiestQuestions" style="max-height: 500px; overflow-y: auto;">
                             <!-- Populated by JavaScript -->
-                        </ul>
+                        </div>
                     </div>
                 </div>
 
@@ -1403,90 +1403,171 @@
         </div>
     </div>
 
-    <!-- Add Question Modal -->
-    <div id="addQuestionModal" class="modal">
+    <!-- Create Project Modal -->
+    <div id="createProjectModal" class="modal">
         <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">Create New Project</h3>
+                <button class="modal-close" onclick="closeCreateProjectModal()">&times;</button>
+            </div>
+            <form id="createProjectForm" onsubmit="createProject(event)">
+                <div class="form-group">
+                    <label for="projectName">Project Name *</label>
+                    <input type="text" id="projectName" name="name" required maxlength="100" 
+                           placeholder="e.g., NCC Consumer Protection Assessment">
+                </div>
+                <div class="form-group">
+                    <label for="projectDescription">Description</label>
+                    <textarea id="projectDescription" name="description" maxlength="500"
+                              placeholder="Brief description of the project and its objectives"></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="projectTimeLimit">Time Limit (minutes) *</label>
+                    <select id="projectTimeLimit" name="time_limit" required>
+                        <option value="1800">30 minutes</option>
+                        <option value="2700">45 minutes</option>
+                        <option value="3600">60 minutes</option>
+                        <option value="5400">90 minutes</option>
+                        <option value="7200">120 minutes</option>
+                    </select>
+                </div>
+                <div style="display: flex; gap: 16px; justify-content: flex-end; margin-top: 32px;">
+                    <button type="button" class="btn btn-secondary" onclick="closeCreateProjectModal()">
+                        Cancel
+                    </button>
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fas fa-plus"></i> Create Project
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Enhanced Add Question Modal -->
+    <div id="addQuestionModal" class="modal">
+        <div class="modal-content" style="max-width: 800px;">
             <div class="modal-header">
                 <h3 class="modal-title">Add New Question</h3>
                 <button class="modal-close" onclick="closeQuestionModal()">&times;</button>
             </div>
             <form id="addQuestionForm" onsubmit="createQuestion(event)">
-                <div class="form-group">
-                    <label for="questionProject">Project *</label>
-                    <select id="questionProject" name="project_id" required>
-                        <option value="">Select Project</option>
-                    </select>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+                    <div class="form-group">
+                        <label for="questionProject">Project *</label>
+                        <select id="questionProject" name="project_id" required>
+                            <option value="">Select Project</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="questionPeriod">Period</label>
+                        <select id="questionPeriod" name="period">
+                            <option value="baseline">Baseline</option>
+                            <option value="intermediate">Intermediate</option>
+                            <option value="endline">Endline</option>
+                        </select>
+                    </div>
                 </div>
-                <div class="form-group">
-                    <label for="questionPeriod">Period</label>
-                    <select id="questionPeriod" name="period">
-                        <option value="baseline">Baseline</option>
-                        <option value="intermediate">Intermediate</option>
-                        <option value="endline">Endline</option>
-                    </select>
+                
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+                    <div class="form-group">
+                        <label for="questionCategory">Category *</label>
+                        <select id="questionCategory" name="category" required onchange="toggleCustomCategory()">
+                            <option value="">Select Category</option>
+                            <option value="Data Analysis">Data Analysis</option>
+                            <option value="M&E">M&E (Monitoring & Evaluation)</option>
+                            <option value="RCT/Impact">RCT/Impact Evaluation</option>
+                            <option value="Programming Logic">Programming Logic</option>
+                            <option value="Other">Other (Custom)</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="customCategory" id="customCategoryLabel" style="display: none;">Custom Category Name *</label>
+                        <input type="text" id="customCategory" name="custom_category" maxlength="100" 
+                               placeholder="Enter custom category name" style="display: none;">
+                    </div>
                 </div>
-                <div class="form-group">
-                    <label for="questionCategory">Category *</label>
-                    <select id="questionCategory" name="category" required>
-                        <option value="">Select Category</option>
-                        <option value="Data Analysis">Data Analysis</option>
-                        <option value="M&E">M&E (Monitoring & Evaluation)</option>
-                        <option value="RCT/Impact">RCT/Impact Evaluation</option>
-                        <option value="Programming Logic">Programming Logic</option>
-                        <option value="Other">Other</option>
-                    </select>
-                </div>
+                
                 <div class="form-group">
                     <label for="questionSkill">Skill/Topic *</label>
                     <input type="text" id="questionSkill" name="skill" required maxlength="200" 
                            placeholder="e.g., Understanding Confounding Variables">
                 </div>
+                
                 <div class="form-group">
                     <label for="questionText">Question Text *</label>
                     <textarea id="questionText" name="question_text" required maxlength="1000" rows="4"
-                              placeholder="Enter the full question text..."></textarea>
+                              placeholder="Enter the full question text..." style="font-family: inherit; resize: vertical;"></textarea>
                 </div>
+                
                 <div class="form-group">
-                    <label>Answer Options *</label>
-                    <div id="questionOptions">
-                        <div class="option-input" data-option="A">
-                            <label>Option A:</label>
-                            <textarea name="option_A" required maxlength="500" rows="2" placeholder="First option..."></textarea>
+                    <label style="display: flex; justify-content: space-between; align-items: center;">
+                        <span>Answer Options *</span>
+                        <button type="button" class="btn btn-outline" onclick="showBulkPasteHelp()" 
+                                style="padding: 6px 12px; font-size: 0.8rem;">
+                            <i class="fas fa-paste"></i> Bulk Paste Help
+                        </button>
+                    </label>
+                    <div id="bulkPasteArea" style="display: none; margin-bottom: 16px;">
+                        <textarea id="bulkPasteInput" placeholder="Paste all 4 options here (one per line)&#10;Option A text&#10;Option B text&#10;Option C text&#10;Option D text" 
+                                  rows="5" style="width: 100%; padding: 12px; border: 2px dashed var(--primary-green); border-radius: 8px; font-family: inherit;"></textarea>
+                        <div style="display: flex; gap: 8px; margin-top: 8px;">
+                            <button type="button" class="btn btn-primary" onclick="applyBulkPaste()" 
+                                    style="padding: 8px 16px; font-size: 0.85rem;">
+                                <i class="fas fa-check"></i> Apply to Options
+                            </button>
+                            <button type="button" class="btn btn-secondary" onclick="hideBulkPasteHelp()" 
+                                    style="padding: 8px 16px; font-size: 0.85rem;">
+                                Cancel
+                            </button>
                         </div>
-                        <div class="option-input" data-option="B">
-                            <label>Option B:</label>
-                            <textarea name="option_B" required maxlength="500" rows="2" placeholder="Second option..."></textarea>
+                    </div>
+                    <div id="questionOptions" style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
+                        <div class="option-input" data-option="A" style="background: var(--surface-alt); padding: 16px; border-radius: 12px; border: 1px solid var(--border-light);">
+                            <label style="font-weight: 600; color: var(--primary-green); margin-bottom: 8px; display: block;">Option A:</label>
+                            <textarea name="option_A" required maxlength="500" rows="3" placeholder="First option..." 
+                                      style="width: 100%; border: 1px solid var(--border-light); border-radius: 6px; padding: 8px; font-family: inherit; resize: vertical;"></textarea>
                         </div>
-                        <div class="option-input" data-option="C">
-                            <label>Option C:</label>
-                            <textarea name="option_C" required maxlength="500" rows="2" placeholder="Third option..."></textarea>
+                        <div class="option-input" data-option="B" style="background: var(--surface-alt); padding: 16px; border-radius: 12px; border: 1px solid var(--border-light);">
+                            <label style="font-weight: 600; color: var(--primary-green); margin-bottom: 8px; display: block;">Option B:</label>
+                            <textarea name="option_B" required maxlength="500" rows="3" placeholder="Second option..." 
+                                      style="width: 100%; border: 1px solid var(--border-light); border-radius: 6px; padding: 8px; font-family: inherit; resize: vertical;"></textarea>
                         </div>
-                        <div class="option-input" data-option="D">
-                            <label>Option D:</label>
-                            <textarea name="option_D" required maxlength="500" rows="2" placeholder="Fourth option..."></textarea>
+                        <div class="option-input" data-option="C" style="background: var(--surface-alt); padding: 16px; border-radius: 12px; border: 1px solid var(--border-light);">
+                            <label style="font-weight: 600; color: var(--primary-green); margin-bottom: 8px; display: block;">Option C:</label>
+                            <textarea name="option_C" required maxlength="500" rows="3" placeholder="Third option..." 
+                                      style="width: 100%; border: 1px solid var(--border-light); border-radius: 6px; padding: 8px; font-family: inherit; resize: vertical;"></textarea>
+                        </div>
+                        <div class="option-input" data-option="D" style="background: var(--surface-alt); padding: 16px; border-radius: 12px; border: 1px solid var(--border-light);">
+                            <label style="font-weight: 600; color: var(--primary-green); margin-bottom: 8px; display: block;">Option D:</label>
+                            <textarea name="option_D" required maxlength="500" rows="3" placeholder="Fourth option..." 
+                                      style="width: 100%; border: 1px solid var(--border-light); border-radius: 6px; padding: 8px; font-family: inherit; resize: vertical;"></textarea>
                         </div>
                     </div>
                 </div>
-                <div class="form-group">
-                    <label for="correctAnswer">Correct Answer *</label>
-                    <select id="correctAnswer" name="correct_answer" required>
-                        <option value="">Select correct answer</option>
-                        <option value="A">A</option>
-                        <option value="B">B</option>
-                        <option value="C">C</option>
-                        <option value="D">D</option>
-                    </select>
+                
+                <div style="display: grid; grid-template-columns: 1fr 2fr; gap: 20px;">
+                    <div class="form-group">
+                        <label for="correctAnswer">Correct Answer *</label>
+                        <select id="correctAnswer" name="correct_answer" required style="font-size: 1.1rem; font-weight: 600;">
+                            <option value="">Select correct answer</option>
+                            <option value="A">A</option>
+                            <option value="B">B</option>
+                            <option value="C">C</option>
+                            <option value="D">D</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="questionExplanation">Explanation (Recommended)</label>
+                        <textarea id="questionExplanation" name="explanation" maxlength="1000" rows="3"
+                                  placeholder="Explain why this is the correct answer..." style="font-family: inherit; resize: vertical;"></textarea>
+                    </div>
                 </div>
-                <div class="form-group">
-                    <label for="questionExplanation">Explanation</label>
-                    <textarea id="questionExplanation" name="explanation" maxlength="1000" rows="3"
-                              placeholder="Explain why this is the correct answer (optional but recommended)..."></textarea>
-                </div>
-                <div style="display: flex; gap: 16px; justify-content: flex-end; margin-top: 32px;">
+                
+                <div style="display: flex; gap: 16px; justify-content: flex-end; margin-top: 32px; padding-top: 20px; border-top: 2px solid var(--border-light);">
                     <button type="button" class="btn btn-secondary" onclick="closeQuestionModal()">
                         Cancel
                     </button>
-                    <button type="submit" class="btn btn-primary">
+                    <button type="submit" class="btn btn-primary" style="padding: 14px 28px;">
                         <i class="fas fa-plus"></i> Add Question
                     </button>
                 </div>
@@ -1794,6 +1875,109 @@
             } catch (error) {
                 console.error('Error creating project:', error);
                 showActionMessage('Failed to create project: ' + error.message, true);
+            }
+        }
+
+        // Enhanced form functions for question creation
+        function toggleCustomCategory() {
+            const categorySelect = document.getElementById('questionCategory');
+            const customCategoryInput = document.getElementById('customCategory');
+            const customCategoryLabel = document.getElementById('customCategoryLabel');
+            
+            if (categorySelect.value === 'Other') {
+                customCategoryInput.style.display = 'block';
+                customCategoryLabel.style.display = 'block';
+                customCategoryInput.required = true;
+            } else {
+                customCategoryInput.style.display = 'none';
+                customCategoryLabel.style.display = 'none';
+                customCategoryInput.required = false;
+                customCategoryInput.value = '';
+            }
+        }
+
+        function showBulkPasteHelp() {
+            document.getElementById('bulkPasteArea').style.display = 'block';
+        }
+
+        function hideBulkPasteHelp() {
+            document.getElementById('bulkPasteArea').style.display = 'none';
+            document.getElementById('bulkPasteInput').value = '';
+        }
+
+        function applyBulkPaste() {
+            const bulkText = document.getElementById('bulkPasteInput').value.trim();
+            const lines = bulkText.split('\n').filter(line => line.trim());
+            
+            if (lines.length !== 4) {
+                alert('Please paste exactly 4 options (one per line)');
+                return;
+            }
+            
+            const optionInputs = ['option_A', 'option_B', 'option_C', 'option_D'];
+            lines.forEach((line, index) => {
+                if (index < 4) {
+                    const textarea = document.querySelector(`textarea[name="${optionInputs[index]}"]`);
+                    if (textarea) {
+                        textarea.value = line.trim();
+                    }
+                }
+            });
+            
+            hideBulkPasteHelp();
+            showActionMessage('Options applied successfully!');
+        }
+
+        async function createQuestion(event) {
+            event.preventDefault();
+            
+            const formData = new FormData(event.target);
+            let category = formData.get('category');
+            
+            // Handle custom category
+            if (category === 'Other') {
+                const customCategory = formData.get('custom_category');
+                if (!customCategory || !customCategory.trim()) {
+                    showActionMessage('Please enter a custom category name.', true);
+                    return;
+                }
+                category = customCategory.trim();
+            }
+            
+            const questionData = {
+                project_id: formData.get('project_id'),
+                period: formData.get('period'),
+                category: category,
+                skill: formData.get('skill'),
+                question_text: formData.get('question_text'),
+                options: [
+                    formData.get('option_A'),
+                    formData.get('option_B'),
+                    formData.get('option_C'),
+                    formData.get('option_D')
+                ],
+                correct_answer: formData.get('correct_answer'),
+                explanation: formData.get('explanation')
+            };
+            
+            try {
+                const response = await fetch('/api/questions', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(questionData)
+                });
+                
+                if (response.ok) {
+                    const result = await response.json();
+                    showActionMessage(`Question added successfully!`);
+                    closeQuestionModal();
+                    await loadQuestionsForProject();
+                } else {
+                    throw new Error('Failed to create question');
+                }
+            } catch (error) {
+                console.error('Error creating question:', error);
+                showActionMessage('Failed to create question: ' + error.message, true);
             }
         }
 
@@ -2149,17 +2333,271 @@
             showActionMessage('Question editing feature coming soon!', true);
         }
 
-        // Enhanced placeholder functions for other features
-        function loadQuestions() {
-            updateQuestionProjectFilter();
-            nccProjectId = projects.find(p => p.name === "NCC Embedded Lab")?._id;
-            console.log('Questions section loaded, NCC Project ID:', nccProjectId);
+        function generateAnalytics(results) {
+            if (!results.length) return;
+
+            // Get questions from the current project to include question text
+            const questionTexts = {};
+            if (currentProjectQuestions.length > 0) {
+                currentProjectQuestions.forEach(q => {
+                    questionTexts[q.question_number] = q.question_text;
+                });
+            }
+
+            // Create question analytics
+            const questionStats = {};
+            
+            results.forEach(result => {
+                // Count questions dynamically based on result data
+                for (let i = 1; i <= 20; i++) {
+                    const qKey = `Q${i}`;
+                    if (result[qKey] && result[`${qKey}_correct`]) {
+                        if (!questionStats[i]) {
+                            questionStats[i] = {
+                                id: i,
+                                category: result[`${qKey}_category`] || 'Unknown',
+                                skill: result[`${qKey}_skill`] || 'Unknown',
+                                question: questionTexts[i] || 'Question text not available',
+                                correct: 0,
+                                total: 0
+                            };
+                        }
+                        questionStats[i].total++;
+                        if (result[qKey] === result[`${qKey}_correct`]) {
+                            questionStats[i].correct++;
+                        }
+                    }
+                }
+            });
+
+            const questions = Object.values(questionStats).map(q => ({
+                ...q,
+                successRate: q.total > 0 ? Math.round((q.correct / q.total) * 100) : 0
+            }));
+
+            const hardest = questions.sort((a, b) => a.successRate - b.successRate).slice(0, 5);
+            const easiest = questions.sort((a, b) => b.successRate - a.successRate).slice(0, 5);
+
+            updateQuestionAnalytics(hardest, easiest);
+            generateSkillAnalytics(results);
+            updateResultsTable(results);
         }
 
-        function loadPeriodComparison() {
-            console.log('Loading period comparison for project:', currentProjectId);
-            // TODO: Implement period comparison
+        // Period Comparison Functions
+        let periodComparisonData = null;
+
+        async function loadPeriodComparison() {
+            if (currentProjectId === 'all') {
+                showPeriodMessage('Please select a specific project to view period comparison.');
+                return;
+            }
+
+            try {
+                const response = await fetch(`/api/period-comparison/${currentProjectId}`);
+                if (response.ok) {
+                    periodComparisonData = await response.json();
+                    updatePeriodDisplay();
+                } else {
+                    throw new Error('Failed to load period comparison data');
+                }
+            } catch (error) {
+                console.error('Error loading period comparison:', error);
+                showPeriodMessage('Failed to load period comparison data.');
+            }
         }
+
+        function updatePeriodDisplay() {
+            const activePeriod = document.querySelector('.period-tab.active')?.dataset?.period || 'baseline';
+            updatePeriodContent(activePeriod);
+        }
+
+        function updatePeriodContent(period) {
+            const container = document.getElementById('periodContent');
+            if (!periodComparisonData) return;
+
+            const periodData = periodComparisonData.periodData.find(p => p._id === period);
+            
+            if (!periodData || periodData.participants.length === 0) {
+                container.innerHTML = `
+                    <div style="text-align: center; padding: 80px; color: var(--text-muted);">
+                        <i class="fas fa-chart-line" style="font-size: 4rem; margin-bottom: 24px;"></i>
+                        <h3>No ${period.charAt(0).toUpperCase() + period.slice(1)} Data</h3>
+                        <p style="margin: 16px 0; font-size: 1.1rem;">No participants have completed the ${period} assessment for this project yet.</p>
+                        <div style="background: var(--surface-alt); padding: 20px; border-radius: 12px; margin: 24px auto; max-width: 500px;">
+                            <p style="margin: 0; color: var(--text-secondary); font-size: 0.95rem; line-height: 1.6;">
+                                <i class="fas fa-lightbulb" style="color: var(--primary-green); margin-right: 8px;"></i>
+                                Participants need to complete assessments in this period before comparison data will be available.
+                            </p>
+                        </div>
+                        ${period === 'baseline' ? `
+                            <button class="btn btn-primary" onclick="migrateToBaseline()" style="margin-top: 20px;">
+                                <i class="fas fa-database"></i> Migrate Existing Data to Baseline
+                            </button>
+                        ` : ''}
+                    </div>
+                `;
+                return;
+            }
+
+            // Display period data with charts
+            let html = `
+                <div style="margin-bottom: 32px;">
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; margin-bottom: 32px;">
+                        <div style="background: var(--surface-alt); padding: 24px; border-radius: 16px; text-align: center; border: 1px solid var(--border-light);">
+                            <div style="font-size: 2.5rem; font-weight: 800; color: var(--primary-green); margin-bottom: 8px;">
+                                ${periodData.participants.length}
+                            </div>
+                            <div style="color: var(--text-secondary); font-weight: 600; text-transform: uppercase; font-size: 0.9rem;">
+                                Participants
+                            </div>
+                        </div>
+                        <div style="background: var(--surface-alt); padding: 24px; border-radius: 16px; text-align: center; border: 1px solid var(--border-light);">
+                            <div style="font-size: 2.5rem; font-weight: 800; color: var(--primary-green); margin-bottom: 8px;">
+                                ${Math.round(periodData.averageScore)}%
+                            </div>
+                            <div style="color: var(--text-secondary); font-weight: 600; text-transform: uppercase; font-size: 0.9rem;">
+                                Average Score
+                            </div>
+                        </div>
+                    </div>
+            `;
+
+            // Add individual participant performance chart
+            html += `
+                <div style="background: white; padding: 24px; border-radius: 16px; border: 1px solid var(--border-light); margin-bottom: 32px;">
+                    <h4 style="margin-bottom: 20px; color: var(--text-primary);">
+                        <i class="fas fa-user-chart"></i> Individual Performance in ${period.charAt(0).toUpperCase() + period.slice(1)}
+                    </h4>
+                    <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 20px;">
+            `;
+
+            // Individual participant cards
+            periodData.participants.forEach(participant => {
+                html += `
+                    <div style="border: 1px solid var(--border-light); border-radius: 12px; padding: 20px; background: var(--surface-alt);">
+                        <div style="display: flex; justify-content: between; align-items: center; margin-bottom: 16px;">
+                            <h5 style="margin: 0; color: var(--text-primary); font-weight: 600;">
+                                ${participant.name}
+                            </h5>
+                            <div style="background: ${getScoreColor(participant.percentage)}; color: white; padding: 6px 12px; border-radius: 20px; font-weight: 700; font-size: 0.9rem;">
+                                ${participant.percentage}%
+                            </div>
+                        </div>
+                        <div style="background: white; height: 8px; border-radius: 4px; overflow: hidden; margin-bottom: 12px;">
+                            <div style="height: 100%; background: ${getScoreColor(participant.percentage)}; width: ${participant.percentage}%; transition: width 0.3s ease;"></div>
+                        </div>
+                        <div style="font-size: 0.8rem; color: var(--text-muted);">
+                            Score: ${participant.totalScore}/20 • Completed: ${formatDateTime(participant.completedAt)}
+                        </div>
+                    </div>
+                `;
+            });
+
+            html += `
+                    </div>
+                </div>
+            `;
+
+            // Add skill area performance for this period
+            const skillData = periodComparisonData.skillByPeriod[period];
+            if (skillData) {
+                html += `
+                    <div style="background: white; padding: 24px; border-radius: 16px; border: 1px solid var(--border-light);">
+                        <h4 style="margin-bottom: 20px; color: var(--text-primary);">
+                            <i class="fas fa-brain"></i> Skill Area Performance in ${period.charAt(0).toUpperCase() + period.slice(1)}
+                        </h4>
+                        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px;">
+                `;
+
+                Object.entries(skillData).forEach(([skill, data]) => {
+                    const color = data.percentage >= 80 ? 'var(--primary-green)' : 
+                                 data.percentage >= 60 ? '#f59e0b' : '#dc2626';
+                    const icon = skill.includes('Data') ? 'chart-bar' : 
+                               skill.includes('M&E') ? 'tasks' :
+                               skill.includes('RCT') ? 'flask' : 'code';
+
+                    html += `
+                        <div style="background: var(--surface-alt); padding: 20px; border-radius: 12px; text-align: center; border: 1px solid var(--border-light);">
+                            <div style="color: ${color}; font-size: 1.5rem; margin-bottom: 12px;">
+                                <i class="fas fa-${icon}"></i>
+                            </div>
+                            <div style="font-size: 2rem; font-weight: 800; color: ${color}; margin-bottom: 8px;">
+                                ${data.percentage}%
+                            </div>
+                            <div style="font-size: 0.9rem; font-weight: 600; color: var(--text-primary); margin-bottom: 4px;">
+                                ${skill}
+                            </div>
+                            <div style="font-size: 0.8rem; color: var(--text-muted);">
+                                ${data.totalCorrect}/${data.totalQuestions} correct
+                            </div>
+                        </div>
+                    `;
+                });
+
+                html += `
+                        </div>
+                    </div>
+                `;
+            }
+
+            html += '</div>';
+            container.innerHTML = html;
+        }
+
+        function getScoreColor(percentage) {
+            if (percentage >= 80) return 'var(--primary-green)';
+            if (percentage >= 60) return '#f59e0b';
+            return '#dc2626';
+        }
+
+        function showPeriodMessage(message) {
+            const container = document.getElementById('periodContent');
+            container.innerHTML = `
+                <div style="text-align: center; padding: 60px; color: var(--text-muted);">
+                    <i class="fas fa-info-circle" style="font-size: 3rem; margin-bottom: 16px;"></i>
+                    <p style="font-size: 1.1rem; margin: 0;">${message}</p>
+                </div>
+            `;
+        }
+
+        async function migrateToBaseline() {
+            if (!confirm('This will move all existing quiz results for this project to the baseline period. Continue?')) {
+                return;
+            }
+
+            try {
+                const response = await fetch('/api/migrate-to-baseline', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' }
+                });
+
+                if (response.ok) {
+                    const result = await response.json();
+                    showActionMessage(result.message);
+                    await loadPeriodComparison();
+                    await refreshData();
+                } else {
+                    throw new Error('Failed to migrate data');
+                }
+            } catch (error) {
+                console.error('Error migrating to baseline:', error);
+                showActionMessage('Failed to migrate data: ' + error.message, true);
+            }
+        }
+
+        // Add period tab functionality
+        document.addEventListener('DOMContentLoaded', function() {
+            document.addEventListener('click', function(e) {
+                if (e.target.classList.contains('period-tab')) {
+                    // Remove active class from all tabs
+                    document.querySelectorAll('.period-tab').forEach(tab => tab.classList.remove('active'));
+                    // Add active class to clicked tab
+                    e.target.classList.add('active');
+                    // Update period content
+                    updatePeriodContent(e.target.dataset.period);
+                }
+            });
+        });
 
         // Enhanced utility functions
         function updateStatistics(stats) {
@@ -2230,27 +2668,63 @@
 
             if (!hardestContainer || !easiestContainer) return;
 
-            hardestContainer.innerHTML = hardest.map(q => `
-                <li class="question-item hardest" style="padding: 20px; margin-bottom: 16px; background: var(--surface); border-radius: 12px; border-left: 4px solid #dc2626;">
-                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
-                        <span style="font-weight: 700; color: var(--text-primary);">Question ${q.id} - ${q.category}</span>
-                        <span style="background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%); color: white; padding: 8px 16px; border-radius: 20px; font-weight: 800; font-size: 1.1rem;">${q.successRate}%</span>
+            const createQuestionCard = (q, type) => `
+                <div style="padding: 20px; margin-bottom: 16px; background: var(--surface-alt); border-radius: 12px; border-left: 4px solid ${type === 'hard' ? '#dc2626' : 'var(--primary-green)'}; transition: all 0.3s ease;" 
+                     onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 8px 25px rgba(0,0,0,0.1)'" 
+                     onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='none'">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+                        <div>
+                            <div style="font-weight: 700; color: var(--text-primary); font-size: 1rem; margin-bottom: 4px;">
+                                Question ${q.id} - ${q.category}
+                            </div>
+                            <div style="color: var(--text-secondary); font-size: 0.9rem; font-weight: 500;">
+                                ${q.skill}
+                            </div>
+                        </div>
+                        <div style="text-align: right;">
+                            <div style="background: linear-gradient(135deg, ${type === 'hard' ? '#dc2626' : 'var(--primary-green)'} 0%, ${type === 'hard' ? '#b91c1c' : 'var(--primary-green-light)'} 100%); color: white; padding: 8px 16px; border-radius: 20px; font-weight: 800; font-size: 1.1rem; margin-bottom: 4px;">
+                                ${q.successRate}%
+                            </div>
+                            <div style="color: var(--text-muted); font-size: 0.8rem; font-weight: 500;">
+                                ${q.correct}/${q.total} correct
+                            </div>
+                        </div>
                     </div>
-                    <div style="color: var(--text-secondary); font-size: 0.9rem; font-weight: 500;">${q.skill}</div>
-                    <div style="color: var(--text-muted); font-size: 0.8rem; margin-top: 8px;">${q.correct}/${q.total} correct</div>
-                </li>
-            `).join('');
+                    <div style="background: white; padding: 16px; border-radius: 8px; border: 1px solid var(--border-light);">
+                        <div style="color: var(--text-primary); font-size: 0.9rem; line-height: 1.5; font-weight: 500;">
+                            ${q.question ? q.question.substring(0, 200) + (q.question.length > 200 ? '...' : '') : 'Question preview not available'}
+                        </div>
+                        ${q.successRate < 50 && type === 'hard' ? `
+                            <div style="margin-top: 12px; padding: 12px; background: #fef2f2; border: 1px solid #fecaca; border-radius: 6px;">
+                                <div style="color: #dc2626; font-size: 0.8rem; font-weight: 600;">
+                                    <i class="fas fa-exclamation-triangle"></i> Requires Review
+                                </div>
+                                <div style="color: #7f1d1d; font-size: 0.75rem; margin-top: 4px;">
+                                    Consider reviewing question clarity or providing additional training on this topic.
+                                </div>
+                            </div>
+                        ` : ''}
+                        ${q.successRate > 90 && type === 'easy' ? `
+                            <div style="margin-top: 12px; padding: 12px; background: #f0fdf4; border: 1px solid #bbf7d0; border-radius: 6px;">
+                                <div style="color: var(--primary-green); font-size: 0.8rem; font-weight: 600;">
+                                    <i class="fas fa-check-circle"></i> Excellent Performance
+                                </div>
+                                <div style="color: #15803d; font-size: 0.75rem; margin-top: 4px;">
+                                    This topic is well understood by participants.
+                                </div>
+                            </div>
+                        ` : ''}
+                    </div>
+                </div>
+            `;
 
-            easiestContainer.innerHTML = easiest.map(q => `
-                <li class="question-item easiest" style="padding: 20px; margin-bottom: 16px; background: var(--surface); border-radius: 12px; border-left: 4px solid var(--primary-green);">
-                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
-                        <span style="font-weight: 700; color: var(--text-primary);">Question ${q.id} - ${q.category}</span>
-                        <span style="background: linear-gradient(135deg, var(--primary-green) 0%, var(--primary-green-light) 100%); color: white; padding: 8px 16px; border-radius: 20px; font-weight: 800; font-size: 1.1rem;">${q.successRate}%</span>
-                    </div>
-                    <div style="color: var(--text-secondary); font-size: 0.9rem; font-weight: 500;">${q.skill}</div>
-                    <div style="color: var(--text-muted); font-size: 0.8rem; margin-top: 8px;">${q.correct}/${q.total} correct</div>
-                </li>
-            `).join('');
+            hardestContainer.innerHTML = hardest.length > 0 ? 
+                hardest.map(q => createQuestionCard(q, 'hard')).join('') :
+                '<div style="text-align: center; padding: 40px; color: var(--text-muted);"><i class="fas fa-chart-line" style="font-size: 2rem; margin-bottom: 12px;"></i><h4>No Data Available</h4><p>Complete some assessments to see challenging questions.</p></div>';
+
+            easiestContainer.innerHTML = easiest.length > 0 ? 
+                easiest.map(q => createQuestionCard(q, 'easy')).join('') :
+                '<div style="text-align: center; padding: 40px; color: var(--text-muted);"><i class="fas fa-chart-line" style="font-size: 2rem; margin-bottom: 12px;"></i><h4>No Data Available</h4><p>Complete some assessments to see best performing questions.</p></div>';
         }
 
         function generateSkillAnalytics(results) {
