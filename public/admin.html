@@ -516,6 +516,12 @@
             transform: translateY(-3px);
         }
 
+        .btn-small {
+            padding: 8px 16px;
+            font-size: 0.85rem;
+            margin: 2px;
+        }
+
         .btn:disabled {
             background: var(--border-medium);
             color: var(--text-muted);
@@ -742,6 +748,115 @@
         .period-tab:hover:not(.active) {
             background: rgba(5, 150, 105, 0.1);
             color: var(--primary-green);
+        }
+
+        /* Period Chart Container */
+        .period-chart {
+            background: var(--surface-alt);
+            border-radius: 16px;
+            padding: 24px;
+            margin-bottom: 32px;
+            border: 1px solid var(--border-light);
+        }
+
+        .chart-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 24px;
+        }
+
+        .chart-title {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: var(--text-primary);
+        }
+
+        .comparison-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 24px;
+            margin-bottom: 32px;
+        }
+
+        .comparison-card {
+            background: var(--surface);
+            border-radius: 16px;
+            padding: 24px;
+            border: 1px solid var(--border-light);
+            box-shadow: var(--shadow-md);
+        }
+
+        .comparison-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+        }
+
+        .period-label {
+            font-weight: 700;
+            font-size: 1.1rem;
+            color: var(--text-primary);
+            text-transform: capitalize;
+        }
+
+        .period-count {
+            background: var(--primary-green);
+            color: white;
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+
+        .skill-breakdown {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            margin-top: 16px;
+        }
+
+        .skill-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 8px 12px;
+            background: var(--surface-alt);
+            border-radius: 8px;
+            font-size: 0.85rem;
+        }
+
+        .skill-name {
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        .skill-score {
+            font-weight: 700;
+            color: var(--primary-green);
+        }
+
+        /* Question Analytics Enhancements */
+        .analytics-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+        }
+
+        .sort-controls {
+            display: flex;
+            gap: 8px;
+        }
+
+        .question-card {
+            transition: all 0.3s ease;
+        }
+
+        .question-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.1);
         }
 
         /* Password Screen */
@@ -993,6 +1108,184 @@
                 width: 95%;
             }
         }
+
+        /* Copy Questions Modal */
+        .copy-questions-modal .modal-content {
+            max-width: 800px;
+        }
+
+        .question-list {
+            max-height: 400px;
+            overflow-y: auto;
+            border: 1px solid var(--border-light);
+            border-radius: 12px;
+            padding: 16px;
+            background: var(--surface-alt);
+        }
+
+        .question-item {
+            display: flex;
+            align-items: flex-start;
+            padding: 12px;
+            margin-bottom: 8px;
+            background: var(--surface);
+            border-radius: 8px;
+            border: 1px solid var(--border-light);
+            transition: all 0.3s ease;
+        }
+
+        .question-item:hover {
+            box-shadow: var(--shadow-md);
+            transform: translateY(-1px);
+        }
+
+        .question-item input[type="checkbox"] {
+            margin-right: 12px;
+            margin-top: 4px;
+        }
+
+        .question-details {
+            flex: 1;
+        }
+
+        .question-title {
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 4px;
+        }
+
+        .question-meta {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            margin-bottom: 8px;
+        }
+
+        .question-preview {
+            font-size: 0.9rem;
+            color: var(--text-muted);
+            line-height: 1.4;
+        }
+
+        /* Settings Page Styles */
+        .status-badge.active {
+            background: linear-gradient(135deg, var(--primary-green) 0%, var(--primary-green-light) 100%);
+            color: white;
+        }
+
+        .status-badge.closed {
+            background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%);
+            color: white;
+        }
+
+        .timezone-info {
+            background: var(--surface-alt);
+            padding: 16px;
+            border-radius: 12px;
+            border: 1px solid var(--border-light);
+            margin-top: 16px;
+        }
+
+        .schedule-preview {
+            background: linear-gradient(135deg, #e3f2fd 0%, #f8fbff 100%);
+            padding: 20px;
+            border-radius: 12px;
+            border: 1px solid #e1f5fe;
+            margin-top: 16px;
+        }
+
+        .schedule-preview h4 {
+            color: #1976d2;
+            margin-bottom: 12px;
+            font-size: 1rem;
+            font-weight: 600;
+        }
+
+        .time-display {
+            font-family: 'JetBrains Mono', monospace;
+            background: var(--surface);
+            padding: 8px 12px;
+            border-radius: 6px;
+            border: 1px solid var(--border-light);
+            display: inline-block;
+            font-weight: 600;
+            color: var(--primary-green);
+        }
+
+        .settings-section {
+            background: var(--surface-alt);
+            border-radius: 16px;
+            padding: 24px;
+            margin-bottom: 24px;
+            border: 1px solid var(--border-light);
+        }
+
+        .settings-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 16px 0;
+            border-bottom: 1px solid var(--border-light);
+        }
+
+        .settings-row:last-child {
+            border-bottom: none;
+        }
+
+        .settings-label {
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        .settings-description {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            margin-top: 4px;
+        }
+
+        .toggle-switch {
+            position: relative;
+            display: inline-block;
+            width: 60px;
+            height: 34px;
+        }
+
+        .toggle-switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #ccc;
+            transition: .4s;
+            border-radius: 34px;
+        }
+
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 26px;
+            width: 26px;
+            left: 4px;
+            bottom: 4px;
+            background-color: white;
+            transition: .4s;
+            border-radius: 50%;
+        }
+
+        input:checked + .slider {
+            background-color: var(--primary-green);
+        }
+
+        input:checked + .slider:before {
+            transform: translateX(26px);
+        }
     </style>
 </head>
 <body>
@@ -1071,6 +1364,13 @@
                     </div>
                     <div class="nav-item" onclick="showSection('actions')">
                         <i class="fas fa-cogs"></i> Actions & Export
+                    </div>
+                </div>
+
+                <div class="nav-section">
+                    <div class="nav-section-title">Administration</div>
+                    <div class="nav-item" onclick="showSection('settings')">
+                        <i class="fas fa-cog"></i> Settings
                     </div>
                 </div>
 
@@ -1199,13 +1499,26 @@
                 </div>
 
                 <div class="card">
-                    <div class="period-tabs">
-                        <button class="period-tab active" data-period="baseline">Baseline</button>
-                        <button class="period-tab" data-period="intermediate">Intermediate</button>
-                        <button class="period-tab" data-period="endline">Endline</button>
+                    <div class="card-header">
+                        <h3 class="card-title">
+                            <i class="fas fa-timeline"></i> Period Analysis
+                        </h3>
+                        <div style="display: flex; gap: 12px;">
+                            <select id="periodProjectSelector" onchange="loadPeriodComparison()" style="padding: 8px 12px; border: 2px solid var(--border-light); border-radius: 8px; font-size: 0.95rem; background: var(--surface);">
+                                <option value="">Select Project...</option>
+                            </select>
+                            <button class="btn btn-outline btn-small" onclick="refreshPeriodData()">
+                                <i class="fas fa-sync-alt"></i> Refresh
+                            </button>
+                        </div>
                     </div>
+                    
                     <div id="periodContent">
-                        <!-- Period-specific content will be loaded here -->
+                        <div style="text-align: center; padding: 60px; color: var(--text-muted);">
+                            <i class="fas fa-timeline" style="font-size: 3rem; margin-bottom: 16px;"></i>
+                            <h3>Select a Project</h3>
+                            <p style="margin-top: 12px;">Choose a project above to view period comparison data.</p>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -1258,10 +1571,18 @@
 
                 <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 32px; margin-bottom: 40px;">
                     <div class="card">
-                        <div class="card-header">
+                        <div class="analytics-header">
                             <h3 class="card-title">
                                 <i class="fas fa-exclamation-triangle" style="color: #dc2626;"></i> Most Challenging Questions
                             </h3>
+                            <div class="sort-controls">
+                                <button class="btn btn-outline btn-small" onclick="sortQuestions('hardest', 'asc')" title="Lowest Success Rate First">
+                                    <i class="fas fa-sort-amount-down"></i>
+                                </button>
+                                <button class="btn btn-outline btn-small" onclick="sortQuestions('hardest', 'desc')" title="Highest Success Rate First">
+                                    <i class="fas fa-sort-amount-up"></i>
+                                </button>
+                            </div>
                         </div>
                         <div id="hardestQuestions" style="max-height: 500px; overflow-y: auto;">
                             <!-- Populated by JavaScript -->
@@ -1269,10 +1590,18 @@
                     </div>
 
                     <div class="card">
-                        <div class="card-header">
+                        <div class="analytics-header">
                             <h3 class="card-title">
                                 <i class="fas fa-check-circle" style="color: var(--primary-green);"></i> Best Performing Questions
                             </h3>
+                            <div class="sort-controls">
+                                <button class="btn btn-outline btn-small" onclick="sortQuestions('easiest', 'desc')" title="Highest Success Rate First">
+                                    <i class="fas fa-sort-amount-down"></i>
+                                </button>
+                                <button class="btn btn-outline btn-small" onclick="sortQuestions('easiest', 'asc')" title="Lowest Success Rate First">
+                                    <i class="fas fa-sort-amount-up"></i>
+                                </button>
+                            </div>
                         </div>
                         <div id="easiestQuestions" style="max-height: 500px; overflow-y: auto;">
                             <!-- Populated by JavaScript -->
@@ -1427,6 +1756,133 @@
                 </div>
 
                 <div id="actionMessage2" class="hidden"></div>
+            </div>
+
+            <!-- Settings Section -->
+            <div id="settingsSection" class="content-section">
+                <div class="section-header">
+                    <h2 class="section-title">System Settings</h2>
+                    <p class="section-subtitle">Manage project access control and scheduling</p>
+                </div>
+
+                <!-- Project Access Control -->
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">
+                            <i class="fas fa-shield-check"></i> Project Access Control
+                        </h3>
+                        <button class="btn btn-outline" onclick="refreshProjectSettings()">
+                            <i class="fas fa-sync-alt"></i> Refresh
+                        </button>
+                    </div>
+                    <p style="color: var(--text-secondary); margin-bottom: 24px; font-weight: 500;">Control which projects accept new responses and configure custom messages for closed assessments.</p>
+                    
+                    <div id="projectAccessControls">
+                        <!-- Will be populated by JavaScript -->
+                    </div>
+                </div>
+
+                <!-- Project Scheduling -->
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">
+                            <i class="fas fa-clock"></i> Assessment Scheduling
+                        </h3>
+                    </div>
+                    <p style="color: var(--text-secondary); margin-bottom: 24px; font-weight: 500;">Schedule when assessments are available for participants across different time zones.</p>
+                    
+                    <div class="form-group">
+                        <label for="scheduleProjectSelect">Select Project to Schedule:</label>
+                        <select id="scheduleProjectSelect" onchange="loadProjectSchedule()" style="padding: 12px; border: 2px solid var(--border-light); border-radius: 8px; font-size: 0.95rem; background: var(--surface); width: 100%;">
+                            <option value="">Choose a project...</option>
+                        </select>
+                    </div>
+                    
+                    <div id="projectScheduleContainer" style="display: none;">
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin-bottom: 24px;">
+                            <div class="form-group">
+                                <label for="projectTimezone">Timezone:</label>
+                                <select id="projectTimezone" style="padding: 12px; border: 2px solid var(--border-light); border-radius: 8px; font-size: 0.95rem; background: var(--surface); width: 100%;">
+                                    <option value="Africa/Lagos">GMT+1 (Nigeria/Lagos)</option>
+                                    <option value="America/New_York">EST (Eastern Standard Time)</option>
+                                    <option value="America/Chicago">CST (Central Standard Time)</option>
+                                    <option value="America/Denver">MST (Mountain Standard Time)</option>
+                                    <option value="America/Los_Angeles">PST (Pacific Standard Time)</option>
+                                    <option value="UTC">UTC (Coordinated Universal Time)</option>
+                                    <option value="Europe/London">GMT (Greenwich Mean Time)</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="scheduleMode">Schedule Mode:</label>
+                                <select id="scheduleMode" onchange="toggleScheduleMode()" style="padding: 12px; border: 2px solid var(--border-light); border-radius: 8px; font-size: 0.95rem; background: var(--surface); width: 100%;">
+                                    <option value="always">Always Available</option>
+                                    <option value="scheduled">Scheduled Availability</option>
+                                </select>
+                            </div>
+                        </div>
+                        
+                        <div id="scheduleDetails" style="display: none;">
+                            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin-bottom: 24px;">
+                                <div class="form-group">
+                                    <label for="startDateTime">Start Date & Time:</label>
+                                    <input type="datetime-local" id="startDateTime" style="padding: 12px; border: 2px solid var(--border-light); border-radius: 8px; font-size: 0.95rem; background: var(--surface); width: 100%;">
+                                </div>
+                                <div class="form-group">
+                                    <label for="endDateTime">End Date & Time:</label>
+                                    <input type="datetime-local" id="endDateTime" style="padding: 12px; border: 2px solid var(--border-light); border-radius: 8px; font-size: 0.95rem; background: var(--surface); width: 100%;">
+                                </div>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="scheduleMessage">Custom Message (when not available):</label>
+                                <textarea id="scheduleMessage" rows="3" placeholder="This assessment is not currently available. Please check back during the scheduled time." style="width: 100%; padding: 12px; border: 2px solid var(--border-light); border-radius: 8px; font-size: 0.95rem; background: var(--surface); font-family: inherit; resize: vertical;"></textarea>
+                            </div>
+                        </div>
+                        
+                        <div style="display: flex; gap: 16px; justify-content: flex-end; margin-top: 24px;">
+                            <button class="btn btn-secondary" onclick="resetProjectSchedule()">
+                                <i class="fas fa-undo"></i> Reset
+                            </button>
+                            <button class="btn btn-primary" onclick="saveProjectSchedule()">
+                                <i class="fas fa-save"></i> Save Schedule
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- System Configuration -->
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">
+                            <i class="fas fa-server"></i> System Configuration
+                        </h3>
+                    </div>
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px;">
+                        <div class="form-group">
+                            <label for="defaultTimezone">Default System Timezone:</label>
+                            <select id="defaultTimezone" style="padding: 12px; border: 2px solid var(--border-light); border-radius: 8px; font-size: 0.95rem; background: var(--surface); width: 100%;">
+                                <option value="Africa/Lagos">GMT+1 (Nigeria/Lagos)</option>
+                                <option value="America/New_York">EST (Eastern Standard Time)</option>
+                                <option value="UTC">UTC (Coordinated Universal Time)</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="maintenanceMode">Maintenance Mode:</label>
+                            <select id="maintenanceMode" style="padding: 12px; border: 2px solid var(--border-light); border-radius: 8px; font-size: 0.95rem; background: var(--surface); width: 100%;">
+                                <option value="off">Disabled</option>
+                                <option value="on">Enabled</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div style="display: flex; gap: 16px; justify-content: flex-end; margin-top: 24px;">
+                        <button class="btn btn-primary" onclick="saveSystemSettings()">
+                            <i class="fas fa-save"></i> Save System Settings
+                        </button>
+                    </div>
+                </div>
+
+                <div id="settingsMessage" class="hidden"></div>
             </div>
         </div>
     </div>
@@ -1607,6 +2063,48 @@
                     </button>
                 </div>
             </form>
+        </div>
+    </div>
+
+    <!-- Copy Questions Modal -->
+    <div id="copyQuestionsModal" class="modal copy-questions-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">Copy Questions from NCC Embedded Lab</h3>
+                <button class="modal-close" onclick="closeCopyQuestionsModal()">&times;</button>
+            </div>
+            <div>
+                <div class="form-group">
+                    <label for="copyTargetProject">Target Project *</label>
+                    <select id="copyTargetProject" required style="width: 100%; padding: 12px; border: 2px solid var(--border-light); border-radius: 8px;">
+                        <option value="">Select target project...</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label style="display: flex; justify-content: space-between; align-items: center;">
+                        <span>Select Questions to Copy</span>
+                        <div>
+                            <button type="button" class="btn btn-outline btn-small" onclick="selectAllQuestions()">
+                                <i class="fas fa-check-double"></i> Select All
+                            </button>
+                            <button type="button" class="btn btn-outline btn-small" onclick="deselectAllQuestions()">
+                                <i class="fas fa-times"></i> Deselect All
+                            </button>
+                        </div>
+                    </label>
+                    <div id="nccQuestionsList" class="question-list">
+                        <!-- Will be populated by JavaScript -->
+                    </div>
+                </div>
+                
+                <div style="display: flex; gap: 16px; justify-content: flex-end; margin-top: 24px;">
+                    <button type="button" class="btn btn-secondary" onclick="closeCopyQuestionsModal()">Cancel</button>
+                    <button type="button" class="btn btn-primary" onclick="executeCopyQuestions()">
+                        <i class="fas fa-copy"></i> Copy Selected Questions
+                    </button>
+                </div>
+            </div>
         </div>
     </div>
 
@@ -1815,6 +2313,8 @@
         let currentProjectId = 'all';
         let analyticsData = null;
         let currentSort = 'recent';
+        let currentQuestionSortOrder = { hardest: 'asc', easiest: 'desc' };
+        let nccQuestions = [];
 
         // Authentication
         function login() {
@@ -1861,6 +2361,8 @@
                 loadQuestions();
             } else if (sectionName === 'periods') {
                 loadPeriodComparison();
+            } else if (sectionName === 'settings') {
+                loadSettings();
             }
         }
 
@@ -1918,6 +2420,10 @@
                     projects = await response.json();
                     updateProjectSelector();
                     updateProjectGrid();
+                    updateProjectFilters(); // Update all project filters
+                    updateQuestionProjectDropdowns(); // Fix question modal dropdowns
+                } else {
+                    throw new Error('Failed to fetch projects');
                 }
             } catch (error) {
                 console.error('Error loading projects:', error);
@@ -2020,6 +2526,74 @@
             }
         }
 
+        // Fix for question modal dropdowns
+        function updateQuestionProjectDropdowns() {
+            const questionProjectSelect = document.getElementById('questionProject');
+            const questionProjectFilter = document.getElementById('questionProjectFilter');
+            const copyTargetProject = document.getElementById('copyTargetProject');
+            const periodProjectSelector = document.getElementById('periodProjectSelector');
+            
+            // Update question modal project dropdown
+            if (questionProjectSelect) {
+                const currentValue = questionProjectSelect.value;
+                questionProjectSelect.innerHTML = '<option value="">Select Project</option>';
+                projects.forEach(project => {
+                    const option = document.createElement('option');
+                    option.value = project._id;
+                    option.textContent = project.name;
+                    questionProjectSelect.appendChild(option);
+                });
+                if (currentValue && projects.find(p => p._id === currentValue)) {
+                    questionProjectSelect.value = currentValue;
+                }
+            }
+            
+            // Update question filter dropdown
+            if (questionProjectFilter) {
+                const currentValue = questionProjectFilter.value;
+                questionProjectFilter.innerHTML = '<option value="">Select a project...</option>';
+                projects.forEach(project => {
+                    const option = document.createElement('option');
+                    option.value = project._id;
+                    option.textContent = project.name;
+                    questionProjectFilter.appendChild(option);
+                });
+                if (currentValue && projects.find(p => p._id === currentValue)) {
+                    questionProjectFilter.value = currentValue;
+                }
+            }
+            
+            // Update copy target project dropdown
+            if (copyTargetProject) {
+                const currentValue = copyTargetProject.value;
+                copyTargetProject.innerHTML = '<option value="">Select target project...</option>';
+                projects.forEach(project => {
+                    const option = document.createElement('option');
+                    option.value = project._id;
+                    option.textContent = project.name;
+                    copyTargetProject.appendChild(option);
+                });
+                if (currentValue && projects.find(p => p._id === currentValue)) {
+                    copyTargetProject.value = currentValue;
+                }
+            }
+            
+            // Update period project selector
+            if (periodProjectSelector) {
+                const currentValue = periodProjectSelector.value;
+                periodProjectSelector.innerHTML = '<option value="">Select Project...</option>';
+                projects.forEach(project => {
+                    const option = document.createElement('option');
+                    option.value = project._id;
+                    option.textContent = project.name;
+                    periodProjectSelector.appendChild(option);
+                });
+                if (currentValue && projects.find(p => p._id === currentValue)) {
+                    periodProjectSelector.value = currentValue;
+                }
+            }
+        }
+
         // Modal Management
         function showCreateProjectModal() {
             document.getElementById('createProjectModal').classList.add('active');
@@ -2030,59 +2604,6 @@
             document.getElementById('createProjectForm').reset();
         }
 
-        async function createProject(event) {
-            event.preventDefault();
-            
-            const formData = new FormData(event.target);
-            const projectData = {
-                name: formData.get('name'),
-                description: formData.get('description'),
-                time_limit: parseInt(formData.get('time_limit'))
-            };
-            
-            try {
-                const response = await fetch('/api/projects', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify(projectData)
-                });
-                
-                if (response.ok) {
-                    const result = await response.json();
-                    showActionMessage(`Project "${projectData.name}" created successfully! Access code: ${result.project.access_code}`);
-                    closeCreateProjectModal();
-                    await loadProjects();
-                } else {
-                    throw new Error('Failed to create project');
-                }
-            } catch (error) {
-                console.error('Error creating project:', error);
-                showActionMessage('Failed to create project: ' + error.message, true);
-            }
-        }
-
-        // Password-protected operations
-        const SECURE_PASSWORD = 'KK@www1203pw';
-        let currentRecordToDelete = null;
-
-        // Custom time limit functionality
-        function toggleCustomTime() {
-            const timeSelect = document.getElementById('projectTimeLimit');
-            const customInput = document.getElementById('customTimeLimit');
-            
-            if (timeSelect.value === 'custom') {
-                customInput.style.display = 'block';
-                customInput.required = true;
-            } else {
-                customInput.style.display = 'none';
-                customInput.required = false;
-                customInput.value = '';
-            }
-        }
-
-        // Enhanced project creation with custom time
         async function createProject(event) {
             event.preventDefault();
             
@@ -2106,7 +2627,7 @@
                 time_limit: timeLimit
             };
             
-                            try {
+            try {
                 const response = await fetch('/api/projects', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
@@ -2127,13 +2648,35 @@
             }
         }
 
-        // Project filtering functions
+        // Custom time limit functionality
+        function toggleCustomTime() {
+            const timeSelect = document.getElementById('projectTimeLimit');
+            const customInput = document.getElementById('customTimeLimit');
+            
+            if (timeSelect.value === 'custom') {
+                customInput.style.display = 'block';
+                customInput.required = true;
+            } else {
+                customInput.style.display = 'none';
+                customInput.required = false;
+                customInput.value = '';
+            }
+        }
+
+        // Project filtering functions - Fixed to filter deleted projects
         function updateProjectFilters() {
             const participantFilter = document.getElementById('participantProjectFilter');
             const resultsFilter = document.getElementById('resultsProjectFilter');
             const deleteProjectSelect = document.getElementById('deleteProjectSelect');
             
+            // Filter out deleted projects from existing results
+            if (quizResults && quizResults.length > 0) {
+                const validProjectIds = projects.map(p => p._id);
+                quizResults = quizResults.filter(result => validProjectIds.includes(result.project_id));
+            }
+            
             if (participantFilter) {
+                const currentValue = participantFilter.value;
                 participantFilter.innerHTML = '<option value="all">All Projects</option>';
                 projects.forEach(project => {
                     const option = document.createElement('option');
@@ -2141,9 +2684,16 @@
                     option.textContent = project.name;
                     participantFilter.appendChild(option);
                 });
+                // Restore selection if project still exists
+                if (currentValue === 'all' || projects.find(p => p._id === currentValue)) {
+                    participantFilter.value = currentValue;
+                } else {
+                    participantFilter.value = 'all';
+                }
             }
             
             if (resultsFilter) {
+                const currentValue = resultsFilter.value;
                 resultsFilter.innerHTML = '<option value="all">All Projects</option>';
                 projects.forEach(project => {
                     const option = document.createElement('option');
@@ -2151,6 +2701,12 @@
                     option.textContent = project.name;
                     resultsFilter.appendChild(option);
                 });
+                // Restore selection if project still exists
+                if (currentValue === 'all' || projects.find(p => p._id === currentValue)) {
+                    resultsFilter.value = currentValue;
+                } else {
+                    resultsFilter.value = 'all';
+                }
             }
             
             if (deleteProjectSelect) {
@@ -2196,205 +2752,227 @@
             updateResultsTable(filteredResults);
         }
 
-        // Password-protected modal functions
-        function showDeleteProjectModal() {
-            updateProjectFilters();
-            document.getElementById('deleteProjectModal').classList.add('active');
-        }
-
-        function closeDeleteProjectModal() {
-            document.getElementById('deleteProjectModal').classList.remove('active');
-            document.getElementById('deleteProjectPassword').value = '';
-            document.getElementById('deleteProjectSelect').value = '';
-        }
-
-        function showClearProjectDataModal() {
-            if (currentProjectId === 'all') {
-                showActionMessage('Please select a specific project first.', true);
-                return;
-            }
+        // Period Comparison - Enhanced with visualizations
+        async function loadPeriodComparison() {
+            const projectSelector = document.getElementById('periodProjectSelector');
+            const selectedProjectId = projectSelector.value;
             
-            const project = projects.find(p => p._id === currentProjectId);
-            document.getElementById('clearProjectDataName').textContent = project?.name || 'Current Project';
-            document.getElementById('clearProjectDataModal').classList.add('active');
-        }
-
-        function closeClearProjectDataModal() {
-            document.getElementById('clearProjectDataModal').classList.remove('active');
-            document.getElementById('clearProjectDataPassword').value = '';
-        }
-
-        function showClearAllDataModal() {
-            document.getElementById('clearAllDataModal').classList.add('active');
-        }
-
-        function closeClearAllDataModal() {
-            document.getElementById('clearAllDataModal').classList.remove('active');
-            document.getElementById('clearAllDataPassword').value = '';
-        }
-
-        function showDeleteRecordModal(recordId, participantName) {
-            currentRecordToDelete = recordId;
-            document.getElementById('deleteRecordName').textContent = participantName;
-            document.getElementById('deleteRecordModal').classList.add('active');
-        }
-
-        function closeDeleteRecordModal() {
-            document.getElementById('deleteRecordModal').classList.remove('active');
-            document.getElementById('deleteRecordPassword').value = '';
-            currentRecordToDelete = null;
-        }
-
-        // Password-protected execution functions
-        async function executeDeleteProject() {
-            const password = document.getElementById('deleteProjectPassword').value;
-            const projectId = document.getElementById('deleteProjectSelect').value;
-            
-            if (!projectId) {
-                showActionMessage('Please select a project to delete.', true);
-                return;
-            }
-            
-            if (password !== SECURE_PASSWORD) {
-                showActionMessage('Invalid admin password.', true);
+            if (!selectedProjectId) {
+                document.getElementById('periodContent').innerHTML = `
+                    <div style="text-align: center; padding: 60px; color: var(--text-muted);">
+                        <i class="fas fa-timeline" style="font-size: 3rem; margin-bottom: 16px;"></i>
+                        <h3>Select a Project</h3>
+                        <p style="margin-top: 12px;">Choose a project above to view period comparison data.</p>
+                    </div>
+                `;
                 return;
             }
             
             try {
-                const response = await fetch(`/api/projects/${projectId}`, {
-                    method: 'DELETE',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ password })
-                });
-                
+                const response = await fetch(`/api/period-comparison/${selectedProjectId}`);
                 if (response.ok) {
-                    const result = await response.json();
-                    showActionMessage(result.message);
-                    closeDeleteProjectModal();
-                    await loadProjects();
-                    await refreshData();
+                    const data = await response.json();
+                    displayPeriodComparison(data);
                 } else {
-                    throw new Error('Failed to delete project');
+                    throw new Error('Failed to fetch period comparison data');
                 }
             } catch (error) {
-                console.error('Error deleting project:', error);
-                showActionMessage('Failed to delete project: ' + error.message, true);
+                console.error('Error loading period comparison:', error);
+                document.getElementById('periodContent').innerHTML = `
+                    <div style="text-align: center; padding: 60px; color: var(--text-muted);">
+                        <i class="fas fa-exclamation-triangle" style="font-size: 3rem; margin-bottom: 16px; color: #dc2626;"></i>
+                        <h3>Error Loading Data</h3>
+                        <p style="margin-top: 12px;">Unable to load period comparison data. ${error.message}</p>
+                    </div>
+                `;
             }
         }
 
-        async function executeClearProjectData() {
-            const password = document.getElementById('clearProjectDataPassword').value;
+        function displayPeriodComparison(data) {
+            const container = document.getElementById('periodContent');
             
-            if (password !== SECURE_PASSWORD) {
-                showActionMessage('Invalid admin password.', true);
+            if (!data.periodData || data.periodData.length === 0) {
+                container.innerHTML = `
+                    <div style="text-align: center; padding: 60px; color: var(--text-muted);">
+                        <i class="fas fa-chart-line" style="font-size: 3rem; margin-bottom: 16px;"></i>
+                        <h3>No Period Data Available</h3>
+                        <p style="margin-top: 12px;">No assessment data found for this project across different periods.</p>
+                    </div>
+                `;
                 return;
             }
             
-            try {
-                const response = await fetch(`/api/results/${currentProjectId}`, {
-                    method: 'DELETE',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ password })
+            let html = '';
+            
+            // Period Overview Chart
+            html += `
+                <div class="period-chart">
+                    <div class="chart-header">
+                        <h3 class="chart-title">
+                            <i class="fas fa-chart-line"></i> Period Performance Overview
+                        </h3>
+                        <div style="font-size: 0.9rem; color: var(--text-secondary);">
+                            Total Participants: ${data.summary.totalParticipants}
+                        </div>
+                    </div>
+                    <div style="display: flex; justify-content: center; margin-bottom: 24px;">
+                        <canvas id="periodChart" width="600" height="300" style="max-width: 100%;"></canvas>
+                    </div>
+                </div>
+            `;
+            
+            // Period Comparison Cards
+            html += '<div class="comparison-grid">';
+            
+            data.periodData.forEach(period => {
+                const skillData = data.skillByPeriod[period._id] || {};
+                
+                html += `
+                    <div class="comparison-card">
+                        <div class="comparison-header">
+                            <span class="period-label">${period._id}</span>
+                            <span class="period-count">${period.count} participants</span>
+                        </div>
+                        <div style="text-align: center; margin: 20px 0;">
+                            <div style="font-size: 2.5rem; font-weight: 800; color: var(--primary-green); margin-bottom: 8px;">
+                                ${Math.round(period.averageScore)}%
+                            </div>
+                            <div style="color: var(--text-secondary); font-weight: 600;">Average Score</div>
+                        </div>
+                        <div class="skill-breakdown">
+                `;
+                
+                Object.entries(skillData).forEach(([skill, data]) => {
+                    const color = data.percentage >= 80 ? 'var(--primary-green)' : 
+                                  data.percentage >= 60 ? '#f59e0b' : '#dc2626';
+                    
+                    html += `
+                        <div class="skill-item">
+                            <span class="skill-name">${skill.replace('RCT/Impact', 'RCT')}</span>
+                            <span class="skill-score" style="color: ${color};">${data.percentage}%</span>
+                        </div>
+                    `;
                 });
                 
-                if (response.ok) {
-                    const result = await response.json();
-                    showActionMessage(result.message);
-                    closeClearProjectDataModal();
-                    await refreshData();
-                } else {
-                    throw new Error('Failed to clear project data');
-                }
-            } catch (error) {
-                console.error('Error clearing project data:', error);
-                showActionMessage('Failed to clear project data: ' + error.message, true);
-            }
+                html += `
+                        </div>
+                    </div>
+                `;
+            });
+            
+            html += '</div>';
+            
+            container.innerHTML = html;
+            
+            // Draw the period comparison chart
+            drawPeriodChart(data);
         }
 
-        async function executeClearAllData() {
-            const password = document.getElementById('clearAllDataPassword').value;
+        function drawPeriodChart(data) {
+            const canvas = document.getElementById('periodChart');
+            if (!canvas) return;
             
-            if (password !== SECURE_PASSWORD) {
-                showActionMessage('Invalid admin password.', true);
-                return;
-            }
+            const ctx = canvas.getContext('2d');
+            const width = canvas.width;
+            const height = canvas.height;
             
-            try {
-                const response = await fetch('/api/results', {
-                    method: 'DELETE',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ password })
-                });
+            // Clear canvas
+            ctx.clearRect(0, 0, width, height);
+            
+            // Chart settings
+            const padding = 60;
+            const chartWidth = width - 2 * padding;
+            const chartHeight = height - 2 * padding;
+            
+            // Data preparation
+            const periods = data.periodData.map(p => p._id);
+            const scores = data.periodData.map(p => Math.round(p.averageScore));
+            const counts = data.periodData.map(p => p.count);
+            
+            if (periods.length === 0) return;
+            
+            // Draw background
+            ctx.fillStyle = '#f8fafc';
+            ctx.fillRect(0, 0, width, height);
+            
+            // Draw grid lines
+            ctx.strokeStyle = '#e2e8f0';
+            ctx.lineWidth = 1;
+            
+            // Horizontal grid lines
+            for (let i = 0; i <= 5; i++) {
+                const y = padding + (chartHeight / 5) * i;
+                ctx.beginPath();
+                ctx.moveTo(padding, y);
+                ctx.lineTo(width - padding, y);
+                ctx.stroke();
                 
-                if (response.ok) {
-                    const result = await response.json();
-                    showActionMessage(result.message);
-                    closeClearAllDataModal();
-                    await refreshData();
-                } else {
-                    throw new Error('Failed to clear all data');
-                }
-            } catch (error) {
-                console.error('Error clearing all data:', error);
-                showActionMessage('Failed to clear all data: ' + error.message, true);
-            }
-        }
-
-        async function executeDeleteRecord() {
-            const password = document.getElementById('deleteRecordPassword').value;
-            
-            if (password !== SECURE_PASSWORD) {
-                showActionMessage('Invalid admin password.', true);
-                return;
+                // Y-axis labels
+                ctx.fillStyle = '#64748b';
+                ctx.font = '12px Inter';
+                ctx.textAlign = 'right';
+                ctx.fillText(`${100 - i * 20}%`, padding - 10, y + 4);
             }
             
-            if (!currentRecordToDelete) {
-                showActionMessage('No record selected for deletion.', true);
-                return;
-            }
+            // Draw bars
+            const barWidth = chartWidth / periods.length * 0.6;
+            const barSpacing = chartWidth / periods.length;
             
-            try {
-                const response = await fetch(`/api/results/record/${currentRecordToDelete}`, {
-                    method: 'DELETE',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ password })
-                });
+            periods.forEach((period, index) => {
+                const score = scores[index];
+                const count = counts[index];
+                const barHeight = (score / 100) * chartHeight;
+                const x = padding + index * barSpacing + (barSpacing - barWidth) / 2;
+                const y = padding + chartHeight - barHeight;
                 
-                if (response.ok) {
-                    const result = await response.json();
-                    showActionMessage(result.message);
-                    closeDeleteRecordModal();
-                    await refreshData();
-                    refreshResultsTable();
-                } else {
-                    throw new Error('Failed to delete record');
-                }
-            } catch (error) {
-                console.error('Error deleting record:', error);
-                showActionMessage('Failed to delete record: ' + error.message, true);
-            }
+                // Draw bar
+                const gradient = ctx.createLinearGradient(0, y, 0, y + barHeight);
+                gradient.addColorStop(0, '#10b981');
+                gradient.addColorStop(1, '#059669');
+                
+                ctx.fillStyle = gradient;
+                ctx.fillRect(x, y, barWidth, barHeight);
+                
+                // Draw bar border
+                ctx.strokeStyle = '#047857';
+                ctx.lineWidth = 2;
+                ctx.strokeRect(x, y, barWidth, barHeight);
+                
+                // Draw score label on bar
+                ctx.fillStyle = 'white';
+                ctx.font = 'bold 14px Inter';
+                ctx.textAlign = 'center';
+                ctx.fillText(`${score}%`, x + barWidth / 2, y + 20);
+                
+                // Draw participant count
+                ctx.fillStyle = '#374151';
+                ctx.font = '11px Inter';
+                ctx.fillText(`${count} participants`, x + barWidth / 2, y - 8);
+                
+                // Draw period label
+                ctx.fillStyle = '#1f2937';
+                ctx.font = 'bold 13px Inter';
+                ctx.fillText(period.charAt(0).toUpperCase() + period.slice(1), x + barWidth / 2, height - padding + 20);
+            });
+            
+            // Draw chart title
+            ctx.fillStyle = '#1f2937';
+            ctx.font = 'bold 16px Inter';
+            ctx.textAlign = 'center';
+            ctx.fillText('Average Score by Period', width / 2, 25);
         }
 
-        // Enhanced utility functions
-        function updateStatistics(stats) {
-            document.getElementById('totalParticipants').textContent = stats.total || 0;
-            document.getElementById('averageScore').textContent = (stats.average_score || 0) + '%';
-            document.getElementById('todayCount').textContent = stats.today_count || 0;
-            document.getElementById('excellentCount').textContent = stats.excellent_count || 0;
+        function refreshPeriodData() {
+            loadPeriodComparison();
+        }
 
-            document.getElementById('sidebarTotal').textContent = stats.total || 0;
-            document.getElementById('sidebarAverage').textContent = (stats.average_score || 0) + '%';
-            document.getElementById('sidebarToday').textContent = stats.today_count || 0;
-
-            const hasData = (stats.total || 0) > 0;
-            document.getElementById('downloadBtn').disabled = !hasData;
-            const downloadBtn2 = document.getElementById('downloadBtn2');
-            const downloadProjectBtn = document.getElementById('downloadProjectBtn');
-            const clearProjectBtn = document.getElementById('clearProjectBtn');
+        // Question Analytics with Sorting
+        function sortQuestions(type, order) {
+            currentQuestionSortOrder[type] = order;
             
-            if (downloadBtn2) downloadBtn2.disabled = !hasData;
-            if (downloadProjectBtn) downloadProjectBtn.disabled = !hasData || currentProjectId === 'all';
-            if (clearProjectBtn) clearProjectBtn.disabled = !hasData || currentProjectId === 'all';
+            if (analyticsData) {
+                generateAnalytics(quizResults);
+            }
         }
 
         function generateAnalytics(results) {
@@ -2430,8 +3008,17 @@
                 successRate: q.total > 0 ? Math.round((q.correct / q.total) * 100) : 0
             }));
 
-            const hardest = questions.sort((a, b) => a.successRate - b.successRate).slice(0, 5);
-            const easiest = questions.sort((a, b) => b.successRate - a.successRate).slice(0, 5);
+            // Apply sorting
+            const hardestSortFn = currentQuestionSortOrder.hardest === 'asc' ? 
+                (a, b) => a.successRate - b.successRate : 
+                (a, b) => b.successRate - a.successRate;
+                
+            const easiestSortFn = currentQuestionSortOrder.easiest === 'desc' ? 
+                (a, b) => b.successRate - a.successRate : 
+                (a, b) => a.successRate - b.successRate;
+
+            const hardest = [...questions].sort(hardestSortFn).slice(0, 5);
+            const easiest = [...questions].sort(easiestSortFn).slice(0, 5);
 
             updateQuestionAnalytics(hardest, easiest);
             generateSkillAnalytics(results);
@@ -2445,7 +3032,7 @@
             if (!hardestContainer || !easiestContainer) return;
 
             const createQuestionCard = (q, type) => `
-                <div style="padding: 20px; margin-bottom: 16px; background: var(--surface-alt); border-radius: 12px; border-left: 4px solid ${type === 'hard' ? '#dc2626' : 'var(--primary-green)'}; transition: all 0.3s ease;" 
+                <div class="question-card" style="padding: 20px; margin-bottom: 16px; background: var(--surface-alt); border-radius: 12px; border-left: 4px solid ${type === 'hard' ? '#dc2626' : 'var(--primary-green)'}; transition: all 0.3s ease;" 
                      onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 8px 25px rgba(0,0,0,0.1)'" 
                      onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='none'">
                     <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
@@ -2809,6 +3396,563 @@
             }
         }
 
+        // Question Management
+        async function loadQuestions() {
+            updateQuestionProjectDropdowns();
+        }
+
+        async function loadQuestionsForProject() {
+            const projectId = document.getElementById('questionProjectFilter').value;
+            const container = document.getElementById('questionsContent');
+            
+            if (!projectId) {
+                container.innerHTML = `
+                    <div style="text-align: center; padding: 60px; color: var(--text-muted);">
+                        <i class="fas fa-question-circle" style="font-size: 3rem; margin-bottom: 16px;"></i>
+                        <h3>Select a Project</h3>
+                        <p style="margin-top: 12px;">Choose a project above to view and manage its questions.</p>
+                    </div>
+                `;
+                return;
+            }
+            
+            try {
+                const response = await fetch(`/api/questions/${projectId}`);
+                if (response.ok) {
+                    const questions = await response.json();
+                    displayQuestions(questions, projectId);
+                } else {
+                    throw new Error('Failed to fetch questions');
+                }
+            } catch (error) {
+                console.error('Error loading questions:', error);
+                container.innerHTML = `
+                    <div style="text-align: center; padding: 60px; color: var(--text-muted);">
+                        <i class="fas fa-exclamation-triangle" style="font-size: 3rem; margin-bottom: 16px; color: #dc2626;"></i>
+                        <h3>Error Loading Questions</h3>
+                        <p style="margin-top: 12px;">Unable to load questions for this project.</p>
+                    </div>
+                `;
+            }
+        }
+
+        function displayQuestions(questions, projectId) {
+            const container = document.getElementById('questionsContent');
+            
+            if (questions.length === 0) {
+                container.innerHTML = `
+                    <div style="text-align: center; padding: 60px; color: var(--text-muted);">
+                        <i class="fas fa-question-circle" style="font-size: 3rem; margin-bottom: 16px;"></i>
+                        <h3>No Questions Yet</h3>
+                        <p style="margin-top: 12px;">This project doesn't have any questions yet.</p>
+                        <button class="btn btn-primary" onclick="showQuestionModal()" style="margin-top: 20px;">
+                            <i class="fas fa-plus"></i> Add First Question
+                        </button>
+                    </div>
+                `;
+                return;
+            }
+            
+            let html = `
+                <div style="margin-bottom: 24px; display: flex; justify-content: space-between; align-items: center;">
+                    <div style="font-weight: 600; color: var(--text-primary);">
+                        ${questions.length} Questions Found
+                    </div>
+                    <div style="display: flex; gap: 12px;">
+                        <button class="btn btn-secondary btn-small" onclick="loadQuestionsForProject()">
+                            <i class="fas fa-sync-alt"></i> Refresh
+                        </button>
+                    </div>
+                </div>
+            `;
+            
+            questions.forEach(question => {
+                html += `
+                    <div style="margin-bottom: 20px; padding: 24px; background: var(--surface-alt); border-radius: 16px; border: 1px solid var(--border-light);">
+                        <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 16px;">
+                            <div>
+                                <div style="font-weight: 700; color: var(--primary-green); font-size: 1.1rem; margin-bottom: 4px;">
+                                    Question ${question.question_number} - ${question.category}
+                                </div>
+                                <div style="color: var(--text-secondary); font-size: 0.9rem; margin-bottom: 8px;">
+                                    <strong>Skill:</strong> ${question.skill}
+                                </div>
+                                <div style="color: var(--text-secondary); font-size: 0.85rem;">
+                                    <strong>Period:</strong> ${question.period} • <strong>Correct Answer:</strong> ${question.correct_answer}
+                                </div>
+                            </div>
+                            <div style="display: flex; gap: 8px;">
+                                <button class="btn btn-outline btn-small" onclick="editQuestion('${question._id}')" title="Edit Question">
+                                    <i class="fas fa-edit"></i>
+                                </button>
+                                <button class="btn btn-small" onclick="deleteQuestion('${question._id}')" 
+                                        style="background: #dc2626; color: white;" title="Delete Question">
+                                    <i class="fas fa-trash"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <div style="margin-bottom: 12px;">
+                            <div style="font-weight: 600; margin-bottom: 8px;">Question:</div>
+                            <div style="background: var(--surface); padding: 16px; border-radius: 8px; border: 1px solid var(--border-light);">
+                                ${question.question_text}
+                            </div>
+                        </div>
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 12px;">
+                            ${question.options.map((option, index) => `
+                                <div style="padding: 12px; background: var(--surface); border-radius: 8px; border: 1px solid ${question.correct_answer === String.fromCharCode(65 + index) ? 'var(--primary-green)' : 'var(--border-light)'};">
+                                    <strong>${String.fromCharCode(65 + index)}.</strong> ${option}
+                                    ${question.correct_answer === String.fromCharCode(65 + index) ? ' <span style="color: var(--primary-green); font-weight: bold;">✓</span>' : ''}
+                                </div>
+                            `).join('')}
+                        </div>
+                        ${question.explanation ? `
+                            <div style="margin-top: 12px;">
+                                <div style="font-weight: 600; margin-bottom: 8px;">Explanation:</div>
+                                <div style="background: var(--surface); padding: 16px; border-radius: 8px; border: 1px solid var(--border-light); font-style: italic;">
+                                    ${question.explanation}
+                                </div>
+                            </div>
+                        ` : ''}
+                    </div>
+                `;
+            });
+            
+            container.innerHTML = html;
+        }
+
+        // Copy Questions functionality
+        function showCopyQuestionsModal() {
+            loadNccQuestions();
+            updateQuestionProjectDropdowns();
+            document.getElementById('copyQuestionsModal').classList.add('active');
+        }
+
+        function closeCopyQuestionsModal() {
+            document.getElementById('copyQuestionsModal').classList.remove('active');
+            document.getElementById('copyTargetProject').value = '';
+        }
+
+        async function loadNccQuestions() {
+            try {
+                // Find NCC project
+                const nccProject = projects.find(p => p.name === "NCC Embedded Lab");
+                if (!nccProject) {
+                    document.getElementById('nccQuestionsList').innerHTML = `
+                        <div style="text-align: center; padding: 40px; color: var(--text-muted);">
+                            <i class="fas fa-exclamation-triangle" style="font-size: 2rem; margin-bottom: 12px;"></i>
+                            <h4>NCC Embedded Lab Project Not Found</h4>
+                            <p>The default NCC project needs to exist to copy questions.</p>
+                        </div>
+                    `;
+                    return;
+                }
+                
+                const response = await fetch(`/api/questions/${nccProject._id}`);
+                if (response.ok) {
+                    nccQuestions = await response.json();
+                    displayNccQuestions();
+                } else {
+                    throw new Error('Failed to fetch NCC questions');
+                }
+            } catch (error) {
+                console.error('Error loading NCC questions:', error);
+                document.getElementById('nccQuestionsList').innerHTML = `
+                    <div style="text-align: center; padding: 40px; color: var(--text-muted);">
+                        <i class="fas fa-exclamation-triangle" style="font-size: 2rem; margin-bottom: 12px;"></i>
+                        <h4>Error Loading Questions</h4>
+                        <p>Unable to load NCC questions for copying.</p>
+                    </div>
+                `;
+            }
+        }
+
+        function displayNccQuestions() {
+            const container = document.getElementById('nccQuestionsList');
+            
+            if (nccQuestions.length === 0) {
+                container.innerHTML = `
+                    <div style="text-align: center; padding: 40px; color: var(--text-muted);">
+                        <i class="fas fa-question-circle" style="font-size: 2rem; margin-bottom: 12px;"></i>
+                        <h4>No Questions Available</h4>
+                        <p>The NCC project doesn't have any questions to copy.</p>
+                    </div>
+                `;
+                return;
+            }
+            
+            let html = '';
+            nccQuestions.forEach(question => {
+                html += `
+                    <div class="question-item">
+                        <input type="checkbox" id="ncc_q_${question._id}" value="${question._id}">
+                        <div class="question-details">
+                            <div class="question-title">Question ${question.question_number} - ${question.category}</div>
+                            <div class="question-meta">${question.skill} • Period: ${question.period}</div>
+                            <div class="question-preview">${question.question_text.substring(0, 150)}${question.question_text.length > 150 ? '...' : ''}</div>
+                        </div>
+                    </div>
+                `;
+            });
+            
+            container.innerHTML = html;
+        }
+
+        function selectAllQuestions() {
+            const checkboxes = document.querySelectorAll('#nccQuestionsList input[type="checkbox"]');
+            checkboxes.forEach(cb => cb.checked = true);
+        }
+
+        function deselectAllQuestions() {
+            const checkboxes = document.querySelectorAll('#nccQuestionsList input[type="checkbox"]');
+            checkboxes.forEach(cb => cb.checked = false);
+        }
+
+        async function executeCopyQuestions() {
+            const targetProjectId = document.getElementById('copyTargetProject').value;
+            const selectedQuestions = Array.from(document.querySelectorAll('#nccQuestionsList input[type="checkbox"]:checked'))
+                .map(cb => cb.value);
+            
+            if (!targetProjectId) {
+                showActionMessage('Please select a target project.', true);
+                return;
+            }
+            
+            if (selectedQuestions.length === 0) {
+                showActionMessage('Please select at least one question to copy.', true);
+                return;
+            }
+            
+            try {
+                const nccProject = projects.find(p => p.name === "NCC Embedded Lab");
+                const response = await fetch('/api/questions/copy', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        source_project_id: nccProject._id,
+                        target_project_id: targetProjectId,
+                        question_ids: selectedQuestions
+                    })
+                });
+                
+                if (response.ok) {
+                    const result = await response.json();
+                    showActionMessage(`Successfully copied ${result.copied_count} questions to the target project.`);
+                    closeCopyQuestionsModal();
+                    loadQuestionsForProject();
+                } else {
+                    throw new Error('Failed to copy questions');
+                }
+            } catch (error) {
+                console.error('Error copying questions:', error);
+                showActionMessage('Failed to copy questions: ' + error.message, true);
+            }
+        }
+
+        // Question Modal Functions
+        function showQuestionModal() {
+            updateQuestionProjectDropdowns();
+            document.getElementById('addQuestionModal').classList.add('active');
+        }
+
+        function closeQuestionModal() {
+            document.getElementById('addQuestionModal').classList.remove('active');
+            document.getElementById('addQuestionForm').reset();
+            hideBulkPasteHelp();
+        }
+
+        function toggleCustomCategory() {
+            const categorySelect = document.getElementById('questionCategory');
+            const customInput = document.getElementById('customCategory');
+            const customLabel = document.getElementById('customCategoryLabel');
+            
+            if (categorySelect.value === 'Other') {
+                customInput.style.display = 'block';
+                customLabel.style.display = 'block';
+                customInput.required = true;
+            } else {
+                customInput.style.display = 'none';
+                customLabel.style.display = 'none';
+                customInput.required = false;
+                customInput.value = '';
+            }
+        }
+
+        function showBulkPasteHelp() {
+            document.getElementById('bulkPasteArea').style.display = 'block';
+        }
+
+        function hideBulkPasteHelp() {
+            document.getElementById('bulkPasteArea').style.display = 'none';
+            document.getElementById('bulkPasteInput').value = '';
+        }
+
+        function applyBulkPaste() {
+            const bulkText = document.getElementById('bulkPasteInput').value.trim();
+            const lines = bulkText.split('\n').filter(line => line.trim());
+            
+            if (lines.length !== 4) {
+                showActionMessage('Please paste exactly 4 options (one per line).', true);
+                return;
+            }
+            
+            const optionInputs = ['option_A', 'option_B', 'option_C', 'option_D'];
+            lines.forEach((line, index) => {
+                const textarea = document.querySelector(`textarea[name="${optionInputs[index]}"]`);
+                if (textarea) {
+                    textarea.value = line.trim();
+                }
+            });
+            
+            hideBulkPasteHelp();
+            showActionMessage('Options applied successfully!');
+        }
+
+        async function createQuestion(event) {
+            event.preventDefault();
+            
+            const formData = new FormData(event.target);
+            const questionData = {
+                project_id: formData.get('project_id'),
+                period: formData.get('period'),
+                category: formData.get('category') === 'Other' ? formData.get('custom_category') : formData.get('category'),
+                skill: formData.get('skill'),
+                question_text: formData.get('question_text'),
+                options: [
+                    formData.get('option_A'),
+                    formData.get('option_B'),
+                    formData.get('option_C'),
+                    formData.get('option_D')
+                ],
+                correct_answer: formData.get('correct_answer'),
+                explanation: formData.get('explanation')
+            };
+            
+            try {
+                const response = await fetch('/api/questions', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(questionData)
+                });
+                
+                if (response.ok) {
+                    const result = await response.json();
+                    showActionMessage('Question created successfully!');
+                    closeQuestionModal();
+                    loadQuestionsForProject();
+                } else {
+                    throw new Error('Failed to create question');
+                }
+            } catch (error) {
+                console.error('Error creating question:', error);
+                showActionMessage('Failed to create question: ' + error.message, true);
+            }
+        }
+
+        // Password-protected operations
+        const SECURE_PASSWORD = 'KK@www1203pw';
+        let currentRecordToDelete = null;
+
+        // Password-protected modal functions
+        function showDeleteProjectModal() {
+            updateProjectFilters();
+            document.getElementById('deleteProjectModal').classList.add('active');
+        }
+
+        function closeDeleteProjectModal() {
+            document.getElementById('deleteProjectModal').classList.remove('active');
+            document.getElementById('deleteProjectPassword').value = '';
+            document.getElementById('deleteProjectSelect').value = '';
+        }
+
+        function showClearProjectDataModal() {
+            if (currentProjectId === 'all') {
+                showActionMessage('Please select a specific project first.', true);
+                return;
+            }
+            
+            const project = projects.find(p => p._id === currentProjectId);
+            document.getElementById('clearProjectDataName').textContent = project?.name || 'Current Project';
+            document.getElementById('clearProjectDataModal').classList.add('active');
+        }
+
+        function closeClearProjectDataModal() {
+            document.getElementById('clearProjectDataModal').classList.remove('active');
+            document.getElementById('clearProjectDataPassword').value = '';
+        }
+
+        function showClearAllDataModal() {
+            document.getElementById('clearAllDataModal').classList.add('active');
+        }
+
+        function closeClearAllDataModal() {
+            document.getElementById('clearAllDataModal').classList.remove('active');
+            document.getElementById('clearAllDataPassword').value = '';
+        }
+
+        function showDeleteRecordModal(recordId, participantName) {
+            currentRecordToDelete = recordId;
+            document.getElementById('deleteRecordName').textContent = participantName;
+            document.getElementById('deleteRecordModal').classList.add('active');
+        }
+
+        function closeDeleteRecordModal() {
+            document.getElementById('deleteRecordModal').classList.remove('active');
+            document.getElementById('deleteRecordPassword').value = '';
+            currentRecordToDelete = null;
+        }
+
+        // Password-protected execution functions
+        async function executeDeleteProject() {
+            const password = document.getElementById('deleteProjectPassword').value;
+            const projectId = document.getElementById('deleteProjectSelect').value;
+            
+            if (!projectId) {
+                showActionMessage('Please select a project to delete.', true);
+                return;
+            }
+            
+            if (password !== SECURE_PASSWORD) {
+                showActionMessage('Invalid admin password.', true);
+                return;
+            }
+            
+            try {
+                const response = await fetch(`/api/projects/${projectId}`, {
+                    method: 'DELETE',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ password })
+                });
+                
+                if (response.ok) {
+                    const result = await response.json();
+                    showActionMessage(result.message);
+                    closeDeleteProjectModal();
+                    await loadProjects();
+                    await refreshData();
+                } else {
+                    throw new Error('Failed to delete project');
+                }
+            } catch (error) {
+                console.error('Error deleting project:', error);
+                showActionMessage('Failed to delete project: ' + error.message, true);
+            }
+        }
+
+        async function executeClearProjectData() {
+            const password = document.getElementById('clearProjectDataPassword').value;
+            
+            if (password !== SECURE_PASSWORD) {
+                showActionMessage('Invalid admin password.', true);
+                return;
+            }
+            
+            try {
+                const response = await fetch(`/api/results/${currentProjectId}`, {
+                    method: 'DELETE',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ password })
+                });
+                
+                if (response.ok) {
+                    const result = await response.json();
+                    showActionMessage(result.message);
+                    closeClearProjectDataModal();
+                    await refreshData();
+                } else {
+                    throw new Error('Failed to clear project data');
+                }
+            } catch (error) {
+                console.error('Error clearing project data:', error);
+                showActionMessage('Failed to clear project data: ' + error.message, true);
+            }
+        }
+
+        async function executeClearAllData() {
+            const password = document.getElementById('clearAllDataPassword').value;
+            
+            if (password !== SECURE_PASSWORD) {
+                showActionMessage('Invalid admin password.', true);
+                return;
+            }
+            
+            try {
+                const response = await fetch('/api/results', {
+                    method: 'DELETE',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ password })
+                });
+                
+                if (response.ok) {
+                    const result = await response.json();
+                    showActionMessage(result.message);
+                    closeClearAllDataModal();
+                    await refreshData();
+                } else {
+                    throw new Error('Failed to clear all data');
+                }
+            } catch (error) {
+                console.error('Error clearing all data:', error);
+                showActionMessage('Failed to clear all data: ' + error.message, true);
+            }
+        }
+
+        async function executeDeleteRecord() {
+            const password = document.getElementById('deleteRecordPassword').value;
+            
+            if (password !== SECURE_PASSWORD) {
+                showActionMessage('Invalid admin password.', true);
+                return;
+            }
+            
+            if (!currentRecordToDelete) {
+                showActionMessage('No record selected for deletion.', true);
+                return;
+            }
+            
+            try {
+                const response = await fetch(`/api/results/record/${currentRecordToDelete}`, {
+                    method: 'DELETE',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ password })
+                });
+                
+                if (response.ok) {
+                    const result = await response.json();
+                    showActionMessage(result.message);
+                    closeDeleteRecordModal();
+                    await refreshData();
+                    refreshResultsTable();
+                } else {
+                    throw new Error('Failed to delete record');
+                }
+            } catch (error) {
+                console.error('Error deleting record:', error);
+                showActionMessage('Failed to delete record: ' + error.message, true);
+            }
+        }
+
+        // Enhanced utility functions
+        function updateStatistics(stats) {
+            document.getElementById('totalParticipants').textContent = stats.total || 0;
+            document.getElementById('averageScore').textContent = (stats.average_score || 0) + '%';
+            document.getElementById('todayCount').textContent = stats.today_count || 0;
+            document.getElementById('excellentCount').textContent = stats.excellent_count || 0;
+
+            document.getElementById('sidebarTotal').textContent = stats.total || 0;
+            document.getElementById('sidebarAverage').textContent = (stats.average_score || 0) + '%';
+            document.getElementById('sidebarToday').textContent = stats.today_count || 0;
+
+            const hasData = (stats.total || 0) > 0;
+            document.getElementById('downloadBtn').disabled = !hasData;
+            const downloadBtn2 = document.getElementById('downloadBtn2');
+            const downloadProjectBtn = document.getElementById('downloadProjectBtn');
+            const clearProjectBtn2 = document.getElementById('clearProjectBtn2');
+            
+            if (downloadBtn2) downloadBtn2.disabled = !hasData;
+            if (downloadProjectBtn) downloadProjectBtn.disabled = !hasData || currentProjectId === 'all';
+            if (clearProjectBtn2) clearProjectBtn2.disabled = !hasData || currentProjectId === 'all';
+        }
+
         function getGradeClass(percentage) {
             if (percentage >= 80) return 'excellent';
             if (percentage >= 60) return 'good';
@@ -2931,6 +4075,362 @@
         document.getElementById('adminPassword').addEventListener('keypress', function(e) {
             if (e.key === 'Enter') login();
         });
+
+        // Settings Management Functions
+        async function loadSettings() {
+            await refreshProjectSettings();
+            await loadScheduleProjectSelector();
+            await loadSystemSettings();
+        }
+
+        async function refreshProjectSettings() {
+            const container = document.getElementById('projectAccessControls');
+            
+            if (projects.length === 0) {
+                container.innerHTML = `
+                    <div style="text-align: center; padding: 60px; color: var(--text-muted);">
+                        <i class="fas fa-folder-open" style="font-size: 3rem; margin-bottom: 16px;"></i>
+                        <h3>No Projects Available</h3>
+                        <p style="margin-top: 12px;">Create a project first to manage access controls.</p>
+                    </div>
+                `;
+                return;
+            }
+            
+            let html = '';
+            
+            for (const project of projects) {
+                // Get current project settings
+                try {
+                    const response = await fetch(`/api/project-settings/${project._id}`);
+                    const settings = response.ok ? await response.json() : {};
+                    
+                    const isActive = settings.status !== 'closed';
+                    const customMessage = settings.closed_message || 'This assessment is currently closed. Please contact your administrator for more information.';
+                    
+                    html += `
+                        <div style="margin-bottom: 24px; padding: 24px; background: var(--surface-alt); border-radius: 16px; border: 1px solid var(--border-light);">
+                            <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 16px;">
+                                <div>
+                                    <h4 style="color: var(--primary-green); font-size: 1.1rem; margin-bottom: 4px;">
+                                        ${project.name}
+                                    </h4>
+                                    <div style="color: var(--text-secondary); font-size: 0.9rem; margin-bottom: 8px;">
+                                        Access Code: <strong>${project.access_code}</strong>
+                                    </div>
+                                    <div style="display: flex; align-items: center; gap: 12px;">
+                                        <span style="color: var(--text-secondary); font-weight: 500;">Status:</span>
+                                        <span class="status-badge ${isActive ? 'active' : 'closed'}" style="padding: 4px 12px; border-radius: 12px; font-size: 0.8rem; font-weight: 600; text-transform: uppercase;">
+                                            ${isActive ? '🟢 Active' : '🔴 Closed'}
+                                        </span>
+                                    </div>
+                                </div>
+                                <div style="display: flex; gap: 8px;">
+                                    <button class="btn btn-outline btn-small" onclick="toggleProjectStatus('${project._id}', ${isActive})" style="padding: 8px 16px;">
+                                        <i class="fas fa-${isActive ? 'lock' : 'unlock'}"></i> ${isActive ? 'Close' : 'Open'}
+                                    </button>
+                                    <button class="btn btn-secondary btn-small" onclick="showProjectMessageModal('${project._id}', '${project.name}', \`${customMessage.replace(/`/g, '\\`')}\`)" style="padding: 8px 16px;">
+                                        <i class="fas fa-edit"></i> Message
+                                    </button>
+                                </div>
+                            </div>
+                            <div style="margin-top: 12px;">
+                                <div style="font-weight: 600; margin-bottom: 8px; color: var(--text-primary);">Current Message:</div>
+                                <div style="background: var(--surface); padding: 12px; border-radius: 8px; border: 1px solid var(--border-light); color: var(--text-secondary); font-style: italic;">
+                                    ${customMessage}
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                } catch (error) {
+                    console.error('Error loading project settings:', error);
+                }
+            }
+            
+            container.innerHTML = html;
+        }
+
+        async function toggleProjectStatus(projectId, isCurrentlyActive) {
+            const newStatus = isCurrentlyActive ? 'closed' : 'active';
+            
+            try {
+                const response = await fetch(`/api/project-settings/${projectId}`, {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ status: newStatus })
+                });
+                
+                if (response.ok) {
+                    showSettingsMessage(`Project status updated to ${newStatus}`);
+                    await refreshProjectSettings();
+                } else {
+                    throw new Error('Failed to update project status');
+                }
+            } catch (error) {
+                console.error('Error updating project status:', error);
+                showSettingsMessage('Failed to update project status: ' + error.message, true);
+            }
+        }
+
+        function showProjectMessageModal(projectId, projectName, currentMessage) {
+            // Create modal if it doesn't exist
+            let modal = document.getElementById('projectMessageModal');
+            if (!modal) {
+                modal = document.createElement('div');
+                modal.id = 'projectMessageModal';
+                modal.className = 'modal';
+                modal.innerHTML = `
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h3 class="modal-title">Edit Project Message</h3>
+                            <button class="modal-close" onclick="closeProjectMessageModal()">&times;</button>
+                        </div>
+                        <div>
+                            <div style="margin-bottom: 24px;">
+                                <h4 id="messageProjectName" style="color: var(--primary-green);"></h4>
+                                <p style="color: var(--text-secondary);">Customize the message shown when this project is closed or unavailable.</p>
+                            </div>
+                            <div class="form-group">
+                                <label for="projectMessageText">Custom Message:</label>
+                                <textarea id="projectMessageText" rows="4" maxlength="500" style="width: 100%; padding: 12px; border: 2px solid var(--border-light); border-radius: 8px; font-family: inherit; resize: vertical;"></textarea>
+                                <div style="font-size: 0.8rem; color: var(--text-muted); margin-top: 4px;">
+                                    <span id="messageCharCount">0</span>/500 characters
+                                </div>
+                            </div>
+                            <div style="display: flex; gap: 16px; justify-content: flex-end; margin-top: 24px;">
+                                <button type="button" class="btn btn-secondary" onclick="closeProjectMessageModal()">Cancel</button>
+                                <button type="button" class="btn btn-primary" onclick="saveProjectMessage()">
+                                    <i class="fas fa-save"></i> Save Message
+                                </button>
+                            </div>
+                        </div>
+                        <input type="hidden" id="messageProjectId">
+                    </div>
+                `;
+                document.body.appendChild(modal);
+                
+                // Add character counter
+                document.getElementById('projectMessageText').addEventListener('input', function() {
+                    document.getElementById('messageCharCount').textContent = this.value.length;
+                });
+            }
+            
+            // Populate modal
+            document.getElementById('messageProjectName').textContent = projectName;
+            document.getElementById('projectMessageText').value = currentMessage;
+            document.getElementById('messageProjectId').value = projectId;
+            document.getElementById('messageCharCount').textContent = currentMessage.length;
+            
+            modal.classList.add('active');
+        }
+
+        function closeProjectMessageModal() {
+            document.getElementById('projectMessageModal').classList.remove('active');
+        }
+
+        async function saveProjectMessage() {
+            const projectId = document.getElementById('messageProjectId').value;
+            const message = document.getElementById('projectMessageText').value.trim();
+            
+            if (!message) {
+                showSettingsMessage('Please enter a message.', true);
+                return;
+            }
+            
+            try {
+                const response = await fetch(`/api/project-settings/${projectId}`, {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ closed_message: message })
+                });
+                
+                if (response.ok) {
+                    showSettingsMessage('Project message updated successfully');
+                    closeProjectMessageModal();
+                    await refreshProjectSettings();
+                } else {
+                    throw new Error('Failed to update project message');
+                }
+            } catch (error) {
+                console.error('Error updating project message:', error);
+                showSettingsMessage('Failed to update project message: ' + error.message, true);
+            }
+        }
+
+        // Project Scheduling Functions
+        async function loadScheduleProjectSelector() {
+            const selector = document.getElementById('scheduleProjectSelect');
+            selector.innerHTML = '<option value="">Choose a project...</option>';
+            
+            projects.forEach(project => {
+                const option = document.createElement('option');
+                option.value = project._id;
+                option.textContent = project.name;
+                selector.appendChild(option);
+            });
+        }
+
+        async function loadProjectSchedule() {
+            const projectId = document.getElementById('scheduleProjectSelect').value;
+            const container = document.getElementById('projectScheduleContainer');
+            
+            if (!projectId) {
+                container.style.display = 'none';
+                return;
+            }
+            
+            try {
+                const response = await fetch(`/api/project-settings/${projectId}`);
+                const settings = response.ok ? await response.json() : {};
+                
+                // Populate schedule settings
+                document.getElementById('projectTimezone').value = settings.timezone || 'Africa/Lagos';
+                document.getElementById('scheduleMode').value = settings.schedule_mode || 'always';
+                
+                if (settings.start_time) {
+                    document.getElementById('startDateTime').value = formatDateTimeLocal(settings.start_time);
+                }
+                if (settings.end_time) {
+                    document.getElementById('endDateTime').value = formatDateTimeLocal(settings.end_time);
+                }
+                
+                document.getElementById('scheduleMessage').value = settings.schedule_message || 'This assessment is not currently available. Please check back during the scheduled time.';
+                
+                container.style.display = 'block';
+                toggleScheduleMode();
+                
+            } catch (error) {
+                console.error('Error loading project schedule:', error);
+                showSettingsMessage('Failed to load project schedule: ' + error.message, true);
+            }
+        }
+
+        function toggleScheduleMode() {
+            const mode = document.getElementById('scheduleMode').value;
+            const scheduleDetails = document.getElementById('scheduleDetails');
+            
+            if (mode === 'scheduled') {
+                scheduleDetails.style.display = 'block';
+            } else {
+                scheduleDetails.style.display = 'none';
+            }
+        }
+
+        function resetProjectSchedule() {
+            document.getElementById('scheduleMode').value = 'always';
+            document.getElementById('startDateTime').value = '';
+            document.getElementById('endDateTime').value = '';
+            document.getElementById('scheduleMessage').value = 'This assessment is not currently available. Please check back during the scheduled time.';
+            toggleScheduleMode();
+        }
+
+        async function saveProjectSchedule() {
+            const projectId = document.getElementById('scheduleProjectSelect').value;
+            
+            if (!projectId) {
+                showSettingsMessage('Please select a project first.', true);
+                return;
+            }
+            
+            const scheduleData = {
+                timezone: document.getElementById('projectTimezone').value,
+                schedule_mode: document.getElementById('scheduleMode').value
+            };
+            
+            if (scheduleData.schedule_mode === 'scheduled') {
+                const startTime = document.getElementById('startDateTime').value;
+                const endTime = document.getElementById('endDateTime').value;
+                
+                if (!startTime || !endTime) {
+                    showSettingsMessage('Please provide both start and end times for scheduled availability.', true);
+                    return;
+                }
+                
+                if (new Date(endTime) <= new Date(startTime)) {
+                    showSettingsMessage('End time must be after start time.', true);
+                    return;
+                }
+                
+                scheduleData.start_time = startTime;
+                scheduleData.end_time = endTime;
+                scheduleData.schedule_message = document.getElementById('scheduleMessage').value.trim() || 'This assessment is not currently available. Please check back during the scheduled time.';
+            }
+            
+            try {
+                const response = await fetch(`/api/project-settings/${projectId}`, {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(scheduleData)
+                });
+                
+                if (response.ok) {
+                    showSettingsMessage('Project schedule saved successfully');
+                } else {
+                    throw new Error('Failed to save project schedule');
+                }
+            } catch (error) {
+                console.error('Error saving project schedule:', error);
+                showSettingsMessage('Failed to save project schedule: ' + error.message, true);
+            }
+        }
+
+        // System Settings Functions
+        async function loadSystemSettings() {
+            try {
+                const response = await fetch('/api/system-settings');
+                const settings = response.ok ? await response.json() : {};
+                
+                document.getElementById('defaultTimezone').value = settings.default_timezone || 'Africa/Lagos';
+                document.getElementById('maintenanceMode').value = settings.maintenance_mode || 'off';
+                
+            } catch (error) {
+                console.error('Error loading system settings:', error);
+            }
+        }
+
+        async function saveSystemSettings() {
+            const systemData = {
+                default_timezone: document.getElementById('defaultTimezone').value,
+                maintenance_mode: document.getElementById('maintenanceMode').value
+            };
+            
+            try {
+                const response = await fetch('/api/system-settings', {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(systemData)
+                });
+                
+                if (response.ok) {
+                    showSettingsMessage('System settings saved successfully');
+                } else {
+                    throw new Error('Failed to save system settings');
+                }
+            } catch (error) {
+                console.error('Error saving system settings:', error);
+                showSettingsMessage('Failed to save system settings: ' + error.message, true);
+            }
+        }
+
+        // Utility Functions
+        function formatDateTimeLocal(isoString) {
+            const date = new Date(isoString);
+            const year = date.getFullYear();
+            const month = String(date.getMonth() + 1).padStart(2, '0');
+            const day = String(date.getDate()).padStart(2, '0');
+            const hours = String(date.getHours()).padStart(2, '0');
+            const minutes = String(date.getMinutes()).padStart(2, '0');
+            
+            return `${year}-${month}-${day}T${hours}:${minutes}`;
+        }
+
+        function showSettingsMessage(message, isError = false) {
+            const messageDiv = document.getElementById('settingsMessage');
+            messageDiv.textContent = message;
+            messageDiv.className = isError ? 'error-state' : 'success-state';
+            messageDiv.classList.remove('hidden');
+            setTimeout(() => messageDiv.classList.add('hidden'), 5000);
+        }
 
         window.addEventListener('load', () => {
             console.log('IPA Assessment admin dashboard with project management loaded');

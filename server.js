@@ -114,7 +114,7 @@ async function initializeDefaultProject() {
                         "Data validation to filter records by service type and region"
                     ],
                     correct_answer: "B",
-                    explanation: "Pivot Tables are designed for this type of multidimensional analysis, automatically calculating averages across service types and regions. Other options require manual work or don\'t perform the necessary calculations."
+                    explanation: "Pivot Tables are designed for this type of multidimensional analysis, automatically calculating averages across service types and regions. Other options require manual work or don't perform the necessary calculations."
                 },
                 {
                     project_id: defaultProjectId,
@@ -125,7 +125,7 @@ async function initializeDefaultProject() {
                     question_text: "Your campaign improved knowledge from 62% to 64% with 45,000 people surveyed (p<0.001). Your manager says \"Great results!\" What should you consider about this finding?",
                     options: [
                         "The sample size is too large, making the test unreliable",
-                        "Small p-values only mean the result isn\'t due to chance, not that the 2% improvement is meaningful",
+                        "Small p-values only mean the result isn't due to chance, not that the 2% improvement is meaningful",
                         "We need to check if the data meets the assumptions for this test",
                         "The confidence interval would give more accurate information than the p-value"
                     ],
@@ -153,7 +153,7 @@ async function initializeDefaultProject() {
                     period: "baseline",
                     question_number: 5,
                     category: "Data Analysis",
-                    skill: "Understanding Simpson\'s Paradox",
+                    skill: "Understanding Simpson's Paradox",
                     question_text: "Provider A has higher resolution rates than B for billing complaints (85% vs 80%) AND service complaints (90% vs 85%), yet has lower overall resolution (75% vs 78%). How is this possible?",
                     options: [
                         "There are systematic errors in how resolution rates are calculated",
@@ -162,7 +162,7 @@ async function initializeDefaultProject() {
                         "Outlier complaints are affecting the averages differently for each provider"
                     ],
                     correct_answer: "B",
-                    explanation: "This is Simpson\'s Paradox. Provider A excels in both categories but handles more difficult billing complaints (lower base resolution rate), while Provider B handles more easier service complaints, affecting overall averages despite A\'s category-level superiority."
+                    explanation: "This is Simpson's Paradox. Provider A excels in both categories but handles more difficult billing complaints (lower base resolution rate), while Provider B handles more easier service complaints, affecting overall averages despite A's category-level superiority."
                 },
                 {
                     project_id: defaultProjectId,
@@ -170,7 +170,7 @@ async function initializeDefaultProject() {
                     question_number: 6,
                     category: "Data Analysis",
                     skill: "Measurement Error Impact",
-                    question_text: "You\'re studying how income affects telecom spending using survey data where people typically underreport their income. How does this affect your analysis?",
+                    question_text: "You're studying how income affects telecom spending using survey data where people typically underreport their income. How does this affect your analysis?",
                     options: [
                         "Creates systematic bias by shifting all income values downward",
                         "Makes the income-spending relationship appear weaker than it actually is",
@@ -236,7 +236,7 @@ async function initializeDefaultProject() {
                     skill: "Output vs Outcome vs Impact Distinction",
                     question_text: "Your program achieved: 85% gained knowledge, 68% changed behavior, 15% system-wide complaint reduction. Which represents what the program directly produced?",
                     options: [
-                        "The 15% system change because it shows the program\'s ultimate effectiveness",
+                        "The 15% system change because it shows the program's ultimate effectiveness",
                         "The 85% knowledge gain because this is what training sessions directly created",
                         "All three results equally demonstrate program accomplishments",
                         "The 68% behavior change because it proves the program worked as intended"
@@ -266,7 +266,7 @@ async function initializeDefaultProject() {
                     question_number: 12,
                     category: "M&E",
                     skill: "Monitoring vs Evaluation Distinction",
-                    question_text: "For 6 months, you\'ve been tracking training sessions, participant numbers, and immediate feedback scores. What type of M&E activity is this?",
+                    question_text: "For 6 months, you've been tracking training sessions, participant numbers, and immediate feedback scores. What type of M&E activity is this?",
                     options: [
                         "Evaluation because you are measuring program performance over time",
                         "Monitoring because you are tracking ongoing implementation activities and immediate outputs",
@@ -298,7 +298,7 @@ async function initializeDefaultProject() {
                     question_number: 14,
                     category: "RCT/Impact",
                     skill: "Randomization Unit Trade-offs",
-                    question_text: "You\'re testing complaint resolution across 300 centers in 50 cities. You could randomly assign individual centers or entire cities to treatment. What is the main advantage of city-level randomization?",
+                    question_text: "You're testing complaint resolution across 300 centers in 50 cities. You could randomly assign individual centers or entire cities to treatment. What is the main advantage of city-level randomization?",
                     options: [
                         "City randomization provides larger sample sizes for statistical analysis",
                         "City randomization prevents centers from learning practices from nearby treated centers",
@@ -318,7 +318,7 @@ async function initializeDefaultProject() {
                     options: [
                         "Per-protocol analysis comparing actual training participants versus pure controls",
                         "Intent-to-treat analysis comparing original assignments regardless of participation",
-                        "As-treated analysis comparing everyone who got training versus those who didn\'t",
+                        "As-treated analysis comparing everyone who got training versus those who didn't",
                         "Dose-response analysis examining effects by hours of training received"
                     ],
                     correct_answer: "B",
@@ -381,7 +381,7 @@ async function initializeDefaultProject() {
                     question_text: "Your system processes 15,000 daily complaints from 10 data sources. Some sources occasionally fail, but you must produce daily reports regardless. What design approach ensures this?",
                     options: [
                         "Implement comprehensive logging to track all system operations",
-                        "Process each source independently so failures don\'t prevent other sources from completing",
+                        "Process each source independently so failures don't prevent other sources from completing",
                         "Use database transactions to maintain consistency across all operations",
                         "Set up automated alerts to notify administrators of any failures immediately"
                     ],
@@ -914,78 +914,7 @@ app.delete('/api/questions/:question_id', async (req, res) => {
     }
 });
 
-// API: Health check
-app.get('/api/health', async (req, res) => {
-    try {
-        if (!db) {
-            throw new Error('Database not initialized');
-        }
-        
-        await db.admin().ping();
-        
-        res.json({ 
-            status: 'OK', 
-            message: 'Database connected and operational',
-            timestamp: new Date().toISOString(),
-            database: 'MongoDB'
-        });
-    } catch (err) {
-        console.error('❌ Database health check failed:', err);
-        res.status(500).json({ 
-            status: 'ERROR', 
-            message: 'Database connection failed',
-            timestamp: new Date().toISOString(),
-            error: err.message
-        });
-    }
-});
-
-// API: Migrate existing data to baseline period
-app.post('/api/migrate-to-baseline', async (req, res) => {
-    console.log('🔄 Admin requesting migration of existing data to baseline period');
-    
-    try {
-        const resultsCollection = db.collection('quiz_results');
-        const projectsCollection = db.collection('projects');
-        
-        // Find NCC Embedded Lab project
-        const nccProject = await projectsCollection.findOne({ name: "NCC Embedded Lab" });
-        if (!nccProject) {
-            return res.status(404).json({ error: 'NCC Embedded Lab project not found' });
-        }
-        
-        // Update all results for NCC project that don't have a period set
-        const updateResult = await resultsCollection.updateMany(
-            { 
-                project_id: nccProject._id,
-                $or: [
-                    { period: { $exists: false } },
-                    { period: null },
-                    { period: "" }
-                ]
-            },
-            { 
-                $set: { 
-                    period: "baseline",
-                    updated_at: new Date()
-                }
-            }
-        );
-        
-        console.log(`✅ Migrated ${updateResult.modifiedCount} NCC results to baseline period`);
-        res.json({
-            success: true,
-            message: `Successfully migrated ${updateResult.modifiedCount} results to baseline period`,
-            updated_count: updateResult.modifiedCount
-        });
-        
-    } catch (err) {
-        console.error('❌ Error migrating data to baseline:', err);
-        res.status(500).json({ error: 'Database error', details: err.message });
-    }
-});
-
-// API: Get period comparison data
+// API: Get period comparison data - Enhanced
 app.get('/api/period-comparison/:project_id', async (req, res) => {
     console.log('📊 Fetching period comparison for project:', req.params.project_id);
     
@@ -1076,6 +1005,188 @@ app.get('/api/period-comparison/:project_id', async (req, res) => {
     } catch (err) {
         console.error('❌ Error fetching period comparison:', err);
         res.status(500).json({ error: 'Database error', details: err.message });
+    }
+});
+
+// API: Health check
+app.get('/api/health', async (req, res) => {
+    try {
+        if (!db) {
+            throw new Error('Database not initialized');
+        }
+        
+        await db.admin().ping();
+        
+        res.json({ 
+            status: 'OK', 
+            message: 'Database connected and operational',
+            timestamp: new Date().toISOString(),
+            database: 'MongoDB'
+        });
+    } catch (err) {
+        console.error('❌ Database health check failed:', err);
+        res.status(500).json({ 
+            status: 'ERROR', 
+            message: 'Database connection failed',
+            timestamp: new Date().toISOString(),
+            error: err.message
+        });
+    }
+});
+
+// API: Migrate existing data to baseline period
+app.post('/api/migrate-to-baseline', async (req, res) => {
+    console.log('🔄 Admin requesting migration of existing data to baseline period');
+    
+    try {
+        const resultsCollection = db.collection('quiz_results');
+        const projectsCollection = db.collection('projects');
+        
+        // Find NCC Embedded Lab project
+        const nccProject = await projectsCollection.findOne({ name: "NCC Embedded Lab" });
+        if (!nccProject) {
+            return res.status(404).json({ error: 'NCC Embedded Lab project not found' });
+        }
+        
+        // Update all results for NCC project that don't have a period set
+        const updateResult = await resultsCollection.updateMany(
+            { 
+                project_id: nccProject._id,
+                $or: [
+                    { period: { $exists: false } },
+                    { period: null },
+                    { period: "" }
+                ]
+            },
+            { 
+                $set: { 
+                    period: "baseline",
+                    updated_at: new Date()
+                }
+            }
+        );
+        
+        console.log(`✅ Migrated ${updateResult.modifiedCount} NCC results to baseline period`);
+        res.json({
+            success: true,
+            message: `Successfully migrated ${updateResult.modifiedCount} results to baseline period`,
+            updated_count: updateResult.modifiedCount
+        });
+        
+    } catch (err) {
+        console.error('❌ Error migrating data to baseline:', err);
+        res.status(500).json({ error: 'Database error', details: err.message });
+    }
+});
+
+// API: Enhanced CSV Download
+app.get('/api/download-csv', async (req, res) => {
+    console.log('📥 CSV download requested');
+    
+    try {
+        const collection = db.collection('quiz_results');
+        const projectsCollection = db.collection('projects');
+        
+        let query = {};
+        if (req.query.project_id && req.query.project_id !== 'all') {
+            query.project_id = new ObjectId(req.query.project_id);
+        }
+        
+        const results = await collection.find(query).sort({ completed_at: -1 }).toArray();
+        const projects = await projectsCollection.find({}).toArray();
+        
+        // Create project lookup
+        const projectLookup = {};
+        projects.forEach(p => {
+            projectLookup[p._id.toString()] = p.name;
+        });
+        
+        // CSV headers
+        const headers = [
+            'Participant Name',
+            'Project',
+            'Period',
+            'Completed At',
+            'Total Score',
+            'Percentage',
+            'Time Taken (seconds)',
+            'Data Analysis Score',
+            'M&E Score', 
+            'RCT/Impact Score',
+            'Programming Logic Score',
+            'Grade'
+        ];
+        
+        // Add individual question columns
+        for (let i = 1; i <= 20; i++) {
+            headers.push(`Q${i} Answer`, `Q${i} Correct`, `Q${i} Category`, `Q${i} Skill`);
+        }
+        
+        let csvContent = headers.join(',') + '\n';
+        
+        // Process each result
+        results.forEach(result => {
+            const projectName = projectLookup[result.project_id?.toString()] || 'Unknown';
+            
+            // Calculate skill area scores
+            const skillAreas = {
+                'Data Analysis': [1,2,3,4,5,6,7,8],
+                'M&E': [9,10,11,12,13],
+                'RCT/Impact': [14,15,16],
+                'Programming Logic': [17,18,19,20]
+            };
+            
+            const skillScores = {};
+            Object.entries(skillAreas).forEach(([area, questions]) => {
+                let correct = 0;
+                questions.forEach(qNum => {
+                    if (result.questions && result.questions[`Q${qNum}`] && 
+                        result.questions[`Q${qNum}`].user_answer === result.questions[`Q${qNum}`].correct_answer) {
+                        correct++;
+                    }
+                });
+                skillScores[area] = `${correct}/${questions.length}`;
+            });
+            
+            const grade = result.percentage >= 80 ? 'Excellent' : 
+                         result.percentage >= 60 ? 'Good' : 'Needs Improvement';
+            
+            const row = [
+                `"${result.participant_name}"`,
+                `"${projectName}"`,
+                result.period || 'baseline',
+                result.completed_at.toISOString(),
+                result.total_score,
+                result.percentage,
+                result.time_taken || '',
+                skillScores['Data Analysis'],
+                skillScores['M&E'],
+                skillScores['RCT/Impact'],
+                skillScores['Programming Logic'],
+                grade
+            ];
+            
+            // Add individual question data
+            for (let i = 1; i <= 20; i++) {
+                const q = result.questions?.[`Q${i}`] || {};
+                row.push(
+                    `"${q.user_answer || ''}"`,
+                    `"${q.correct_answer || ''}"`,
+                    `"${q.category || ''}"`,
+                    `"${q.skill || ''}"`
+                );
+            }
+            
+            csvContent += row.join(',') + '\n';
+        });
+        
+        res.setHeader('Content-Type', 'text/csv');
+        res.setHeader('Content-Disposition', 'attachment; filename="assessment_results.csv"');
+        res.send(csvContent);
+        
+    } catch (err) {
+        console.error('❌ Error generating CSV:', err);
+        res.status(500).json({ error: 'Failed to generate CSV' });
     }
 });
 
