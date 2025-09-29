@@ -65,6 +65,7 @@ async function initializeDefaultProject() {
             const projectDoc = {
                 name: "NCC Embedded Lab",
                 access_code: "NCC2024",
+                 period: "baseline",
                 time_limit: 1800,
                 description: "Default project for existing assessments",
                 created_at: new Date(),
@@ -526,10 +527,10 @@ app.get('/api/projects', async (req, res) => {
 
 // API: Create new project
 app.post('/api/projects', async (req, res) => {
-    const { name, description, time_limit } = req.body;
+    const { name, description, period, time_limit } = req.body;
     
-    if (!name || !time_limit) {
-        return res.status(400).json({ error: 'Name and time limit are required' });
+    if (!name || !time_limit || !period) {
+        return res.status(400).json({ error: 'Name, period, and time limit are required' });
     }
     
     try {
@@ -546,6 +547,7 @@ app.post('/api/projects', async (req, res) => {
         const projectDoc = {
             name,
             description: description || '',
+            period: period, // ADD THIS LINE
             access_code,
             time_limit: parseInt(time_limit),
             created_at: new Date(),
@@ -554,7 +556,7 @@ app.post('/api/projects', async (req, res) => {
         
         const result = await projectsCollection.insertOne(projectDoc);
         
-        console.log(`✅ Project created: ${name} with code: ${access_code}`);
+        console.log(`✅ Project created: ${name} (${period}) with code: ${access_code}`);
         res.json({
             success: true,
             project: { ...projectDoc, _id: result.insertedId }
@@ -565,6 +567,8 @@ app.post('/api/projects', async (req, res) => {
         res.status(500).json({ error: 'Database error' });
     }
 });
+
+
 
 
 
