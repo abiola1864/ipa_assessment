@@ -1897,26 +1897,14 @@ function refreshAnalytics() {
         filteredResults = quizResults.filter(result => result.project_id === selectedProject);
     }
     
-    // Update subtitle
-    const subtitle = document.getElementById('analyticsSubtitle');
-    if (subtitle) {
-        if (selectedProject === 'all') {
-            subtitle.textContent = 'Performance insights by question across all projects';
-        } else {
-            const project = projects.find(p => p._id === selectedProject);
-            subtitle.textContent = project ? `${project.name} - Performance insights by question` : 'Performance insights by question';
-        }
-    }
-    
     if (filteredResults.length > 0) {
         generateAnalytics(filteredResults);
     } else {
-        document.getElementById('hardestQuestions').innerHTML = '<p style="text-align: center; color: var(--text-muted); padding: 40px;">No data available for this project</p>';
-        document.getElementById('easiestQuestions').innerHTML = '<p style="text-align: center; color: var(--text-muted); padding: 40px;">No data available for this project</p>';
-        document.getElementById('skillAreasChart').innerHTML = '<p style="text-align: center; color: var(--text-muted); padding: 40px;">No data available for this project</p>';
+        document.getElementById('hardestQuestions').innerHTML = '<p style="text-align: center; color: var(--text-muted); padding: 40px;">No data</p>';
+        document.getElementById('easiestQuestions').innerHTML = '<p style="text-align: center; color: var(--text-muted); padding: 40px;">No data</p>';
+        document.getElementById('skillAreasChart').innerHTML = '<p style="text-align: center; color: var(--text-muted); padding: 40px;">No data</p>';
     }
 }
-
 
 // Add this sort function
 function sortQuestions(type, order) {
@@ -2304,8 +2292,6 @@ function updateProjectSelector() {
         }
     });
 }
-
-
         // Modal Management
         function showCreateProjectModal() {
             document.getElementById('createProjectModal').classList.add('active');
@@ -2702,22 +2688,16 @@ function updateProjectSelector() {
             }
         }
 
-        // Copy Question
-       function showCopyQuestionsModal() {
-    updateQuestionProjectDropdowns();
-    document.getElementById('copyQuestionsModal').classList.add('active');
-    loadNccQuestions(); // Called after modal is visible
-}
+        // Copy Questions
+        function showCopyQuestionsModal() {
+            loadNccQuestions();
+            updateQuestionProjectDropdowns();
+            document.getElementById('copyQuestionsModal').classList.add('active');
+        }
 
-
-       function closeCopyQuestionsModal() {
-    document.getElementById('copyQuestionsModal').classList.remove('active');
-    document.getElementById('copyTargetProject').value = '';
-    document.getElementById('questionSearchBox').value = '';
-    document.getElementById('categoryFilterSelect').value = '';
-    deselectAllQuestions();
-}
-
+        function closeCopyQuestionsModal() {
+            document.getElementById('copyQuestionsModal').classList.remove('active');
+        }
 
         async function loadNccQuestions() {
             try {
@@ -2737,172 +2717,61 @@ function updateProjectSelector() {
             }
         }
 
-      function displayNccQuestions() {
-    const container = document.getElementById('nccQuestionsList');
-    
-    if (nccQuestions.length === 0) {
-        container.innerHTML = '<p style="text-align: center; color: var(--text-muted);">No questions available</p>';
-        return;
-    }
-    
-    // Get unique categories for filter dropdown
-    const categories = [...new Set(nccQuestions.map(q => q.category))].sort();
-    const categoryFilter = document.getElementById('categoryFilterSelect');
-    categoryFilter.innerHTML = '<option value="">All Categories</option>';
-    categories.forEach(cat => {
-        const option = document.createElement('option');
-        option.value = cat;
-        option.textContent = cat;
-        categoryFilter.appendChild(option);
-    });
-    
-    let html = '';
-    nccQuestions.forEach(question => {
-        html += `
-            <div class="question-item" data-category="${question.category}" data-skill="${question.skill}" data-question-id="${question._id}" 
-                 style="display: flex; align-items: flex-start; padding: 12px; margin-bottom: 8px; background: var(--surface); border-radius: 8px; border: 2px solid var(--border-light); transition: all 0.3s ease;">
-                <input type="checkbox" 
-                       class="question-checkbox" 
-                       id="ncc_q_${question._id}" 
-                       value="${question._id}" 
-                       onchange="updateQuestionCount()"
-                       style="margin-right: 12px; margin-top: 4px; width: 18px; height: 18px; cursor: pointer;">
-                <label for="ncc_q_${question._id}" style="flex: 1; cursor: pointer; margin-bottom: 0;">
-                    <div style="font-weight: 600; color: var(--text-primary); margin-bottom: 4px;">
-                        Q${question.question_number} - ${question.category}
-                    </div>
-                    <div style="font-size: 0.85rem; color: var(--text-secondary);">
-                        ${question.skill}
-                    </div>
-                </label>
-            </div>
-        `;
-    });
-    
-    container.innerHTML = html;
-    updateQuestionCount();
-}
-
-
-
-function selectAllQuestions() {
-    const checkboxes = document.querySelectorAll('.question-checkbox');
-    const visibleCheckboxes = Array.from(checkboxes).filter(cb => {
-        const item = cb.closest('.question-item');
-        return item && item.style.display !== 'none';
-    });
-    
-    visibleCheckboxes.forEach(cb => cb.checked = true);
-    updateQuestionCount();
-}
-
-function deselectAllQuestions() {
-    const checkboxes = document.querySelectorAll('.question-checkbox');
-    checkboxes.forEach(cb => cb.checked = false);
-    updateQuestionCount();
-}
-
-
-function filterQuestionsList() {
-    const searchTerm = document.getElementById('questionSearchBox').value.toLowerCase();
-    const categoryFilter = document.getElementById('categoryFilterSelect').value;
-    const items = document.querySelectorAll('.question-item');
-    
-    items.forEach(item => {
-        const category = item.dataset.category || '';
-        const skill = item.dataset.skill || '';
-        const text = (category + ' ' + skill).toLowerCase();
-        
-        const matchesSearch = searchTerm === '' || text.includes(searchTerm);
-        const matchesCategory = categoryFilter === '' || category === categoryFilter;
-        
-        if (matchesSearch && matchesCategory) {
-            item.style.display = 'flex';
-        } else {
-            item.style.display = 'none';
-        }
-    });
-    
-    updateQuestionCount();
-}
-
-
-function updateQuestionCount() {
-    const checkboxes = document.querySelectorAll('.question-checkbox:checked');
-    const count = checkboxes.length;
-    
-    document.getElementById('selectedCount').textContent = `${count} selected`;
-    document.getElementById('copyBtnCount').textContent = count;
-    
-    // Update visual feedback on button
-    const copyBtn = document.getElementById('copyQuestionsBtn');
-    if (count === 0) {
-        copyBtn.disabled = true;
-        copyBtn.style.opacity = '0.5';
-    } else {
-        copyBtn.disabled = false;
-        copyBtn.style.opacity = '1';
-    }
-}
-
-
-       async function executeCopyQuestions() {
-    const targetProjectId = document.getElementById('copyTargetProject').value;
-    const selectedQuestions = Array.from(document.querySelectorAll('.question-checkbox:checked'))
-        .map(cb => cb.value);
-    
-    if (!targetProjectId) {
-        showActionMessage('Please select a target project', true);
-        return;
-    }
-    
-    if (selectedQuestions.length === 0) {
-        showActionMessage('Please select at least one question to copy', true);
-        return;
-    }
-    
-    const copyBtn = document.getElementById('copyQuestionsBtn');
-    const originalText = copyBtn.innerHTML;
-    copyBtn.disabled = true;
-    copyBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Copying...';
-    
-    try {
-        const nccProject = projects.find(p => p.name === "NCC Embedded Lab");
-        if (!nccProject) {
-            throw new Error('Source project not found');
-        }
-        
-        const response = await fetch('/api/questions/copy', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-                source_project_id: nccProject._id,
-                target_project_id: targetProjectId,
-                question_ids: selectedQuestions
-            })
-        });
-        
-        if (response.ok) {
-            const result = await response.json();
-            showActionMessage(`Successfully copied ${result.copied_count} question${result.copied_count !== 1 ? 's' : ''}!`);
-            closeCopyQuestionsModal();
+        function displayNccQuestions() {
+            const container = document.getElementById('nccQuestionsList');
             
-            // Refresh questions if user is viewing the target project
-            const currentProjectFilter = document.getElementById('questionProjectFilter').value;
-            if (currentProjectFilter === targetProjectId) {
-                loadQuestionsForProject();
+            if (nccQuestions.length === 0) {
+                container.innerHTML = '<p>No questions available</p>';
+                return;
             }
-        } else {
-            throw new Error('Failed to copy questions');
+            
+            let html = '';
+            nccQuestions.forEach(question => {
+                html += `
+                    <div style="display: flex; align-items: flex-start; padding: 12px; margin-bottom: 8px; background: var(--surface); border-radius: 8px;">
+                        <input type="checkbox" id="ncc_q_${question._id}" value="${question._id}" style="margin-right: 12px; margin-top: 4px;">
+                        <div style="flex: 1;">
+                            <div style="font-weight: 600; color: var(--text-primary);">Q${question.question_number} - ${question.category}</div>
+                            <div style="font-size: 0.85rem; color: var(--text-secondary);">${question.skill}</div>
+                        </div>
+                    </div>
+                `;
+            });
+            
+            container.innerHTML = html;
         }
-    } catch (error) {
-        showActionMessage('Failed: ' + error.message, true);
-    } finally {
-        copyBtn.disabled = false;
-        copyBtn.innerHTML = originalText;
-    }
-}
 
+        async function executeCopyQuestions() {
+            const targetProjectId = document.getElementById('copyTargetProject').value;
+            const selectedQuestions = Array.from(document.querySelectorAll('#nccQuestionsList input[type="checkbox"]:checked'))
+                .map(cb => cb.value);
+            
+            if (!targetProjectId || selectedQuestions.length === 0) {
+                showActionMessage('Select target project and questions', true);
+                return;
+            }
+            
+            try {
+                const nccProject = projects.find(p => p.name === "NCC Embedded Lab");
+                const response = await fetch('/api/questions/copy', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        source_project_id: nccProject._id,
+                        target_project_id: targetProjectId,
+                        question_ids: selectedQuestions
+                    })
+                });
+                
+                if (response.ok) {
+                    const result = await response.json();
+                    showActionMessage(`Copied ${result.copied_count} questions`);
+                    closeCopyQuestionsModal();
+                }
+            } catch (error) {
+                showActionMessage('Failed: ' + error.message, true);
+            }
+        }
 
         // Analytics
         function generateAnalytics(results) {
@@ -3071,47 +2940,41 @@ function updateQuestionCount() {
             updateParticipantAnalysis(analyticsData.participantAnalysis);
         }
 
-      function updateSkillAreas(skillAreas) {
-    const container = document.getElementById('skillAreasChart');
-    if (!container) return;
-    
-    if (!skillAreas || skillAreas.length === 0) {
-        container.innerHTML = '<p style="text-align: center; color: var(--text-muted); padding: 40px;">No skill area data available</p>';
-        return;
-    }
-    
-    let html = '';
-    
-    skillAreas.forEach(area => {
-        const color = area.averagePercentage >= 80 ? 'var(--primary-green)' : 
-                     area.averagePercentage >= 60 ? '#f59e0b' : '#dc2626';
-        
-        html += `
-            <div style="margin-bottom: 24px; padding: 28px; border-left: 6px solid ${color}; background: var(--surface-alt); border-radius: 16px;">
-                <div style="display: flex; justify-content: space-between;">
-                    <div>
-                        <h4 style="font-size: 1.2rem; margin-bottom: 8px;">${area.name}</h4>
-                        <p style="color: var(--text-secondary); margin-bottom: 8px;">${area.description}</p>
-                        <span style="color: var(--text-muted); font-size: 0.875rem;">
-                            ${area.participantScores ? area.participantScores.length : 0} participants
-                        </span>
-                    </div>
-                    <div style="text-align: right;">
-                        <div style="font-size: 2rem; font-weight: 800; color: ${color};">
-                            ${area.averagePercentage}%
-                        </div>
-                        <div style="color: var(--text-secondary);">
-                            ${area.totalCorrect}/${area.totalPossible}
+        function updateSkillAreas(skillAreas) {
+            const container = document.getElementById('skillAreasChart');
+            if (!container) return;
+            
+            let html = '';
+            
+            skillAreas.forEach(area => {
+                const color = area.averagePercentage >= 80 ? 'var(--primary-green)' : 
+                             area.averagePercentage >= 60 ? '#f59e0b' : '#dc2626';
+                
+                html += `
+                    <div style="margin-bottom: 24px; padding: 28px; border-left: 6px solid ${color}; background: var(--surface-alt); border-radius: 16px;">
+                        <div style="display: flex; justify-content: space-between;">
+                            <div>
+                                <h4 style="font-size: 1.2rem; margin-bottom: 8px;">${area.name}</h4>
+                                <p style="color: var(--text-secondary); margin-bottom: 8px;">${area.description}</p>
+                                <span style="color: var(--text-muted); font-size: 0.875rem;">
+                                    ${area.participantScores ? area.participantScores.length : 0} participants
+                                </span>
+                            </div>
+                            <div style="text-align: right;">
+                                <div style="font-size: 2rem; font-weight: 800; color: ${color};">
+                                    ${area.averagePercentage}%
+                                </div>
+                                <div style="color: var(--text-secondary);">
+                                    ${area.totalCorrect}/${area.totalPossible}
+                                </div>
+                            </div>
                         </div>
                     </div>
-                </div>
-            </div>
-        `;
-    });
-    
-    container.innerHTML = html;
-}
-
+                `;
+            });
+            
+            container.innerHTML = html;
+        }
 
        function updateParticipantAnalysis(participants) {
     const container = document.getElementById('participantAnalysis');
@@ -3267,7 +3130,7 @@ function toggleParticipantDetails(index) {
         }
 
 
-
+        
        function refreshParticipantAnalysis() {
     const selectedProject = document.getElementById('participantProjectFilter').value;
     let filteredResults = quizResults;
