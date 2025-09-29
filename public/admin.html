@@ -1694,6 +1694,7 @@
     </div>
 
     <!-- Copy Questions Modal -->
+   <!-- Copy Questions Modal -->
     <div id="copyQuestionsModal" class="modal">
         <div class="modal-content" style="max-width: 700px;">
             <div class="modal-header">
@@ -1709,7 +1710,21 @@
                 </div>
                 
                 <div class="form-group">
-                    <label>Select Questions to Copy</label>
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+                        <label style="margin-bottom: 0;">Select Questions to Copy</label>
+                        <div style="display: flex; gap: 8px;">
+                            <button type="button" class="btn btn-outline btn-small" onclick="selectAllQuestions()">
+                                <i class="fas fa-check-double"></i> Select All
+                            </button>
+                            <button type="button" class="btn btn-outline btn-small" onclick="deselectAllQuestions()">
+                                <i class="fas fa-times"></i> Deselect All
+                            </button>
+                        </div>
+                    </div>
+                    <div style="background: var(--surface); padding: 12px; border-radius: 8px; margin-bottom: 12px;">
+                        <span id="selectedQuestionsCount" style="font-weight: 600; color: var(--primary-green);">0</span>
+                        <span style="color: var(--text-secondary);"> questions selected</span>
+                    </div>
                     <div id="nccQuestionsList" style="max-height: 400px; overflow-y: auto; border: 1px solid var(--border-light); border-radius: 12px; padding: 16px; background: var(--surface-alt);">
                         <!-- Will be populated by JavaScript -->
                     </div>
@@ -1717,13 +1732,14 @@
                 
                 <div style="display: flex; gap: 16px; justify-content: flex-end; margin-top: 24px;">
                     <button type="button" class="btn btn-secondary" onclick="closeCopyQuestionsModal()">Cancel</button>
-                    <button type="button" class="btn btn-primary" onclick="executeCopyQuestions()">
-                        <i class="fas fa-copy"></i> Copy Selected
+                    <button type="button" class="btn btn-primary" onclick="executeCopyQuestions()" id="copyQuestionsBtn">
+                        <i class="fas fa-copy"></i> Copy Selected (<span id="copyBtnCount">0</span>)
                     </button>
                 </div>
             </div>
         </div>
     </div>
+
 
     <!-- Delete Project Modal -->
     <div id="deleteProjectModal" class="modal">
@@ -2511,8 +2527,7 @@
                 console.error('Error:', error);
             }
         }
-
-        function displayNccQuestions() {
+function displayNccQuestions() {
             const container = document.getElementById('nccQuestionsList');
             
             if (nccQuestions.length === 0) {
@@ -2523,19 +2538,56 @@
             let html = '';
             nccQuestions.forEach(question => {
                 html += `
-                    <div style="display: flex; align-items: flex-start; padding: 12px; margin-bottom: 8px; background: var(--surface); border-radius: 8px;">
-                        <input type="checkbox" id="ncc_q_${question._id}" value="${question._id}" style="margin-right: 12px; margin-top: 4px;">
-                        <div style="flex: 1;">
+                    <div style="display: flex; align-items: flex-start; padding: 12px; margin-bottom: 8px; background: var(--surface); border-radius: 8px; transition: all 0.2s ease;">
+                        <input type="checkbox" 
+                               class="question-checkbox"
+                               id="ncc_q_${question._id}" 
+                               value="${question._id}" 
+                               onchange="updateQuestionCount()"
+                               style="margin-right: 12px; margin-top: 4px; cursor: pointer; width: 18px; height: 18px;">
+                        <label for="ncc_q_${question._id}" style="flex: 1; cursor: pointer;">
                             <div style="font-weight: 600; color: var(--text-primary);">Q${question.question_number} - ${question.category}</div>
                             <div style="font-size: 0.85rem; color: var(--text-secondary);">${question.skill}</div>
-                        </div>
+                        </label>
                     </div>
                 `;
             });
             
             container.innerHTML = html;
+            updateQuestionCount();
         }
 
+
+
+    function selectAllQuestions() {
+            document.querySelectorAll('.question-checkbox').forEach(checkbox => {
+                checkbox.checked = true;
+            });
+            updateQuestionCount();
+        }
+
+        function deselectAllQuestions() {
+            document.querySelectorAll('.question-checkbox').forEach(checkbox => {
+                checkbox.checked = false;
+            });
+            updateQuestionCount();
+        }
+
+        function updateQuestionCount() {
+            const selectedCount = document.querySelectorAll('.question-checkbox:checked').length;
+            document.getElementById('selectedQuestionsCount').textContent = selectedCount;
+            document.getElementById('copyBtnCount').textContent = selectedCount;
+            
+            const copyBtn = document.getElementById('copyQuestionsBtn');
+            if (selectedCount === 0) {
+                copyBtn.disabled = true;
+            } else {
+                copyBtn.disabled = false;
+            }
+        }
+
+
+        
         async function executeCopyQuestions() {
             const targetProjectId = document.getElementById('copyTargetProject').value;
             const selectedQuestions = Array.from(document.querySelectorAll('#nccQuestionsList input[type="checkbox"]:checked'))
