@@ -1897,23 +1897,12 @@ function refreshAnalytics() {
         filteredResults = quizResults.filter(result => result.project_id === selectedProject);
     }
     
-    // Update subtitle
-    const subtitle = document.getElementById('analyticsSubtitle');
-    if (subtitle) {
-        if (selectedProject === 'all') {
-            subtitle.textContent = 'Performance insights by question across all projects';
-        } else {
-            const project = projects.find(p => p._id === selectedProject);
-            subtitle.textContent = project ? `${project.name} - Performance insights by question` : 'Performance insights by question';
-        }
-    }
-    
     if (filteredResults.length > 0) {
         generateAnalytics(filteredResults);
     } else {
-        document.getElementById('hardestQuestions').innerHTML = '<p style="text-align: center; color: var(--text-muted); padding: 40px;">No data available for this project</p>';
-        document.getElementById('easiestQuestions').innerHTML = '<p style="text-align: center; color: var(--text-muted); padding: 40px;">No data available for this project</p>';
-        document.getElementById('skillAreasChart').innerHTML = '<p style="text-align: center; color: var(--text-muted); padding: 40px;">No data available for this project</p>';
+        document.getElementById('hardestQuestions').innerHTML = '<p style="text-align: center; color: var(--text-muted); padding: 40px;">No data</p>';
+        document.getElementById('easiestQuestions').innerHTML = '<p style="text-align: center; color: var(--text-muted); padding: 40px;">No data</p>';
+        document.getElementById('skillAreasChart').innerHTML = '<p style="text-align: center; color: var(--text-muted); padding: 40px;">No data</p>';
     }
 }
 
@@ -2268,43 +2257,34 @@ function updateProjectSelector() {
             });
         }
 
-      function updateProjectFilters() {
-    const filterIds = ['participantProjectFilter', 'resultsProjectFilter', 'deleteProjectSelect', 'analyticsProjectFilter'];
-    
-    filterIds.forEach(id => {
-        const select = document.getElementById(id);
-        if (select) {
-            const currentValue = select.value;
-            const isDeleteSelect = id === 'deleteProjectSelect';
-            const isAnalyticsFilter = id === 'analyticsProjectFilter';
-            
-            select.innerHTML = isDeleteSelect ? 
-                '<option value="">Choose project...</option>' : 
-                '<option value="all">All Projects</option>';
-            
-            projects.forEach(project => {
-                const option = document.createElement('option');
-                option.value = project._id;
-                
-                if (isDeleteSelect) {
-                    option.textContent = `${project.name} (${project.participant_count || 0} participants)`;
-                } else {
-                    option.textContent = project.name;
+        function updateProjectFilters() {
+            ['participantProjectFilter', 'resultsProjectFilter', 'deleteProjectSelect'].forEach(id => {
+                const select = document.getElementById(id);
+                if (select) {
+                    const currentValue = select.value;
+                    const isDeleteSelect = id === 'deleteProjectSelect';
+                    
+                    select.innerHTML = isDeleteSelect ? 
+                        '<option value="">Choose project...</option>' : 
+                        '<option value="all">All Projects</option>';
+                    
+                    projects.forEach(project => {
+                        const option = document.createElement('option');
+                        option.value = project._id;
+                        option.textContent = isDeleteSelect ? 
+                            `${project.name} (${project.participant_count || 0} participants)` : 
+                            project.name;
+                        select.appendChild(option);
+                    });
+                    
+                    if (currentValue === 'all' || projects.find(p => p._id === currentValue)) {
+                        select.value = currentValue;
+                    } else {
+                        select.value = isDeleteSelect ? '' : 'all';
+                    }
                 }
-                
-                select.appendChild(option);
             });
-            
-            if (currentValue === 'all' || projects.find(p => p._id === currentValue)) {
-                select.value = currentValue;
-            } else {
-                select.value = isDeleteSelect ? '' : 'all';
-            }
         }
-    });
-}
-
-
 
         // Modal Management
         function showCreateProjectModal() {
@@ -2954,79 +2934,47 @@ function updateProjectSelector() {
             updateParticipantAnalysis(analyticsData.participantAnalysis);
         }
 
-      function updateSkillAreas(skillAreas) {
-    const container = document.getElementById('skillAreasChart');
-    if (!container) return;
-    
-    if (!skillAreas || skillAreas.length === 0) {
-        container.innerHTML = '<p style="text-align: center; color: var(--text-muted); padding: 40px;">No skill area data available</p>';
-        return;
-    }
-    
-    let html = '';
-    
-    skillAreas.forEach(area => {
-        const color = area.averagePercentage >= 80 ? 'var(--primary-green)' : 
-                     area.averagePercentage >= 60 ? '#f59e0b' : '#dc2626';
-        
-        html += `
-            <div style="margin-bottom: 24px; padding: 28px; border-left: 6px solid ${color}; background: var(--surface-alt); border-radius: 16px;">
-                <div style="display: flex; justify-content: space-between;">
-                    <div>
-                        <h4 style="font-size: 1.2rem; margin-bottom: 8px;">${area.name}</h4>
-                        <p style="color: var(--text-secondary); margin-bottom: 8px;">${area.description}</p>
-                        <span style="color: var(--text-muted); font-size: 0.875rem;">
-                            ${area.participantScores ? area.participantScores.length : 0} participants
-                        </span>
-                    </div>
-                    <div style="text-align: right;">
-                        <div style="font-size: 2rem; font-weight: 800; color: ${color};">
-                            ${area.averagePercentage}%
-                        </div>
-                        <div style="color: var(--text-secondary);">
-                            ${area.totalCorrect}/${area.totalPossible}
+        function updateSkillAreas(skillAreas) {
+            const container = document.getElementById('skillAreasChart');
+            if (!container) return;
+            
+            let html = '';
+            
+            skillAreas.forEach(area => {
+                const color = area.averagePercentage >= 80 ? 'var(--primary-green)' : 
+                             area.averagePercentage >= 60 ? '#f59e0b' : '#dc2626';
+                
+                html += `
+                    <div style="margin-bottom: 24px; padding: 28px; border-left: 6px solid ${color}; background: var(--surface-alt); border-radius: 16px;">
+                        <div style="display: flex; justify-content: space-between;">
+                            <div>
+                                <h4 style="font-size: 1.2rem; margin-bottom: 8px;">${area.name}</h4>
+                                <p style="color: var(--text-secondary); margin-bottom: 8px;">${area.description}</p>
+                                <span style="color: var(--text-muted); font-size: 0.875rem;">
+                                    ${area.participantScores ? area.participantScores.length : 0} participants
+                                </span>
+                            </div>
+                            <div style="text-align: right;">
+                                <div style="font-size: 2rem; font-weight: 800; color: ${color};">
+                                    ${area.averagePercentage}%
+                                </div>
+                                <div style="color: var(--text-secondary);">
+                                    ${area.totalCorrect}/${area.totalPossible}
+                                </div>
+                            </div>
                         </div>
                     </div>
-                </div>
-            </div>
-        `;
-    });
-    
-    container.innerHTML = html;
-}
+                `;
+            });
+            
+            container.innerHTML = html;
+        }
 
-
-      function updateParticipantAnalysis(participants) {
+       function updateParticipantAnalysis(participants) {
     const container = document.getElementById('participantAnalysis');
     if (!container) return;
     
-    // Filter by selected project
-    const selectedProject = document.getElementById('participantProjectFilter').value;
-    let filteredParticipants = participants;
-    
-    if (selectedProject !== 'all') {
-        filteredParticipants = participants.filter(p => p.project_id === selectedProject);
-    }
-    
-    // Update subtitle
-    const subtitle = document.getElementById('participantsSubtitle');
-    if (subtitle) {
-        if (selectedProject === 'all') {
-            subtitle.textContent = 'Detailed participant performance across all projects';
-        } else {
-            const project = projects.find(p => p._id === selectedProject);
-            subtitle.textContent = project ? `${project.name} - Detailed participant performance` : 'Detailed participant performance';
-        }
-    }
-    
-    // Handle no data case
-    if (filteredParticipants.length === 0) {
-        container.innerHTML = '<p style="text-align: center; padding: 60px; color: var(--text-muted);">No participants found for this project.</p>';
-        return;
-    }
-    
-    // Sort participants
-    let sortedParticipants = [...filteredParticipants];
+    let sortedParticipants = [...participants];
 
     if (currentSort === 'highest') {
         sortedParticipants.sort((a, b) => b.percentage - a.percentage);
@@ -3047,7 +2995,7 @@ function updateProjectSelector() {
                  onmouseover="this.style.boxShadow='var(--shadow-lg)'" 
                  onmouseout="this.style.boxShadow='none'">
                 <div style="display: flex; justify-content: space-between; align-items: center;" onclick="toggleParticipantDetails(${index})">
-                    <div style="flex: 1;">
+                    <div>
                         <div style="font-weight: 700; font-size: 1.1rem; color: var(--text-primary); margin-bottom: 4px;">
                             <i class="fas fa-user" style="color: var(--primary-green); margin-right: 8px;"></i>${participant.name}
                         </div>
@@ -3063,7 +3011,7 @@ function updateProjectSelector() {
                             <div class="grade-badge ${gradeClass}" style="margin-bottom: 8px; padding: 10px 20px;">
                                 ${participant.percentage}% (${participant.totalScore}/20)
                             </div>
-                            <div style="color: var(--text-muted); font-size: 0.875rem; cursor: pointer;">
+                            <div style="color: var(--text-muted); font-size: 0.875rem;">
                                 <span id="toggle-${index}">
                                     <i class="fas fa-chevron-down"></i> Show Details
                                 </span>
@@ -3072,7 +3020,7 @@ function updateProjectSelector() {
                     </div>
                 </div>
                 
-                <!-- Collapsible Details Section - HIDDEN BY DEFAULT -->
+                <!-- Collapsible Details Section -->
                 <div class="participant-details" id="details-${index}" style="display: none; margin-top: 24px; padding-top: 24px; border-top: 2px solid var(--border-light);">
                     <h4 style="margin-bottom: 16px; color: var(--text-primary); font-weight: 700;">
                         <i class="fas fa-chart-bar"></i> Skill Area Breakdown
@@ -3113,7 +3061,6 @@ function updateProjectSelector() {
 }
 
 
-
 function toggleParticipantDetails(index) {
     const details = document.getElementById(`details-${index}`);
     const toggle = document.getElementById(`toggle-${index}`);
@@ -3150,24 +3097,18 @@ function toggleParticipantDetails(index) {
             }
         }
 
-       function refreshParticipantAnalysis() {
-    const selectedProject = document.getElementById('participantProjectFilter').value;
-    let filteredResults = quizResults;
-    
-    if (selectedProject !== 'all') {
-        filteredResults = quizResults.filter(result => result.project_id === selectedProject);
-    }
-    
-    if (filteredResults.length > 0) {
-        generateSkillAnalytics(filteredResults);
-    } else {
-        // Show no data message
-        const container = document.getElementById('participantAnalysis');
-        if (container) {
-            container.innerHTML = '<p style="text-align: center; padding: 60px; color: var(--text-muted);">No participants found for this project.</p>';
+        function refreshParticipantAnalysis() {
+            const selectedProject = document.getElementById('participantProjectFilter').value;
+            let filteredResults = quizResults;
+            
+            if (selectedProject !== 'all') {
+                filteredResults = quizResults.filter(result => result.project_id === selectedProject);
+            }
+            
+            if (filteredResults.length > 0) {
+                generateSkillAnalytics(filteredResults);
+            }
         }
-    }
-}
 
         function updateResultsTable(results) {
             const tbody = document.getElementById('resultsTableBody');
