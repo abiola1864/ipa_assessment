@@ -3136,38 +3136,47 @@ function refreshAnalytics() {
 }
 
 
-        function updateResultsTable(results) {
-            const tbody = document.getElementById('resultsTableBody');
-            if (!tbody) return;
-            
-            tbody.innerHTML = '';
+     function updateResultsTable(results) {
+    const tbody = document.getElementById('resultsTableBody');
+    if (!tbody) return;
+    
+    tbody.innerHTML = '';
 
-            results.forEach(result => {
-                const projectName = projects.find(p => p._id === result.project_id)?.name || 'Unknown';
+    if (!results || results.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="8" style="text-align: center; padding: 40px; color: var(--text-muted);">No results available</td></tr>';
+        return;
+    }
 
-                const row = document.createElement('tr');
-                row.innerHTML = `
-                    <td>${result.participant_name}</td>
-                    <td>${projectName}</td>
-                    <td>${result.period || 'baseline'}</td>
-                    <td>${result.total_score}/20</td>
-                    <td>${result.percentage}%</td>
-                    <td>
-                        <span class="grade-badge ${getGradeClass(result.percentage)}">
-                            ${getGradeText(result.percentage)}
-                        </span>
-                    </td>
-                    <td>${formatDateTime(result.completed_at)}</td>
-                    <td>
-                        <button class="btn btn-small" onclick="showDeleteRecordModal('${result.id}', '${result.participant_name}')" 
-                                style="background: #dc2626; color: white; padding: 6px 12px;">
-                            <i class="fas fa-trash"></i>
-                        </button>
-                    </td>
-                `;
-                tbody.appendChild(row);
-            });
-        }
+    results.forEach(result => {
+        const projectName = projects.find(p => p._id === result.project_id)?.name || 'Unknown';
+
+        const row = document.createElement('tr');
+        row.innerHTML = `
+            <td><strong>${result.participant_name}</strong></td>
+            <td>${projectName}</td>
+            <td style="text-transform: capitalize;">${result.period || 'baseline'}</td>
+            <td>${result.total_score}/20</td>
+            <td><strong>${result.percentage}%</strong></td>
+            <td>
+                <span class="grade-badge ${getGradeClass(result.percentage)}">
+                    ${getGradeText(result.percentage)}
+                </span>
+            </td>
+            <td>${formatDateTime(result.completed_at)}</td>
+            <td>
+                <button class="btn btn-small" 
+                        onclick="showDeleteRecordModal('${result.id}', '${result.participant_name.replace(/'/g, "\\'")}')" 
+                        style="background: #dc2626; color: white; padding: 6px 12px;"
+                        title="Delete this record">
+                    <i class="fas fa-trash"></i>
+                </button>
+            </td>
+        `;
+        tbody.appendChild(row);
+    });
+}
+
+
 
         function refreshResultsTable() {
             const selectedProject = document.getElementById('resultsProjectFilter').value;
