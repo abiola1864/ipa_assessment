@@ -428,6 +428,7 @@ app.get('/', (req, res) => {
 });
 
 // API: Validate project access code
+// API: Validate project access code
 app.post('/api/validate-access-code', async (req, res) => {
     const { access_code } = req.body;
     
@@ -447,9 +448,23 @@ app.post('/api/validate-access-code', async (req, res) => {
         }
         
         const questionsCollection = db.collection('questions');
-        const questions = await questionsCollection.find({ 
+        
+        // Get all questions for this project
+        const allQuestions = await questionsCollection.find({ 
             project_id: project._id 
-        }).sort({ question_number: 1 }).toArray();
+        }).sort({ question_number: 1, created_at: -1 }).toArray();
+        
+        // Keep only the LATEST version of each question_number
+        const questionMap = {};
+        allQuestions.forEach(q => {
+            if (!questionMap[q.question_number] || 
+                new Date(q.created_at) > new Date(questionMap[q.question_number].created_at)) {
+                questionMap[q.question_number] = q;
+            }
+        });
+        
+        // Convert back to array and sort
+        const questions = Object.values(questionMap).sort((a, b) => a.question_number - b.question_number);
         
         if (questions.length === 0) {
             return res.status(400).json({ error: 'No questions available for this project' });
@@ -480,59 +495,7 @@ app.post('/api/validate-access-code', async (req, res) => {
     }
 });
 
-// API: Submit quiz result
-app.post('/api/submit-quiz', async (req, res) => {
-    console.log('📝 Received quiz submission from:', req.body.participant_name);
-    
-    if (!db) {
-        return res.status(500).json({ error: 'Database not available' });
-    }
-    
-    const data = req.body;
-    
-    if (!data.participant_name || data.total_score === undefined || !data.project_id) {
-        return res.status(400).json({ error: 'Missing required fields' });
-    }
-    
-    try {
-        const collection = db.collection('quiz_results');
-        
-        const quizDocument = {
-            participant_name: data.participant_name,
-            project_id: new ObjectId(data.project_id),
-            period: data.period || 'baseline',
-            completed_at: new Date(data.completed_at),
-            total_score: data.total_score,
-            percentage: data.percentage,
-            time_taken: data.time_taken || null,
-            questions: {},
-            created_at: new Date()
-        };
-        
-        for (let i = 1; i <= (data.total_questions || 20); i++) {
-            quizDocument.questions[`Q${i}`] = {
-                user_answer: data[`Q${i}`] || '',
-                correct_answer: data[`Q${i}_correct`] || '',
-                skill: data[`Q${i}_skill`] || '',
-                category: data[`Q${i}_category`] || '',
-                is_correct: data[`Q${i}`] === data[`Q${i}_correct`]
-            };
-        }
-        
-        const result = await collection.insertOne(quizDocument);
-        
-        console.log(`✅ Quiz saved! ID: ${result.insertedId}`);
-        res.json({ 
-            success: true, 
-            id: result.insertedId,
-            message: 'Quiz results saved successfully'
-        });
-        
-    } catch (err) {
-        console.error('❌ Database error:', err.message);
-        res.status(500).json({ error: 'Database error' });
-    }
-});
+
 
 // API: Get all projects
 app.get('/api/projects', async (req, res) => {
