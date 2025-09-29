@@ -2703,11 +2703,12 @@ function updateProjectSelector() {
         }
 
         // Copy Questions
-        function showCopyQuestionsModal() {
-            loadNccQuestions();
-            updateQuestionProjectDropdowns();
-            document.getElementById('copyQuestionsModal').classList.add('active');
-        }
+       function showCopyQuestionsModal() {
+    updateQuestionProjectDropdowns();
+    document.getElementById('copyQuestionsModal').classList.add('active');
+    loadNccQuestions(); // Called after modal is visible
+}
+
 
        function closeCopyQuestionsModal() {
     document.getElementById('copyQuestionsModal').classList.remove('active');
