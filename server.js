@@ -748,6 +748,7 @@ app.post('/api/questions', async (req, res) => {
 
 
 // API: Update question
+// API: Update question
 app.put('/api/questions/:question_id', async (req, res) => {
     const { category, skill, question_text, options, correct_answer, explanation } = req.body;
     
