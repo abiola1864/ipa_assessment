@@ -1,7 +1,6 @@
 const express = require('express');
 const { MongoClient, ObjectId } = require('mongodb');
 const path = require('path');
-const fs = require('fs');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -30,7 +29,6 @@ async function initDatabase() {
         const projectsCollection = db.collection('projects');
         const questionsCollection = db.collection('questions');
         
-        // Create indexes for better query performance
         await resultsCollection.createIndex({ "participant_name": 1 });
         await resultsCollection.createIndex({ "completed_at": -1 });
         await resultsCollection.createIndex({ "percentage": -1 });
@@ -44,7 +42,6 @@ async function initDatabase() {
         
         console.log('✅ Database collections ready');
         
-        // Initialize default project if none exists
         await initializeDefaultProject();
         
     } catch (err) {
@@ -53,24 +50,22 @@ async function initDatabase() {
     }
 }
 
-// Initialize default project and migrate existing data
+// Initialize default project
 async function initializeDefaultProject() {
     try {
         const projectsCollection = db.collection('projects');
         const questionsCollection = db.collection('questions');
         const resultsCollection = db.collection('quiz_results');
         
-        // Check if default project exists
         const defaultProject = await projectsCollection.findOne({ name: "NCC Embedded Lab" });
         
         if (!defaultProject) {
             console.log('🔧 Creating default project and migrating data...');
             
-            // Create default project
             const projectDoc = {
                 name: "NCC Embedded Lab",
                 access_code: "NCC2024",
-                time_limit: 1800, // 30 minutes
+                time_limit: 1800,
                 description: "Default project for existing assessments",
                 created_at: new Date(),
                 status: "active"
@@ -81,8 +76,7 @@ async function initializeDefaultProject() {
             
             console.log(`✅ Default project created with ID: ${defaultProjectId}`);
             
-            // Extract and migrate existing questions from current index.html JavaScript
-            // These are the actual NCC Embedded Lab questions currently in use
+            // Insert default questions (your existing 20 questions)
             const existingQuestions = [
                 {
                     project_id: defaultProjectId,
@@ -409,7 +403,6 @@ async function initializeDefaultProject() {
             await questionsCollection.insertMany(existingQuestions);
             console.log(`✅ ${existingQuestions.length} existing NCC Embedded Lab questions migrated to database`);
             
-            // Update existing quiz results to reference the default project
             const updateResult = await resultsCollection.updateMany(
                 { project_id: { $exists: false } },
                 { 
@@ -430,9 +423,7 @@ async function initializeDefaultProject() {
 
 // Routes
 
-// Serve main quiz page
 app.get('/', (req, res) => {
-    console.log('📄 Serving main quiz page');
     res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
 
@@ -452,10 +443,9 @@ app.post('/api/validate-access-code', async (req, res) => {
         });
         
         if (!project) {
-            return res.status(404).json({ error: 'Invalid access code' });
+            return res.status(404).json({ error: 'Invalid access code or project is closed' });
         }
         
-        // Get questions for this project
         const questionsCollection = db.collection('questions');
         const questions = await questionsCollection.find({ 
             project_id: project._id 
@@ -490,27 +480,23 @@ app.post('/api/validate-access-code', async (req, res) => {
     }
 });
 
-// API: Submit quiz result (enhanced with project context)
+// API: Submit quiz result
 app.post('/api/submit-quiz', async (req, res) => {
     console.log('📝 Received quiz submission from:', req.body.participant_name);
     
     if (!db) {
-        console.error('❌ Database not available');
         return res.status(500).json({ error: 'Database not available' });
     }
     
     const data = req.body;
     
-    // Validate required fields including project context
-    if (!data.participant_name || data.total_score === undefined || data.percentage === undefined || !data.project_id) {
-        console.error('❌ Invalid submission data');
-        return res.status(400).json({ error: 'Invalid data', details: 'Missing required fields including project context' });
+    if (!data.participant_name || data.total_score === undefined || !data.project_id) {
+        return res.status(400).json({ error: 'Missing required fields' });
     }
     
     try {
         const collection = db.collection('quiz_results');
         
-        // Prepare document for MongoDB with project context
         const quizDocument = {
             participant_name: data.participant_name,
             project_id: new ObjectId(data.project_id),
@@ -523,7 +509,6 @@ app.post('/api/submit-quiz', async (req, res) => {
             created_at: new Date()
         };
         
-        // Store questions in a cleaner nested structure
         for (let i = 1; i <= (data.total_questions || 20); i++) {
             quizDocument.questions[`Q${i}`] = {
                 user_answer: data[`Q${i}`] || '',
@@ -534,36 +519,32 @@ app.post('/api/submit-quiz', async (req, res) => {
             };
         }
         
-        // Insert into MongoDB
         const result = await collection.insertOne(quizDocument);
         
-        console.log(`✅ Quiz saved successfully! ID: ${result.insertedId}, Participant: ${data.participant_name}, Project: ${data.project_id}`);
+        console.log(`✅ Quiz saved! ID: ${result.insertedId}`);
         res.json({ 
             success: true, 
             id: result.insertedId,
-            message: 'Quiz results saved successfully',
-            participant: data.participant_name
+            message: 'Quiz results saved successfully'
         });
         
     } catch (err) {
         console.error('❌ Database error:', err.message);
-        res.status(500).json({ error: 'Database error', details: err.message });
+        res.status(500).json({ error: 'Database error' });
     }
 });
 
-// API: Get all projects (for admin)
+// API: Get all projects
 app.get('/api/projects', async (req, res) => {
-    console.log('📋 Admin requesting all projects');
-    
     try {
         const projectsCollection = db.collection('projects');
         const projects = await projectsCollection.find({}).sort({ created_at: -1 }).toArray();
         
-        // Get participant counts for each project
         const resultsCollection = db.collection('quiz_results');
+        const questionsCollection = db.collection('questions');
+        
         const projectsWithStats = await Promise.all(projects.map(async (project) => {
             const participantCount = await resultsCollection.countDocuments({ project_id: project._id });
-            const questionsCollection = db.collection('questions');
             const questionCount = await questionsCollection.countDocuments({ project_id: project._id });
             
             return {
@@ -591,7 +572,6 @@ app.post('/api/projects', async (req, res) => {
     try {
         const projectsCollection = db.collection('projects');
         
-        // Generate unique access code
         let access_code;
         let isUnique = false;
         while (!isUnique) {
@@ -623,14 +603,31 @@ app.post('/api/projects', async (req, res) => {
     }
 });
 
+// API: Update project status (simplified)
+app.put('/api/projects/:project_id/status', async (req, res) => {
+    const { status } = req.body;
+    
+    try {
+        const projectsCollection = db.collection('projects');
+        const result = await projectsCollection.updateOne(
+            { _id: new ObjectId(req.params.project_id) },
+            { $set: { status, updated_at: new Date() } }
+        );
+        
+        if (result.matchedCount === 0) {
+            return res.status(404).json({ error: 'Project not found' });
+        }
+        
+        res.json({ success: true, message: `Project status updated to ${status}` });
+        
+    } catch (err) {
+        console.error('❌ Error updating project status:', err);
+        res.status(500).json({ error: 'Database error' });
+    }
+});
+
 // API: Get results by project
 app.get('/api/results/:project_id?', async (req, res) => {
-    console.log('📊 Admin requesting results for project:', req.params.project_id || 'all');
-    
-    if (!db) {
-        return res.status(500).json({ error: 'Database not available' });
-    }
-    
     try {
         const collection = db.collection('quiz_results');
         let query = {};
@@ -641,7 +638,6 @@ app.get('/api/results/:project_id?', async (req, res) => {
         
         const results = await collection.find(query).sort({ completed_at: -1 }).toArray();
         
-        // Convert MongoDB results to match frontend expectations
         const formattedResults = results.map(doc => {
             const formatted = {
                 id: doc._id,
@@ -655,7 +651,6 @@ app.get('/api/results/:project_id?', async (req, res) => {
                 created_at: doc.created_at.toISOString()
             };
             
-            // Flatten questions for compatibility with existing frontend
             const questionCount = Object.keys(doc.questions || {}).length;
             for (let i = 1; i <= questionCount; i++) {
                 const q = doc.questions[`Q${i}`] || {};
@@ -668,23 +663,16 @@ app.get('/api/results/:project_id?', async (req, res) => {
             return formatted;
         });
         
-        console.log(`✅ Returning ${formattedResults.length} results for project filter`);
         res.json(formattedResults);
         
     } catch (err) {
-        console.error('❌ Database error:', err.message);
-        res.status(500).json({ error: 'Database error', details: err.message });
+        console.error('❌ Database error:', err);
+        res.status(500).json({ error: 'Database error' });
     }
 });
 
-// API: Get statistics (enhanced with project filtering)
+// API: Get statistics
 app.get('/api/stats/:project_id?', async (req, res) => {
-    console.log('📈 Admin requesting statistics for project:', req.params.project_id || 'all');
-    
-    if (!db) {
-        return res.status(500).json({ error: 'Database not available' });
-    }
-    
     try {
         const collection = db.collection('quiz_results');
         let matchQuery = {};
@@ -719,27 +707,22 @@ app.get('/api/stats/:project_id?', async (req, res) => {
         
         const stats = statsAggregation[0];
         
-        const result = {
+        res.json({
             total: stats.total[0]?.count || 0,
             average_score: Math.round(stats.average[0]?.avg_score || 0),
             excellent_count: stats.excellent[0]?.count || 0,
             today_count: stats.today[0]?.count || 0,
             by_period: stats.by_period || []
-        };
-        
-        console.log('✅ Stats calculated:', result);
-        res.json(result);
+        });
         
     } catch (err) {
-        console.error('❌ Database error:', err.message);
-        res.status(500).json({ error: 'Database error', details: err.message });
+        console.error('❌ Database error:', err);
+        res.status(500).json({ error: 'Database error' });
     }
 });
 
 // API: Get questions for a project
 app.get('/api/questions/:project_id', async (req, res) => {
-    console.log('📋 Fetching questions for project:', req.params.project_id);
-    
     try {
         const questionsCollection = db.collection('questions');
         const questions = await questionsCollection.find({ 
@@ -764,7 +747,6 @@ app.post('/api/questions', async (req, res) => {
     try {
         const questionsCollection = db.collection('questions');
         
-        // Get next question number for this project
         const lastQuestion = await questionsCollection.findOne(
             { project_id: new ObjectId(project_id) },
             { sort: { question_number: -1 } }
@@ -786,7 +768,6 @@ app.post('/api/questions', async (req, res) => {
         
         const result = await questionsCollection.insertOne(questionDoc);
         
-        console.log(`✅ Question ${nextQuestionNumber} created for project ${project_id}`);
         res.json({
             success: true,
             question: { ...questionDoc, _id: result.insertedId }
@@ -794,65 +775,6 @@ app.post('/api/questions', async (req, res) => {
         
     } catch (err) {
         console.error('❌ Error creating question:', err);
-        res.status(500).json({ error: 'Database error' });
-    }
-});
-
-// API: Copy questions from one project to another
-app.post('/api/questions/copy', async (req, res) => {
-    const { source_project_id, target_project_id, question_ids } = req.body;
-    
-    if (!source_project_id || !target_project_id) {
-        return res.status(400).json({ error: 'Source and target project IDs required' });
-    }
-    
-    try {
-        const questionsCollection = db.collection('questions');
-        
-        // Get source questions
-        const sourceQuery = question_ids 
-            ? { project_id: new ObjectId(source_project_id), _id: { $in: question_ids.map(id => new ObjectId(id)) } }
-            : { project_id: new ObjectId(source_project_id) };
-            
-        const sourceQuestions = await questionsCollection.find(sourceQuery).toArray();
-        
-        if (sourceQuestions.length === 0) {
-            return res.status(404).json({ error: 'No questions found to copy' });
-        }
-        
-        // Get next question number for target project
-        const lastQuestion = await questionsCollection.findOne(
-            { project_id: new ObjectId(target_project_id) },
-            { sort: { question_number: -1 } }
-        );
-        let nextQuestionNumber = (lastQuestion?.question_number || 0) + 1;
-        
-        // Prepare copied questions
-        const copiedQuestions = sourceQuestions.map(q => ({
-            project_id: new ObjectId(target_project_id),
-            period: q.period,
-            question_number: nextQuestionNumber++,
-            category: q.category,
-            skill: q.skill,
-            question_text: q.question_text,
-            options: q.options,
-            correct_answer: q.correct_answer,
-            explanation: q.explanation,
-            created_at: new Date(),
-            copied_from: q._id
-        }));
-        
-        const result = await questionsCollection.insertMany(copiedQuestions);
-        
-        console.log(`✅ Copied ${copiedQuestions.length} questions from ${source_project_id} to ${target_project_id}`);
-        res.json({
-            success: true,
-            copied_count: copiedQuestions.length,
-            questions: copiedQuestions
-        });
-        
-    } catch (err) {
-        console.error('❌ Error copying questions:', err);
         res.status(500).json({ error: 'Database error' });
     }
 });
@@ -870,7 +792,7 @@ app.put('/api/questions/:question_id', async (req, res) => {
             ...(question_text && { question_text }),
             ...(options && { options }),
             ...(correct_answer && { correct_answer }),
-            ...(explanation && { explanation }),
+            ...(explanation !== undefined && { explanation }),
             updated_at: new Date()
         };
         
@@ -883,7 +805,6 @@ app.put('/api/questions/:question_id', async (req, res) => {
             return res.status(404).json({ error: 'Question not found' });
         }
         
-        console.log(`✅ Question ${req.params.question_id} updated`);
         res.json({ success: true, message: 'Question updated successfully' });
         
     } catch (err) {
@@ -905,7 +826,6 @@ app.delete('/api/questions/:question_id', async (req, res) => {
             return res.status(404).json({ error: 'Question not found' });
         }
         
-        console.log(`✅ Question ${req.params.question_id} deleted`);
         res.json({ success: true, message: 'Question deleted successfully' });
         
     } catch (err) {
@@ -914,49 +834,145 @@ app.delete('/api/questions/:question_id', async (req, res) => {
     }
 });
 
-// API: Get period comparison data - Enhanced
-app.get('/api/period-comparison/:project_id', async (req, res) => {
-    console.log('📊 Fetching period comparison for project:', req.params.project_id);
+// API: Copy questions
+app.post('/api/questions/copy', async (req, res) => {
+    const { source_project_id, target_project_id, question_ids } = req.body;
     
+    if (!source_project_id || !target_project_id) {
+        return res.status(400).json({ error: 'Source and target project IDs required' });
+    }
+    
+    try {
+        const questionsCollection = db.collection('questions');
+        
+        const sourceQuery = question_ids 
+            ? { project_id: new ObjectId(source_project_id), _id: { $in: question_ids.map(id => new ObjectId(id)) } }
+            : { project_id: new ObjectId(source_project_id) };
+            
+        const sourceQuestions = await questionsCollection.find(sourceQuery).toArray();
+        
+        if (sourceQuestions.length === 0) {
+            return res.status(404).json({ error: 'No questions found to copy' });
+        }
+        
+        const lastQuestion = await questionsCollection.findOne(
+            { project_id: new ObjectId(target_project_id) },
+            { sort: { question_number: -1 } }
+        );
+        let nextQuestionNumber = (lastQuestion?.question_number || 0) + 1;
+        
+        const copiedQuestions = sourceQuestions.map(q => ({
+            project_id: new ObjectId(target_project_id),
+            period: q.period,
+            question_number: nextQuestionNumber++,
+            category: q.category,
+            skill: q.skill,
+            question_text: q.question_text,
+            options: q.options,
+            correct_answer: q.correct_answer,
+            explanation: q.explanation,
+            created_at: new Date(),
+            copied_from: q._id
+        }));
+        
+        const result = await questionsCollection.insertMany(copiedQuestions);
+        
+        res.json({
+            success: true,
+            copied_count: copiedQuestions.length,
+            questions: copiedQuestions
+        });
+        
+    } catch (err) {
+        console.error('❌ Error copying questions:', err);
+        res.status(500).json({ error: 'Database error' });
+    }
+});
+
+// API: Get period comparison with individual participant tracking
+app.get('/api/period-comparison/:project_id', async (req, res) => {
     try {
         const resultsCollection = db.collection('quiz_results');
         const projectId = new ObjectId(req.params.project_id);
         
-        // Aggregate data by period
-        const periodData = await resultsCollection.aggregate([
-            { $match: { project_id: projectId } },
-            {
-                $group: {
-                    _id: {
-                        period: "$period",
-                        participant: "$participant_name"
-                    },
-                    totalScore: { $first: "$total_score" },
-                    percentage: { $first: "$percentage" },
-                    completedAt: { $first: "$completed_at" },
-                    questions: { $first: "$questions" }
-                }
-            },
-            {
-                $group: {
-                    _id: "$_id.period",
-                    participants: {
-                        $push: {
-                            name: "$_id.participant",
-                            totalScore: "$totalScore",
-                            percentage: "$percentage",
-                            completedAt: "$completedAt",
-                            questions: "$questions"
-                        }
-                    },
-                    averageScore: { $avg: "$percentage" },
-                    count: { $sum: 1 }
-                }
-            },
-            { $sort: { "_id": 1 } }
-        ]).toArray();
+        // Get all results for this project grouped by participant and period
+        const results = await resultsCollection.find({ project_id: projectId }).toArray();
         
-        // Calculate skill area performance by period
+        // Group by participant name to track individual across periods
+        const participantMap = {};
+        results.forEach(result => {
+            if (!participantMap[result.participant_name]) {
+                participantMap[result.participant_name] = {};
+            }
+            
+            const period = result.period || 'baseline';
+            if (!participantMap[result.participant_name][period]) {
+                participantMap[result.participant_name][period] = result;
+            }
+        });
+        
+        // Calculate period averages and individual progress
+        const periodData = {};
+        const individualProgress = [];
+        
+        Object.entries(participantMap).forEach(([name, periods]) => {
+            const participantData = {
+                name,
+                periods: {}
+            };
+            
+            Object.entries(periods).forEach(([period, result]) => {
+                if (!periodData[period]) {
+                    periodData[period] = {
+                        _id: period,
+                        count: 0,
+                        totalScore: 0,
+                        participants: []
+                    };
+                }
+                
+                periodData[period].count++;
+                periodData[period].totalScore += result.percentage;
+                periodData[period].participants.push({
+                    name: result.participant_name,
+                    percentage: result.percentage,
+                    totalScore: result.total_score,
+                    completedAt: result.completed_at
+                });
+                
+                participantData.periods[period] = {
+                    percentage: result.percentage,
+                    totalScore: result.total_score,
+                    completedAt: result.completed_at
+                };
+            });
+            
+            // Calculate change if participant has multiple periods
+            const periodKeys = Object.keys(participantData.periods);
+            if (periodKeys.length > 1) {
+                const orderedPeriods = ['baseline', 'intermediate', 'endline'].filter(p => periodKeys.includes(p));
+                if (orderedPeriods.length > 1) {
+                    const first = orderedPeriods[0];
+                    const last = orderedPeriods[orderedPeriods.length - 1];
+                    participantData.change = {
+                        from: first,
+                        to: last,
+                        percentageChange: participantData.periods[last].percentage - participantData.periods[first].percentage,
+                        scoreChange: participantData.periods[last].totalScore - participantData.periods[first].totalScore
+                    };
+                }
+            }
+            
+            individualProgress.push(participantData);
+        });
+        
+        // Calculate averages
+        const periodArray = Object.values(periodData).map(p => ({
+            ...p,
+            averageScore: Math.round(p.totalScore / p.count)
+        }));
+        
+        // Calculate skill area breakdown
         const skillAreaMapping = {
             'Data Analysis': [1, 2, 3, 4, 5, 6, 7, 8],
             'M&E': [9, 10, 11, 12, 13],
@@ -966,16 +982,16 @@ app.get('/api/period-comparison/:project_id', async (req, res) => {
         
         const skillByPeriod = {};
         
-        periodData.forEach(period => {
+        periodArray.forEach(period => {
             skillByPeriod[period._id] = {};
             
             Object.entries(skillAreaMapping).forEach(([skill, questionNumbers]) => {
                 let totalCorrect = 0;
                 let totalQuestions = 0;
                 
-                period.participants.forEach(participant => {
+                results.filter(r => (r.period || 'baseline') === period._id).forEach(result => {
                     questionNumbers.forEach(qNum => {
-                        const question = participant.questions[`Q${qNum}`];
+                        const question = result.questions[`Q${qNum}`];
                         if (question) {
                             totalQuestions++;
                             if (question.is_correct) {
@@ -994,95 +1010,24 @@ app.get('/api/period-comparison/:project_id', async (req, res) => {
         });
         
         res.json({
-            periodData,
+            periodData: periodArray,
             skillByPeriod,
+            individualProgress,
             summary: {
-                periods: periodData.map(p => p._id),
-                totalParticipants: periodData.reduce((sum, p) => sum + p.count, 0)
+                periods: periodArray.map(p => p._id),
+                totalParticipants: results.length,
+                uniqueParticipants: Object.keys(participantMap).length
             }
         });
         
     } catch (err) {
         console.error('❌ Error fetching period comparison:', err);
-        res.status(500).json({ error: 'Database error', details: err.message });
+        res.status(500).json({ error: 'Database error' });
     }
 });
 
-// API: Health check
-app.get('/api/health', async (req, res) => {
-    try {
-        if (!db) {
-            throw new Error('Database not initialized');
-        }
-        
-        await db.admin().ping();
-        
-        res.json({ 
-            status: 'OK', 
-            message: 'Database connected and operational',
-            timestamp: new Date().toISOString(),
-            database: 'MongoDB'
-        });
-    } catch (err) {
-        console.error('❌ Database health check failed:', err);
-        res.status(500).json({ 
-            status: 'ERROR', 
-            message: 'Database connection failed',
-            timestamp: new Date().toISOString(),
-            error: err.message
-        });
-    }
-});
-
-// API: Migrate existing data to baseline period
-app.post('/api/migrate-to-baseline', async (req, res) => {
-    console.log('🔄 Admin requesting migration of existing data to baseline period');
-    
-    try {
-        const resultsCollection = db.collection('quiz_results');
-        const projectsCollection = db.collection('projects');
-        
-        // Find NCC Embedded Lab project
-        const nccProject = await projectsCollection.findOne({ name: "NCC Embedded Lab" });
-        if (!nccProject) {
-            return res.status(404).json({ error: 'NCC Embedded Lab project not found' });
-        }
-        
-        // Update all results for NCC project that don't have a period set
-        const updateResult = await resultsCollection.updateMany(
-            { 
-                project_id: nccProject._id,
-                $or: [
-                    { period: { $exists: false } },
-                    { period: null },
-                    { period: "" }
-                ]
-            },
-            { 
-                $set: { 
-                    period: "baseline",
-                    updated_at: new Date()
-                }
-            }
-        );
-        
-        console.log(`✅ Migrated ${updateResult.modifiedCount} NCC results to baseline period`);
-        res.json({
-            success: true,
-            message: `Successfully migrated ${updateResult.modifiedCount} results to baseline period`,
-            updated_count: updateResult.modifiedCount
-        });
-        
-    } catch (err) {
-        console.error('❌ Error migrating data to baseline:', err);
-        res.status(500).json({ error: 'Database error', details: err.message });
-    }
-});
-
-// API: Enhanced CSV Download
+// API: Download CSV
 app.get('/api/download-csv', async (req, res) => {
-    console.log('📥 CSV download requested');
-    
     try {
         const collection = db.collection('quiz_results');
         const projectsCollection = db.collection('projects');
@@ -1095,13 +1040,11 @@ app.get('/api/download-csv', async (req, res) => {
         const results = await collection.find(query).sort({ completed_at: -1 }).toArray();
         const projects = await projectsCollection.find({}).toArray();
         
-        // Create project lookup
         const projectLookup = {};
         projects.forEach(p => {
             projectLookup[p._id.toString()] = p.name;
         });
         
-        // CSV headers
         const headers = [
             'Participant Name',
             'Project',
@@ -1117,18 +1060,15 @@ app.get('/api/download-csv', async (req, res) => {
             'Grade'
         ];
         
-        // Add individual question columns
         for (let i = 1; i <= 20; i++) {
             headers.push(`Q${i} Answer`, `Q${i} Correct`, `Q${i} Category`, `Q${i} Skill`);
         }
         
         let csvContent = headers.join(',') + '\n';
         
-        // Process each result
         results.forEach(result => {
             const projectName = projectLookup[result.project_id?.toString()] || 'Unknown';
             
-            // Calculate skill area scores
             const skillAreas = {
                 'Data Analysis': [1,2,3,4,5,6,7,8],
                 'M&E': [9,10,11,12,13],
@@ -1166,7 +1106,6 @@ app.get('/api/download-csv', async (req, res) => {
                 grade
             ];
             
-            // Add individual question data
             for (let i = 1; i <= 20; i++) {
                 const q = result.questions?.[`Q${i}`] || {};
                 row.push(
@@ -1190,7 +1129,7 @@ app.get('/api/download-csv', async (req, res) => {
     }
 });
 
-// API: Delete project (password protected)
+// API: Delete project
 app.delete('/api/projects/:project_id', async (req, res) => {
     const { password } = req.body;
     const SECURE_PASSWORD = 'KK@www1203pw';
@@ -1199,39 +1138,33 @@ app.delete('/api/projects/:project_id', async (req, res) => {
         return res.status(401).json({ error: 'Invalid admin password' });
     }
     
-    console.log('🗑️ Admin deleting project:', req.params.project_id);
-    
     try {
         const projectsCollection = db.collection('projects');
         const resultsCollection = db.collection('quiz_results');
         const questionsCollection = db.collection('questions');
         const projectId = new ObjectId(req.params.project_id);
         
-        // Get project name for response
         const project = await projectsCollection.findOne({ _id: projectId });
         if (!project) {
             return res.status(404).json({ error: 'Project not found' });
         }
         
-        // Delete all related data
         const resultsDeleted = await resultsCollection.deleteMany({ project_id: projectId });
         const questionsDeleted = await questionsCollection.deleteMany({ project_id: projectId });
-        const projectDeleted = await projectsCollection.deleteOne({ _id: projectId });
-        
-        console.log(`✅ Deleted project "${project.name}" and ${resultsDeleted.deletedCount} results, ${questionsDeleted.deletedCount} questions`);
+        await projectsCollection.deleteOne({ _id: projectId });
         
         res.json({
             success: true,
-            message: `Project "${project.name}" and all associated data deleted (${resultsDeleted.deletedCount} results, ${questionsDeleted.deletedCount} questions)`
+            message: `Project "${project.name}" deleted (${resultsDeleted.deletedCount} results, ${questionsDeleted.deletedCount} questions)`
         });
         
     } catch (err) {
         console.error('❌ Error deleting project:', err);
-        res.status(500).json({ error: 'Database error', details: err.message });
+        res.status(500).json({ error: 'Database error' });
     }
 });
 
-// API: Delete individual record (password protected)
+// API: Delete individual record
 app.delete('/api/results/record/:record_id', async (req, res) => {
     const { password } = req.body;
     const SECURE_PASSWORD = 'KK@www1203pw';
@@ -1240,25 +1173,17 @@ app.delete('/api/results/record/:record_id', async (req, res) => {
         return res.status(401).json({ error: 'Invalid admin password' });
     }
     
-    console.log('🗑️ Admin deleting individual record:', req.params.record_id);
-    
     try {
         const resultsCollection = db.collection('quiz_results');
         const recordId = new ObjectId(req.params.record_id);
         
-        // Get participant name for response
         const record = await resultsCollection.findOne({ _id: recordId });
         if (!record) {
             return res.status(404).json({ error: 'Record not found' });
         }
         
-        const result = await resultsCollection.deleteOne({ _id: recordId });
+        await resultsCollection.deleteOne({ _id: recordId });
         
-        if (result.deletedCount === 0) {
-            return res.status(404).json({ error: 'Record not found' });
-        }
-        
-        console.log(`✅ Deleted record for participant: ${record.participant_name}`);
         res.json({
             success: true,
             message: `Record for "${record.participant_name}" deleted successfully`
@@ -1266,11 +1191,11 @@ app.delete('/api/results/record/:record_id', async (req, res) => {
         
     } catch (err) {
         console.error('❌ Error deleting record:', err);
-        res.status(500).json({ error: 'Database error', details: err.message });
+        res.status(500).json({ error: 'Database error' });
     }
 });
 
-// API: Clear project data (password protected)
+// API: Clear project data
 app.delete('/api/results/:project_id', async (req, res) => {
     const { password } = req.body;
     const SECURE_PASSWORD = 'KK@www1203pw';
@@ -1279,14 +1204,11 @@ app.delete('/api/results/:project_id', async (req, res) => {
         return res.status(401).json({ error: 'Invalid admin password' });
     }
     
-    console.log('🗑️ Admin clearing data for project:', req.params.project_id);
-    
     try {
         const resultsCollection = db.collection('quiz_results');
         const projectsCollection = db.collection('projects');
         const projectId = new ObjectId(req.params.project_id);
         
-        // Get project name for response
         const project = await projectsCollection.findOne({ _id: projectId });
         if (!project) {
             return res.status(404).json({ error: 'Project not found' });
@@ -1294,7 +1216,6 @@ app.delete('/api/results/:project_id', async (req, res) => {
         
         const result = await resultsCollection.deleteMany({ project_id: projectId });
         
-        console.log(`✅ Cleared ${result.deletedCount} results for project: ${project.name}`);
         res.json({
             success: true,
             message: `All data cleared for project "${project.name}" (${result.deletedCount} records)`
@@ -1302,7 +1223,31 @@ app.delete('/api/results/:project_id', async (req, res) => {
         
     } catch (err) {
         console.error('❌ Error clearing project data:', err);
-        res.status(500).json({ error: 'Database error', details: err.message });
+        res.status(500).json({ error: 'Database error' });
+    }
+});
+
+// API: Health check
+app.get('/api/health', async (req, res) => {
+    try {
+        if (!db) {
+            throw new Error('Database not initialized');
+        }
+        
+        await db.admin().ping();
+        
+        res.json({ 
+            status: 'OK', 
+            message: 'Database connected and operational',
+            timestamp: new Date().toISOString()
+        });
+    } catch (err) {
+        console.error('❌ Database health check failed:', err);
+        res.status(500).json({ 
+            status: 'ERROR', 
+            message: 'Database connection failed',
+            error: err.message
+        });
     }
 });
 
@@ -1316,18 +1261,16 @@ process.on('SIGINT', async () => {
     process.exit(0);
 });
 
-// Initialize database and start server
+// Initialize and start server
 initDatabase()
     .then(() => {
         app.listen(PORT, () => {
             console.log(`🚀 Server running on port ${PORT}`);
-            console.log(`📊 Quiz available at: http://localhost:${PORT}`);
-            console.log(`👨‍💼 Admin panel at: http://localhost:${PORT}/admin.html`);
-            console.log(`💾 Database: MongoDB (persistent with project management)`);
-            console.log('✅ System ready for quiz submissions with project-based access control');
+            console.log(`📊 Quiz: http://localhost:${PORT}`);
+            console.log(`👨‍💼 Admin: http://localhost:${PORT}/admin.html`);
         });
     })
     .catch(err => {
-        console.error('💥 Failed to initialize database:', err);
+        console.error('💥 Failed to initialize:', err);
         process.exit(1);
     });
