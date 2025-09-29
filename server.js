@@ -780,11 +780,23 @@ app.post('/api/questions', async (req, res) => {
 });
 
 // API: Update question
+
+
+// API: Update question
 app.put('/api/questions/:question_id', async (req, res) => {
     const { category, skill, question_text, options, correct_answer, explanation } = req.body;
     
     try {
         const questionsCollection = db.collection('questions');
+        
+        // Get the current question to preserve its question_number and project_id
+        const currentQuestion = await questionsCollection.findOne({
+            _id: new ObjectId(req.params.question_id)
+        });
+        
+        if (!currentQuestion) {
+            return res.status(404).json({ error: 'Question not found' });
+        }
         
         const updateDoc = {
             ...(category && { category }),
@@ -796,6 +808,7 @@ app.put('/api/questions/:question_id', async (req, res) => {
             updated_at: new Date()
         };
         
+        // Update the existing question in place
         const result = await questionsCollection.updateOne(
             { _id: new ObjectId(req.params.question_id) },
             { $set: updateDoc }
@@ -812,6 +825,8 @@ app.put('/api/questions/:question_id', async (req, res) => {
         res.status(500).json({ error: 'Database error' });
     }
 });
+
+
 
 // API: Delete question
 app.delete('/api/questions/:question_id', async (req, res) => {
