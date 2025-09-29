@@ -1933,85 +1933,6 @@ function sortQuestions(type, order) {
     }
 }
 
-
-
-// ========== NEW COPY QUESTIONS HELPER FUNCTIONS ==========
-
-function selectAllQuestions() {
-    document.querySelectorAll('#nccQuestionsList input[type="checkbox"]').forEach(cb => {
-        cb.checked = true;
-    });
-    updateSelectionCount();
-}
-
-function deselectAllQuestions() {
-    document.querySelectorAll('#nccQuestionsList input[type="checkbox"]').forEach(cb => {
-        cb.checked = false;
-    });
-    updateSelectionCount();
-}
-
-function selectCategory(category) {
-    document.querySelectorAll(`#nccQuestionsList input[data-category="${category}"]`).forEach(cb => {
-        cb.checked = true;
-    });
-    updateSelectionCount();
-}
-
-function deselectCategory(category) {
-    document.querySelectorAll(`#nccQuestionsList input[data-category="${category}"]`).forEach(cb => {
-        cb.checked = false;
-    });
-    updateSelectionCount();
-}
-
-function selectByCategory() {
-    const categories = [...new Set(nccQuestions.map(q => q.category))];
-    
-    const categoryList = categories.map(cat => {
-        const count = nccQuestions.filter(q => q.category === cat).length;
-        return `<button onclick="selectCategory('${cat}'); closeSelectModal();" 
-                        style="display: block; width: 100%; padding: 12px; margin-bottom: 8px; background: var(--surface); border: 2px solid var(--border-light); border-radius: 8px; cursor: pointer; text-align: left; font-weight: 600; transition: all 0.2s ease;"
-                        onmouseover="this.style.borderColor='var(--primary-green)'"
-                        onmouseout="this.style.borderColor='var(--border-light)'">
-            ${cat} (${count} questions)
-        </button>`;
-    }).join('');
-    
-    showActionMessage(`
-        <div style="background: white; padding: 24px; border-radius: 12px; max-width: 400px;">
-            <h3 style="margin-bottom: 16px;">Select Category</h3>
-            ${categoryList}
-            <button onclick="closeSelectModal()" class="btn btn-secondary" style="width: 100%; margin-top: 12px;">Cancel</button>
-        </div>
-    `);
-}
-
-function closeSelectModal() {
-    const actionDivs = [
-        document.getElementById('actionMessage'),
-        document.getElementById('actionMessage2')
-    ];
-    actionDivs.forEach(div => {
-        if (div) div.classList.add('hidden');
-    });
-}
-
-function updateSelectionCount() {
-    const selectedCount = document.querySelectorAll('#nccQuestionsList input[type="checkbox"]:checked').length;
-    document.getElementById('selectedCount').textContent = selectedCount;
-    document.getElementById('copyBtnCount').textContent = selectedCount;
-    
-    const copyBtn = document.getElementById('executeCopyBtn');
-    if (copyBtn) {
-        copyBtn.disabled = selectedCount === 0;
-    }
-}
-
-// ========== END NEW FUNCTIONS ==========
-
-
-
 // Update generateAnalytics to use sort order
 function generateAnalytics(results) {
     if (!results.length) return;
@@ -2810,92 +2731,29 @@ function updateProjectSelector() {
             }
         }
 
-
-// AFTER: Category-grouped with enhanced features
-function displayNccQuestions() {
-    const container = document.getElementById('nccQuestionsList');
-    
-    if (nccQuestions.length === 0) {
-        container.innerHTML = '<p style="text-align: center; padding: 40px; color: var(--text-muted);">No questions available</p>';
-        document.getElementById('totalCount').textContent = '0';
-        document.getElementById('selectedCount').textContent = '0';
-        document.getElementById('copyBtnCount').textContent = '0';
-        return;
-    }
-    
-    // Group questions by category
-    const questionsByCategory = {};
-    nccQuestions.forEach(question => {
-        if (!questionsByCategory[question.category]) {
-            questionsByCategory[question.category] = [];
-        }
-        questionsByCategory[question.category].push(question);
-    });
-    
-    let html = '';
-    
-    // Build HTML for each category group
-    Object.entries(questionsByCategory).forEach(([category, questions]) => {
-        html += `
-            <div style="margin-bottom: 20px;">
-                <!-- Category Header -->
-                <div style="display: flex; justify-content: space-between; align-items: center; padding: 12px; background: var(--primary-green); color: white; border-radius: 8px; margin-bottom: 8px;">
-                    <div style="font-weight: 700; font-size: 1rem;">
-                        <i class="fas fa-folder"></i> ${category} (${questions.length})
-                    </div>
-                    <div style="display: flex; gap: 8px;">
-                        <button type="button" class="btn btn-small" onclick="selectCategory('${category}')" 
-                                style="background: rgba(255,255,255,0.2); color: white; padding: 4px 12px;">
-                            <i class="fas fa-check"></i> Select All
-                        </button>
-                        <button type="button" class="btn btn-small" onclick="deselectCategory('${category}')" 
-                                style="background: rgba(255,255,255,0.2); color: white; padding: 4px 12px;">
-                            <i class="fas fa-times"></i> Deselect
-                        </button>
-                    </div>
-                </div>
-        `;
-        
-        // Build HTML for each question in category
-        questions.forEach(question => {
-            const questionPreview = question.question_text.length > 100 
-                ? question.question_text.substring(0, 100) + '...' 
-                : question.question_text;
+        function displayNccQuestions() {
+            const container = document.getElementById('nccQuestionsList');
             
-            html += `
-                <div style="display: flex; align-items: flex-start; padding: 12px; margin-bottom: 6px; background: var(--surface); border-radius: 8px; transition: all 0.2s ease; border: 2px solid transparent;"
-                     onmouseover="this.style.borderColor='var(--primary-green)'"
-                     onmouseout="this.style.borderColor='transparent'">
-                    <input type="checkbox" 
-                           id="ncc_q_${question._id}" 
-                           value="${question._id}" 
-                           data-category="${question.category}"
-                           onchange="updateSelectionCount()"
-                           style="margin-right: 12px; margin-top: 4px; width: 18px; height: 18px; cursor: pointer;">
-                    <label for="ncc_q_${question._id}" style="flex: 1; cursor: pointer;">
-                        <div style="font-weight: 600; color: var(--text-primary); margin-bottom: 4px;">
-                            Q${question.question_number} - ${question.category}
+            if (nccQuestions.length === 0) {
+                container.innerHTML = '<p>No questions available</p>';
+                return;
+            }
+            
+            let html = '';
+            nccQuestions.forEach(question => {
+                html += `
+                    <div style="display: flex; align-items: flex-start; padding: 12px; margin-bottom: 8px; background: var(--surface); border-radius: 8px;">
+                        <input type="checkbox" id="ncc_q_${question._id}" value="${question._id}" style="margin-right: 12px; margin-top: 4px;">
+                        <div style="flex: 1;">
+                            <div style="font-weight: 600; color: var(--text-primary);">Q${question.question_number} - ${question.category}</div>
+                            <div style="font-size: 0.85rem; color: var(--text-secondary);">${question.skill}</div>
                         </div>
-                        <div style="font-size: 0.85rem; color: var(--text-secondary); margin-bottom: 4px;">
-                            ${question.skill}
-                        </div>
-                        <div style="font-size: 0.8rem; color: var(--text-muted); margin-top: 4px;">
-                            ${questionPreview}
-                        </div>
-                    </label>
-                </div>
-            `;
-        });
-        
-        html += '</div>'; // Close category group
-    });
-    
-    container.innerHTML = html;
-    document.getElementById('totalCount').textContent = nccQuestions.length;
-    updateSelectionCount();
-}
-
-
+                    </div>
+                `;
+            });
+            
+            container.innerHTML = html;
+        }
 
         async function executeCopyQuestions() {
             const targetProjectId = document.getElementById('copyTargetProject').value;
