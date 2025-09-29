@@ -2899,6 +2899,27 @@ async function executeCopyQuestions() {
             updateParticipantAnalysis(analyticsData.participantAnalysis);
         }
 
+
+
+
+// Add this function anywhere in the script section
+function toggleParticipantDetails(index) {
+    const detailsDiv = document.getElementById(`details-${index}`);
+    const toggleSpan = document.getElementById(`toggle-${index}`);
+    
+    if (detailsDiv && toggleSpan) {
+        if (detailsDiv.style.display === 'none' || detailsDiv.style.display === '') {
+            detailsDiv.style.display = 'block';
+            toggleSpan.innerHTML = '<i class="fas fa-chevron-up"></i> Hide Details';
+        } else {
+            detailsDiv.style.display = 'none';
+            toggleSpan.innerHTML = '<i class="fas fa-chevron-down"></i> Show Details';
+        }
+    }
+}
+
+
+
        function updateSkillAreas(skillAreas) {
     const container = document.getElementById('skillAreasChart');
     if (!container) return;

@@ -591,6 +591,97 @@ app.put('/api/projects/:project_id/status', async (req, res) => {
     }
 });
 
+
+
+
+// API: Submit quiz results
+app.post('/api/submit-quiz', async (req, res) => {
+    try {
+        const resultsCollection = db.collection('quiz_results');
+        const projectsCollection = db.collection('projects');
+        
+        const {
+            participant_name,
+            project_id,
+            period,
+            completed_at,
+            total_score,
+            percentage,
+            time_taken,
+            total_questions,
+            ...questionData
+        } = req.body;
+        
+        // Validate required fields
+        if (!participant_name || !project_id || !total_score) {
+            return res.status(400).json({ 
+                success: false, 
+                error: 'Missing required fields' 
+            });
+        }
+        
+        // Verify project exists
+        const project = await projectsCollection.findOne({ 
+            _id: new ObjectId(project_id) 
+        });
+        
+        if (!project) {
+            return res.status(404).json({ 
+                success: false, 
+                error: 'Project not found' 
+            });
+        }
+        
+        // Organize questions data
+        const questions = {};
+        Object.keys(questionData).forEach(key => {
+            if (key.startsWith('Q') && !key.includes('_')) {
+                const qNum = key;
+                questions[qNum] = {
+                    user_answer: questionData[qNum] || '',
+                    correct_answer: questionData[`${qNum}_correct`] || '',
+                    skill: questionData[`${qNum}_skill`] || '',
+                    category: questionData[`${qNum}_category`] || '',
+                    is_correct: questionData[qNum] === questionData[`${qNum}_correct`]
+                };
+            }
+        });
+        
+        // Create result document
+        const resultDoc = {
+            participant_name,
+            project_id: new ObjectId(project_id),
+            period: period || 'baseline',
+            completed_at: new Date(completed_at || Date.now()),
+            total_score,
+            percentage,
+            time_taken: time_taken || 0,
+            total_questions: total_questions || Object.keys(questions).length,
+            questions,
+            created_at: new Date()
+        };
+        
+        const result = await resultsCollection.insertOne(resultDoc);
+        
+        console.log(`✅ Quiz submitted: ${participant_name} - ${total_score}/${total_questions} (${percentage}%) - Project: ${project.name}`);
+        
+        res.json({
+            success: true,
+            id: result.insertedId,
+            message: 'Quiz results saved successfully'
+        });
+        
+    } catch (err) {
+        console.error('❌ Error submitting quiz:', err);
+        res.status(500).json({ 
+            success: false, 
+            error: 'Database error: ' + err.message 
+        });
+    }
+});
+
+
+
 // API: Get results by project
 app.get('/api/results/:project_id?', async (req, res) => {
     try {
