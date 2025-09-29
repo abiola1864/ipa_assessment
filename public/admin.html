@@ -3142,7 +3142,9 @@ function refreshAnalytics() {
 }
 
 
-     function updateResultsTable(results) {
+  
+
+function updateResultsTable(results) {
     const tbody = document.getElementById('resultsTableBody');
     if (!tbody) return;
     
@@ -3155,6 +3157,8 @@ function refreshAnalytics() {
 
     results.forEach(result => {
         const projectName = projects.find(p => p._id === result.project_id)?.name || 'Unknown';
+        const recordId = result.id.toString(); // Convert to string explicitly
+        const participantName = result.participant_name.replace(/'/g, "\\'"); // Escape quotes
 
         const row = document.createElement('tr');
         row.innerHTML = `
@@ -3171,8 +3175,10 @@ function refreshAnalytics() {
             <td>${formatDateTime(result.completed_at)}</td>
             <td>
                 <button class="btn btn-small" 
-                        onclick="showDeleteRecordModal('${result.id}', '${result.participant_name.replace(/'/g, "\\'")}')" 
-                        style="background: #dc2626; color: white; padding: 6px 12px;"
+                        onclick="showDeleteRecordModal('${recordId}', '${participantName}')" 
+                        style="background: #dc2626; color: white; padding: 8px 14px; border: none; border-radius: 8px; cursor: pointer; transition: all 0.3s ease;"
+                        onmouseover="this.style.background='#b91c1c'"
+                        onmouseout="this.style.background='#dc2626'"
                         title="Delete this record">
                     <i class="fas fa-trash"></i>
                 </button>
@@ -3181,6 +3187,8 @@ function refreshAnalytics() {
         tbody.appendChild(row);
     });
 }
+
+
 
 
 
@@ -3223,16 +3231,19 @@ function refreshAnalytics() {
         }
 
         function showDeleteRecordModal(recordId, participantName) {
-            currentRecordToDelete = recordId;
-            document.getElementById('deleteRecordName').textContent = participantName;
-            document.getElementById('deleteRecordModal').classList.add('active');
-        }
+    console.log('Opening delete modal for:', recordId, participantName); // Debug log
+    currentRecordToDelete = recordId;
+    document.getElementById('deleteRecordName').textContent = participantName;
+    document.getElementById('deleteRecordModal').classList.add('active');
+}
 
-        function closeDeleteRecordModal() {
-            document.getElementById('deleteRecordModal').classList.remove('active');
-            document.getElementById('deleteRecordPassword').value = '';
-            currentRecordToDelete = null;
-        }
+function closeDeleteRecordModal() {
+    document.getElementById('deleteRecordModal').classList.remove('active');
+    document.getElementById('deleteRecordPassword').value = '';
+    currentRecordToDelete = null;
+
+
+
 
         async function executeDeleteProject() {
             const password = document.getElementById('deleteProjectPassword').value;
@@ -3314,6 +3325,53 @@ function refreshAnalytics() {
                 showActionMessage('Failed: ' + error.message, true);
             }
         }
+
+
+
+
+async function executeDeleteRecord() {
+    const password = document.getElementById('deleteRecordPassword').value;
+    const SECURE_PASSWORD = 'KK@www1203pw';
+    
+    if (!password) {
+        showActionMessage('Please enter admin password', true);
+        return;
+    }
+    
+    if (password !== SECURE_PASSWORD) {
+        showActionMessage('Invalid admin password', true);
+        return;
+    }
+    
+    if (!currentRecordToDelete) {
+        showActionMessage('No record selected', true);
+        return;
+    }
+    
+    try {
+        console.log('Deleting record:', currentRecordToDelete); // Debug log
+        
+        const response = await fetch(`/api/results/record/${currentRecordToDelete}`, {
+            method: 'DELETE',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ password })
+        });
+        
+        const result = await response.json();
+        
+        if (response.ok) {
+            showActionMessage(result.message);
+            closeDeleteRecordModal();
+            await refreshData();
+            refreshResultsTable();
+        } else {
+            throw new Error(result.error || 'Failed to delete record');
+        }
+    } catch (error) {
+        console.error('Delete error:', error);
+        showActionMessage('Failed to delete: ' + error.message, true);
+    }
+}
 
         // Utility functions
         function updateStatistics(stats) {
