@@ -3242,7 +3242,7 @@ function closeDeleteRecordModal() {
     document.getElementById('deleteRecordPassword').value = '';
     currentRecordToDelete = null;
 
-
+}
 
 
         async function executeDeleteProject() {
@@ -3299,35 +3299,7 @@ function closeDeleteRecordModal() {
             }
         }
 
-        async function executeDeleteRecord() {
-            const password = document.getElementById('deleteRecordPassword').value;
-            
-            if (password !== SECURE_PASSWORD || !currentRecordToDelete) {
-                showActionMessage('Invalid password', true);
-                return;
-            }
-            
-            try {
-                const response = await fetch(`/api/results/record/${currentRecordToDelete}`, {
-                    method: 'DELETE',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ password })
-                });
-                
-                if (response.ok) {
-                    const result = await response.json();
-                    showActionMessage(result.message);
-                    closeDeleteRecordModal();
-                    await refreshData();
-                    refreshResultsTable();
-                }
-            } catch (error) {
-                showActionMessage('Failed: ' + error.message, true);
-            }
-        }
-
-
-
+       
 
 async function executeDeleteRecord() {
     const password = document.getElementById('deleteRecordPassword').value;
