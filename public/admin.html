@@ -1168,61 +1168,79 @@
             </div>
 
             <!-- Overview Section -->
-            <div id="overviewSection" class="content-section active">
-                <div class="section-header">
-                    <h2 class="section-title">Dashboard Overview</h2>
-                    <p class="section-subtitle" id="overviewSubtitle">Project-based assessment performance summary</p>
-                </div>
+            <!-- Overview Section -->
+<div id="overviewSection" class="content-section active">
+    <div class="section-header">
+        <h2 class="section-title">Dashboard Overview</h2>
+        <p class="section-subtitle" id="overviewSubtitle">Project-based assessment performance summary</p>
+    </div>
 
-                <!-- Statistics Grid -->
-                <div class="stats-grid">
-                    <div class="stat-card">
-                        <i class="fas fa-users stat-icon"></i>
-                        <div class="stat-number" id="totalParticipants">-</div>
-                        <div class="stat-label">Total Participants</div>
-                    </div>
-                    <div class="stat-card">
-                        <i class="fas fa-percentage stat-icon"></i>
-                        <div class="stat-number" id="averageScore">-</div>
-                        <div class="stat-label">Average Score</div>
-                    </div>
-                    <div class="stat-card">
-                        <i class="fas fa-calendar-day stat-icon"></i>
-                        <div class="stat-number" id="todayCount">-</div>
-                        <div class="stat-label">Completed Today</div>
-                    </div>
-                    <div class="stat-card">
-                        <i class="fas fa-trophy stat-icon"></i>
-                        <div class="stat-number" id="excellentCount">-</div>
-                        <div class="stat-label">Excellent Scores (80%+)</div>
-                    </div>
-                </div>
-
-                <!-- Quick Actions -->
-                <div class="card">
-                    <div class="card-header">
-                        <h3 class="card-title">
-                            <i class="fas fa-bolt"></i> Quick Actions
-                        </h3>
-                        <button class="btn btn-outline" onclick="refreshData()">
-                            <i class="fas fa-sync-alt"></i> Refresh Data
-                        </button>
-                    </div>
-                    <div style="display: flex; gap: 15px; flex-wrap: wrap;">
-                        <button class="btn btn-primary" onclick="downloadCSV()" id="downloadBtn" disabled>
-                            <i class="fas fa-download"></i> Download CSV
-                        </button>
-                        <button class="btn btn-secondary" onclick="checkHealth()">
-                            <i class="fas fa-heartbeat"></i> Health Check
-                        </button>
-                        <button class="btn btn-outline" onclick="showSection('projects')">
-                            <i class="fas fa-plus"></i> New Project
-                        </button>
-                    </div>
-                    <div id="actionMessage" class="hidden"></div>
-                </div>
+    <!-- Enhanced Project Filter Card -->
+    <div class="card" style="background: linear-gradient(135deg, #e3f2fd 0%, #f8fbff 100%); border-left: 5px solid #2196F3; margin-bottom: 32px;">
+        <div style="display: flex; justify-content: space-between; align-items: center;">
+            <div>
+                <h3 style="color: #1976d2; margin-bottom: 8px; font-size: 1.2rem; font-weight: 700;">
+                    <i class="fas fa-filter"></i> Filter Dashboard
+                </h3>
+                <p style="color: #555; font-size: 0.95rem;">View statistics and data for a specific project or all projects combined</p>
             </div>
+            <div style="display: flex; gap: 16px; align-items: center;">
+                <select id="overviewProjectFilter" onchange="switchProjectFromOverview()" 
+                        style="padding: 12px 20px; border: 2px solid #2196F3; border-radius: 12px; font-size: 1rem; font-weight: 600; background: white; color: #1976d2; min-width: 250px;">
+                    <option value="all">All Projects</option>
+                </select>
+                <button class="btn btn-primary" onclick="refreshData()">
+                    <i class="fas fa-sync-alt"></i> Refresh
+                </button>
+            </div>
+        </div>
+    </div>
 
+    <!-- Statistics Grid -->
+    <div class="stats-grid">
+        <div class="stat-card">
+            <i class="fas fa-users stat-icon"></i>
+            <div class="stat-number" id="totalParticipants">-</div>
+            <div class="stat-label">Total Participants</div>
+        </div>
+        <div class="stat-card">
+            <i class="fas fa-percentage stat-icon"></i>
+            <div class="stat-number" id="averageScore">-</div>
+            <div class="stat-label">Average Score</div>
+        </div>
+        <div class="stat-card">
+            <i class="fas fa-calendar-day stat-icon"></i>
+            <div class="stat-number" id="todayCount">-</div>
+            <div class="stat-label">Completed Today</div>
+        </div>
+        <div class="stat-card">
+            <i class="fas fa-trophy stat-icon"></i>
+            <div class="stat-number" id="excellentCount">-</div>
+            <div class="stat-label">Excellent Scores (80%+)</div>
+        </div>
+    </div>
+
+    <!-- Quick Actions -->
+    <div class="card">
+        <div class="card-header">
+            <h3 class="card-title">
+                <i class="fas fa-bolt"></i> Quick Actions
+            </h3>
+        </div>
+        <div style="display: flex; gap: 15px; flex-wrap: wrap;">
+            <button class="btn btn-primary" onclick="downloadCSV()" id="downloadBtn" disabled>
+                <i class="fas fa-download"></i> Download CSV
+            </button>
+            <button class="btn btn-secondary" onclick="checkHealth()">
+                <i class="fas fa-heartbeat"></i> Health Check
+            </button>
+            <button class="btn btn-outline" onclick="showSection('projects')">
+                <i class="fas fa-plus"></i> New Project
+            </button>
+        </div>
+        <div id="actionMessage" class="hidden"></div>
+    </div>
+</div>
             <!-- Projects Section -->
             <div id="projectsSection" class="content-section">
                 <div class="section-header">
@@ -1319,47 +1337,81 @@
             </div>
 
             <!-- Analytics Section -->
-            <div id="analyticsSection" class="content-section">
-                <div class="section-header">
-                    <h2 class="section-title">Question Analytics</h2>
-                    <p class="section-subtitle" id="analyticsSubtitle">Performance insights by question</p>
-                </div>
+          <!-- Analytics Section -->
+<div id="analyticsSection" class="content-section">
+    <div class="section-header">
+        <h2 class="section-title">Question Analytics</h2>
+        <p class="section-subtitle" id="analyticsSubtitle">Performance insights by question</p>
+    </div>
 
-                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 32px; margin-bottom: 40px;">
-                    <div class="card">
-                        <div style="display: flex; justify-content: space-between; margin-bottom: 16px;">
-                            <h3 class="card-title">
-                                <i class="fas fa-exclamation-triangle" style="color: #dc2626;"></i> Most Challenging
-                            </h3>
-                        </div>
-                        <div id="hardestQuestions">
-                            <!-- Populated by JavaScript -->
-                        </div>
-                    </div>
+    <!-- Project Filter for Analytics -->
+    <div class="card" style="margin-bottom: 24px;">
+        <div style="display: flex; justify-content: space-between; align-items: center;">
+            <div class="form-group" style="margin-bottom: 0; flex: 1; max-width: 400px;">
+                <label for="analyticsProjectFilter" style="margin-bottom: 8px;">Filter by Project:</label>
+                <select id="analyticsProjectFilter" onchange="refreshAnalytics()" style="padding: 10px; border: 2px solid var(--border-light); border-radius: 8px; font-size: 0.95rem; width: 100%;">
+                    <option value="all">All Projects</option>
+                </select>
+            </div>
+            <button class="btn btn-outline" onclick="refreshAnalytics()">
+                <i class="fas fa-sync-alt"></i> Refresh
+            </button>
+        </div>
+    </div>
 
-                    <div class="card">
-                        <div style="display: flex; justify-content: space-between; margin-bottom: 16px;">
-                            <h3 class="card-title">
-                                <i class="fas fa-check-circle" style="color: var(--primary-green);"></i> Best Performing
-                            </h3>
-                        </div>
-                        <div id="easiestQuestions">
-                            <!-- Populated by JavaScript -->
-                        </div>
-                    </div>
-                </div>
-
-                <div class="card">
-                    <div class="card-header">
-                        <h3 class="card-title">
-                            <i class="fas fa-brain"></i> Skill Areas Performance
-                        </h3>
-                    </div>
-                    <div id="skillAreasChart">
-                        <!-- Populated by JavaScript -->
-                    </div>
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 32px; margin-bottom: 40px;">
+        <div class="card">
+            <div class="analytics-header" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
+                <h3 class="card-title">
+                    <i class="fas fa-exclamation-triangle" style="color: #dc2626;"></i> Most Challenging
+                </h3>
+                <div class="sort-controls" style="display: flex; gap: 8px;">
+                    <button class="btn btn-outline btn-small" onclick="sortQuestions('hardest', 'asc')" title="Lowest Success Rate First">
+                        <i class="fas fa-sort-amount-down"></i>
+                    </button>
+                    <button class="btn btn-outline btn-small" onclick="sortQuestions('hardest', 'desc')" title="Highest Success Rate First">
+                        <i class="fas fa-sort-amount-up"></i>
+                    </button>
                 </div>
             </div>
+            <div id="hardestQuestions" style="max-height: 500px; overflow-y: auto;">
+                <!-- Populated by JavaScript -->
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="analytics-header" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
+                <h3 class="card-title">
+                    <i class="fas fa-check-circle" style="color: var(--primary-green);"></i> Best Performing
+                </h3>
+                <div class="sort-controls" style="display: flex; gap: 8px;">
+                    <button class="btn btn-outline btn-small" onclick="sortQuestions('easiest', 'desc')" title="Highest Success Rate First">
+                        <i class="fas fa-sort-amount-down"></i>
+                    </button>
+                    <button class="btn btn-outline btn-small" onclick="sortQuestions('easiest', 'asc')" title="Lowest Success Rate First">
+                        <i class="fas fa-sort-amount-up"></i>
+                    </button>
+                </div>
+            </div>
+            <div id="easiestQuestions" style="max-height: 500px; overflow-y: auto;">
+                <!-- Populated by JavaScript -->
+            </div>
+        </div>
+    </div>
+
+    <div class="card">
+        <div class="card-header">
+            <h3 class="card-title">
+                <i class="fas fa-brain"></i> Skill Areas Performance
+            </h3>
+        </div>
+        <div id="skillAreasChart">
+            <!-- Populated by JavaScript -->
+        </div>
+    </div>
+</div>
+
+
 
             <!-- Participants Section -->
             <div id="participantsSection" class="content-section">
@@ -1830,6 +1882,128 @@
         let nccQuestions = [];
         let currentRecordToDelete = null;
 
+
+
+
+        // Add to global variables at the top
+let currentQuestionSortOrder = { hardest: 'asc', easiest: 'desc' };
+
+// Add this new function
+function refreshAnalytics() {
+    const selectedProject = document.getElementById('analyticsProjectFilter').value;
+    let filteredResults = quizResults;
+    
+    if (selectedProject !== 'all') {
+        filteredResults = quizResults.filter(result => result.project_id === selectedProject);
+    }
+    
+    if (filteredResults.length > 0) {
+        generateAnalytics(filteredResults);
+    } else {
+        document.getElementById('hardestQuestions').innerHTML = '<p style="text-align: center; color: var(--text-muted); padding: 40px;">No data</p>';
+        document.getElementById('easiestQuestions').innerHTML = '<p style="text-align: center; color: var(--text-muted); padding: 40px;">No data</p>';
+        document.getElementById('skillAreasChart').innerHTML = '<p style="text-align: center; color: var(--text-muted); padding: 40px;">No data</p>';
+    }
+}
+
+// Add this sort function
+function sortQuestions(type, order) {
+    currentQuestionSortOrder[type] = order;
+    
+    if (analyticsData) {
+        const selectedProject = document.getElementById('analyticsProjectFilter').value;
+        let filteredResults = quizResults;
+        
+        if (selectedProject !== 'all') {
+            filteredResults = quizResults.filter(result => result.project_id === selectedProject);
+        }
+        
+        generateAnalytics(filteredResults);
+    }
+}
+
+// Update generateAnalytics to use sort order
+function generateAnalytics(results) {
+    if (!results.length) return;
+
+    const questionStats = {};
+    
+    results.forEach(result => {
+        for (let i = 1; i <= 20; i++) {
+            const qKey = `Q${i}`;
+            if (result[qKey] && result[`${qKey}_correct`]) {
+                if (!questionStats[i]) {
+                    questionStats[i] = {
+                        id: i,
+                        category: result[`${qKey}_category`] || 'Unknown',
+                        skill: result[`${qKey}_skill`] || 'Unknown',
+                        correct: 0,
+                        total: 0
+                    };
+                }
+                questionStats[i].total++;
+                if (result[qKey] === result[`${qKey}_correct`]) {
+                    questionStats[i].correct++;
+                }
+            }
+        }
+    });
+
+    const questions = Object.values(questionStats).map(q => ({
+        ...q,
+        successRate: q.total > 0 ? Math.round((q.correct / q.total) * 100) : 0
+    }));
+
+    // Apply sorting with current order
+    const hardestSortFn = currentQuestionSortOrder.hardest === 'asc' ? 
+        (a, b) => a.successRate - b.successRate : 
+        (a, b) => b.successRate - a.successRate;
+        
+    const easiestSortFn = currentQuestionSortOrder.easiest === 'desc' ? 
+        (a, b) => b.successRate - a.successRate : 
+        (a, b) => a.successRate - b.successRate;
+
+    const hardest = [...questions].sort(hardestSortFn).slice(0, 5);
+    const easiest = [...questions].sort(easiestSortFn).slice(0, 5);
+
+    updateQuestionAnalytics(hardest, easiest);
+    generateSkillAnalytics(results);
+    updateResultsTable(results);
+}
+
+
+function switchProjectFromOverview() {
+    const selector = document.getElementById('overviewProjectFilter');
+    currentProjectId = selector.value;
+    document.getElementById('projectSelector').value = currentProjectId;
+    refreshData();
+}
+
+// Update the updateProjectSelector function to sync both selectors
+function updateProjectSelector() {
+    const selectors = ['projectSelector', 'overviewProjectFilter', 'analyticsProjectFilter'];
+    const currentValue = document.getElementById('projectSelector').value;
+    
+    selectors.forEach(selectorId => {
+        const selector = document.getElementById(selectorId);
+        if (selector) {
+            selector.innerHTML = '<option value="all">All Projects</option>';
+            
+            projects.forEach(project => {
+                const option = document.createElement('option');
+                option.value = project._id;
+                option.textContent = project.name;
+                selector.appendChild(option);
+            });
+            
+            if (projects.find(p => p._id === currentValue)) {
+                selector.value = currentValue;
+            }
+        }
+    });
+}
+
+
         // Authentication
         function login() {
             const password = document.getElementById('adminPassword').value;
@@ -1872,6 +2046,31 @@
                 loadPeriodComparison();
             }
         }
+
+
+
+
+        async function migrateToBaseline() {
+    if (!confirm('This will set the period to "baseline" for all NCC Embedded Lab results that don\'t have a period. Continue?')) return;
+    
+    try {
+        const response = await fetch('/api/migrate-to-baseline', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' }
+        });
+        
+        if (response.ok) {
+            const result = await response.json();
+            showActionMessage(result.message);
+            await refreshData();
+        } else {
+            throw new Error('Migration failed');
+        }
+    } catch (error) {
+        showActionMessage('Failed: ' + error.message, true);
+    }
+}
+
 
         // Dashboard Management
         async function loadDashboard() {
@@ -2771,65 +2970,125 @@
             container.innerHTML = html;
         }
 
-        function updateParticipantAnalysis(participants) {
-            const container = document.getElementById('participantAnalysis');
-            if (!container) return;
-            
-            let sortedParticipants = [...participants];
+       function updateParticipantAnalysis(participants) {
+    const container = document.getElementById('participantAnalysis');
+    if (!container) return;
+    
+    let sortedParticipants = [...participants];
 
-            if (currentSort === 'highest') {
-                sortedParticipants.sort((a, b) => b.percentage - a.percentage);
-            } else if (currentSort === 'lowest') {
-                sortedParticipants.sort((a, b) => a.percentage - b.percentage);
-            } else {
-                sortedParticipants.sort((a, b) => new Date(b.completedAt) - new Date(a.completedAt));
+    if (currentSort === 'highest') {
+        sortedParticipants.sort((a, b) => b.percentage - a.percentage);
+    } else if (currentSort === 'lowest') {
+        sortedParticipants.sort((a, b) => a.percentage - b.percentage);
+    } else {
+        sortedParticipants.sort((a, b) => new Date(b.completedAt) - new Date(a.completedAt));
+    }
+
+    let html = '';
+    
+    sortedParticipants.forEach((participant, index) => {
+        const gradeClass = getGradeClass(participant.percentage);
+        const projectName = projects.find(p => p._id === participant.project_id)?.name || 'Unknown';
+        
+        html += `
+            <div class="participant-card" style="margin-bottom: 16px; padding: 24px; background: var(--surface); border-radius: 16px; border: 1px solid var(--border-light); cursor: pointer; transition: all 0.3s ease;" 
+                 onmouseover="this.style.boxShadow='var(--shadow-lg)'" 
+                 onmouseout="this.style.boxShadow='none'">
+                <div style="display: flex; justify-content: space-between; align-items: center;" onclick="toggleParticipantDetails(${index})">
+                    <div>
+                        <div style="font-weight: 700; font-size: 1.1rem; color: var(--text-primary); margin-bottom: 4px;">
+                            <i class="fas fa-user" style="color: var(--primary-green); margin-right: 8px;"></i>${participant.name}
+                        </div>
+                        <div style="font-size: 0.875rem; color: var(--text-muted); margin-bottom: 4px;">
+                            <i class="fas fa-project-diagram"></i> ${projectName} • ${participant.period}
+                        </div>
+                        <div style="font-size: 0.875rem; color: var(--text-muted);">
+                            <i class="fas fa-clock"></i> ${formatDateTime(participant.completedAt)}
+                        </div>
+                    </div>
+                    <div style="text-align: right; display: flex; align-items: center; gap: 16px;">
+                        <div>
+                            <div class="grade-badge ${gradeClass}" style="margin-bottom: 8px; padding: 10px 20px;">
+                                ${participant.percentage}% (${participant.totalScore}/20)
+                            </div>
+                            <div style="color: var(--text-muted); font-size: 0.875rem;">
+                                <span id="toggle-${index}">
+                                    <i class="fas fa-chevron-down"></i> Show Details
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Collapsible Details Section -->
+                <div class="participant-details" id="details-${index}" style="display: none; margin-top: 24px; padding-top: 24px; border-top: 2px solid var(--border-light);">
+                    <h4 style="margin-bottom: 16px; color: var(--text-primary); font-weight: 700;">
+                        <i class="fas fa-chart-bar"></i> Skill Area Breakdown
+                    </h4>
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 20px;">
+        `;
+        
+        Object.entries(participant.skillAreas).forEach(([area, data]) => {
+            const icon = area.includes('Data') ? 'chart-bar' : 
+                       area.includes('M&E') ? 'tasks' :
+                       area.includes('RCT') ? 'flask' : 'code';
+            
+            html += `
+                <div style="background: var(--surface-alt); padding: 20px; border-radius: 16px; text-align: center; border: 2px solid var(--border-light); transition: all 0.3s ease;"
+                     onmouseover="this.style.borderColor='var(--primary-green)'"
+                     onmouseout="this.style.borderColor='var(--border-light)'">
+                    <div style="font-size: 1.75rem; font-weight: 800; margin-bottom: 8px; color: ${data.percentage >= 80 ? 'var(--primary-green)' : data.percentage >= 60 ? '#f59e0b' : '#dc2626'};">
+                        ${data.percentage}%
+                    </div>
+                    <div style="font-size: 0.95rem; color: var(--text-primary); font-weight: 600; margin-bottom: 4px;">
+                        <i class="fas fa-${icon}"></i> ${area.replace('RCT/Impact', 'RCT')}
+                    </div>
+                    <div style="font-size: 0.8rem; color: var(--text-muted); font-weight: 500;">
+                        ${data.correct}/${data.total} correct
+                    </div>
+                </div>
+            `;
+        });
+        
+        html += `
+                    </div>
+                </div>
+            </div>
+        `;
+    });
+    
+    container.innerHTML = html;
+}
+
+
+function toggleParticipantDetails(index) {
+    const details = document.getElementById(`details-${index}`);
+    const toggle = document.getElementById(`toggle-${index}`);
+    
+    if (!details || !toggle) return;
+    
+    // Close all other expanded details first
+    document.querySelectorAll('.participant-details').forEach((detail, i) => {
+        if (i !== index && detail.style.display !== 'none') {
+            detail.style.display = 'none';
+            const otherToggle = document.getElementById(`toggle-${i}`);
+            if (otherToggle) {
+                otherToggle.innerHTML = '<i class="fas fa-chevron-down"></i> Show Details';
             }
-
-            let html = '';
-            
-            sortedParticipants.forEach((participant, index) => {
-                const gradeClass = getGradeClass(participant.percentage);
-                const projectName = projects.find(p => p._id === participant.project_id)?.name || 'Unknown';
-                
-                html += `
-                    <div style="margin-bottom: 16px; padding: 24px; background: var(--surface); border-radius: 16px; border: 1px solid var(--border-light);">
-                        <div style="display: flex; justify-content: space-between; margin-bottom: 16px;">
-                            <div>
-                                <div style="font-weight: 700; font-size: 1.1rem;">${participant.name}</div>
-                                <div style="font-size: 0.875rem; color: var(--text-muted);">
-                                    ${projectName} • ${participant.period}
-                                </div>
-                            </div>
-                            <div style="text-align: right;">
-                                <div class="grade-badge ${gradeClass}" style="margin-bottom: 8px;">
-                                    ${participant.percentage}%
-                                </div>
-                            </div>
-                        </div>
-                        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 20px;">
-                `;
-                
-                Object.entries(participant.skillAreas).forEach(([area, data]) => {
-                    html += `
-                        <div style="background: var(--surface-alt); padding: 20px; border-radius: 16px; text-align: center;">
-                            <div style="font-size: 1.75rem; font-weight: 800; color: ${data.percentage >= 80 ? 'var(--primary-green)' : data.percentage >= 60 ? '#f59e0b' : '#dc2626'};">
-                                ${data.percentage}%
-                            </div>
-                            <div style="font-size: 0.95rem; font-weight: 600; margin-top: 4px;">
-                                ${area}
-                            </div>
-                            <div style="font-size: 0.8rem; color: var(--text-muted);">
-                                ${data.correct}/${data.total}
-                            </div>
-                        </div>
-                    `;
-                });
-                
-                html += '</div></div>';
-            });
-            
-            container.innerHTML = html;
         }
+    });
+    
+    if (details.style.display === 'none') {
+        details.style.display = 'block';
+        toggle.innerHTML = '<i class="fas fa-chevron-up"></i> Hide Details';
+    } else {
+        details.style.display = 'none';
+        toggle.innerHTML = '<i class="fas fa-chevron-down"></i> Show Details';
+    }
+}
+
+
+
 
         function sortParticipants(sortType) {
             currentSort = sortType;
