@@ -567,69 +567,6 @@ app.post('/api/projects', async (req, res) => {
 });
 
 
-// API: Clean up duplicate questions (keep latest version only)
-app.post('/api/questions/cleanup/:project_id', async (req, res) => {
-    const { password } = req.body;
-    const SECURE_PASSWORD = 'KK@www1203pw';
-    
-    if (password !== SECURE_PASSWORD) {
-        return res.status(401).json({ error: 'Invalid admin password' });
-    }
-    
-    try {
-        const questionsCollection = db.collection('questions');
-        const projectId = new ObjectId(req.params.project_id);
-        
-        // Get all questions for this project
-        const allQuestions = await questionsCollection.find({ 
-            project_id: projectId 
-        }).sort({ question_number: 1, created_at: -1 }).toArray();
-        
-        // Group by question_number
-        const questionGroups = {};
-        allQuestions.forEach(q => {
-            if (!questionGroups[q.question_number]) {
-                questionGroups[q.question_number] = [];
-            }
-            questionGroups[q.question_number].push(q);
-        });
-        
-        // For each question number, keep the latest and delete the rest
-        let deletedCount = 0;
-        const idsToDelete = [];
-        
-        for (const [qNum, questions] of Object.entries(questionGroups)) {
-            if (questions.length > 1) {
-                // Sort by created_at descending (newest first)
-                questions.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
-                
-                // Keep the first (newest), delete the rest
-                for (let i = 1; i < questions.length; i++) {
-                    idsToDelete.push(questions[i]._id);
-                    deletedCount++;
-                }
-            }
-        }
-        
-        if (idsToDelete.length > 0) {
-            await questionsCollection.deleteMany({
-                _id: { $in: idsToDelete }
-            });
-        }
-        
-        res.json({
-            success: true,
-            message: `Cleaned up ${deletedCount} duplicate questions`,
-            remaining: allQuestions.length - deletedCount
-        });
-        
-    } catch (err) {
-        console.error('❌ Error cleaning up questions:', err);
-        res.status(500).json({ error: 'Database error' });
-    }
-});
-
-
 
 // API: Update project status (simplified)
 app.put('/api/projects/:project_id/status', async (req, res) => {
